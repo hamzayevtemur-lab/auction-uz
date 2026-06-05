@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ro'yxatdan o'tish — Savdo.uz</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #08080F;
+            --bg2: #0E0E1A;
+            --bg3: #141425;
+            --border: rgba(255, 255, 255, 0.08);
+            --primary: #7C5CFC;
+            --primary2: #9B7BFF;
+            --accent: #FC5C7D;
+            --gold: #F5C842;
+            --text: #F0F0FF;
+            --text2: rgba(240, 240, 255, 0.55);
+            --text3: rgba(240, 240, 255, 0.25);
+            --green: #2ECC71;
+            --danger: #E74C3C;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Golos Text', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        .navbar {
+            height: 64px;
+            background: rgba(8, 8, 15, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .page {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(124, 92, 252, 0.12), transparent 70%);
+        }
+
+        .auth-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* STEP TRACK */
+        .step-lbl {
+            font-size: 11px;
+            color: var(--text3);
+            margin-bottom: 7px;
+        }
+
+        .steps {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .step {
+            flex: 1;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--bg3);
+            transition: background 0.3s;
+        }
+
+        .step.active {
+            background: var(--primary);
+        }
+
+        .step.done {
+            background: var(--green);
+        }
+
+        h1 {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .sub {
+            font-size: 14px;
+            color: var(--text2);
+            margin-bottom: 24px;
+        }
+
+        /* ROLE */
+        .role-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .role-card {
+            padding: 20px 16px;
+            border-radius: 16px;
+            border: 1.5px solid var(--border);
+            background: var(--bg3);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .role-card:hover {
+            border-color: var(--primary);
+        }
+
+        .role-card.selected {
+            border-color: var(--primary);
+            background: rgba(124, 92, 252, 0.12);
+        }
+
+        .role-card .ri {
+            font-size: 32px;
+            margin-bottom: 9px;
+        }
+
+        .role-card .rn {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .role-card .rd {
+            font-size: 12px;
+            color: var(--text2);
+            line-height: 1.5;
+        }
+
+        /* FORM */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text2);
+            margin-bottom: 6px;
+        }
+
+        .form-label span {
+            color: var(--accent);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input::placeholder {
+            color: var(--text3);
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+        }
+
+        .form-input.error {
+            border-color: var(--danger);
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap .form-input {
+            padding-right: 42px;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text3);
+            cursor: pointer;
+            font-size: 16px;
+            user-select: none;
+        }
+
+        .err-msg {
+            font-size: 11px;
+            color: var(--danger);
+            margin-top: 4px;
+            display: none;
+        }
+
+        .err-msg.show {
+            display: block;
+        }
+
+        .pass-bar {
+            height: 3px;
+            border-radius: 2px;
+            background: var(--bg3);
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .pass-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s, background 0.3s;
+            width: 0;
+        }
+
+        .pass-txt {
+            font-size: 11px;
+            color: var(--text3);
+            margin-top: 3px;
+        }
+
+        .seller-info {
+            background: rgba(245, 200, 66, 0.07);
+            border: 1px solid rgba(245, 200, 66, 0.2);
+            border-radius: 11px;
+            padding: 12px 14px;
+            font-size: 13px;
+            color: rgba(245, 200, 66, 0.9);
+            margin-bottom: 16px;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .check-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .check-row input[type=checkbox] {
+            width: 15px;
+            height: 15px;
+            margin-top: 2px;
+            accent-color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .check-row label {
+            font-size: 13px;
+            color: var(--text2);
+            line-height: 1.5;
+        }
+
+        .check-row a {
+            color: var(--primary2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            border-radius: 13px;
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: inherit;
+            box-shadow: 0 4px 20px rgba(124, 92, 252, 0.35);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .btn-back {
+            width: 100%;
+            padding: 12px;
+            border-radius: 13px;
+            background: transparent;
+            border: 1.5px solid var(--border);
+            color: var(--text2);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+
+        .btn-back:hover {
+            border-color: var(--primary2);
+            color: var(--text);
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 11px;
+            font-size: 13px;
+            margin-bottom: 14px;
+            display: none;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .alert.show {
+            display: flex;
+        }
+
+        .alert-err {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #ff8a80;
+        }
+
+        .alert-ok {
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            color: #69f0ae;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 14px;
+            color: var(--text2);
+        }
+
+        .auth-footer a {
+            color: var(--primary2);
+            font-weight: 600;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        @media(max-width:500px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .role-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <div class="logo-icon">🔨</div>Savdo.uz
+        </a>
+    </nav>
+    <div class="page">
+        <div class="page-bg"></div>
+        <div class="auth-card">
+            <div class="step-lbl" id="step-lbl">1-qadam: Hisob turini tanlang</div>
+            <div class="steps">
+                <div class="step active" id="s1"></div>
+                <div class="step" id="s2"></div>
+                <div class="step" id="s3"></div>
+            </div>
+            <h1 id="card-title">Hisob yarating 🚀</h1>
+            <p class="sub" id="card-sub">Xaridor yoki sotuvchi sifatida ro'yxatdan o'ting</p>
+
+            <div class="alert alert-err" id="alert-err">⚠️ <span id="alert-msg"></span></div>
+            <div class="alert alert-ok" id="alert-ok">✅ Muvaffaqiyatli ro'yxatdan o'tdingiz! Kirilmoqda…</div>
+
+            <!-- STEP 1: ROL -->
+            <div id="step1">
+                <div class="role-grid">
+                    <div class="role-card" id="role-buyer" onclick="selectRole('buyer')">
+                        <div class="ri">🛒</div>
+                        <div class="rn">Xaridor</div>
+                        <div class="rd">Auktsionlarda ishtirok eting va sotib oling</div>
+                    </div>
+                    <div class="role-card" id="role-seller" onclick="selectRole('seller')">
+                        <div class="ri">🏷️</div>
+                        <div class="rn">Sotuvchi</div>
+                        <div class="rd">Mahsulotlaringizni auktsion orqali soting</div>
+                    </div>
+                </div>
+                <button class="btn-submit" onclick="goStep2()" id="role-next" disabled>Davom etish →</button>
+            </div>
+
+            <!-- STEP 2: MA'LUMOTLAR -->
+            <div id="step2" style="display:none">
+                <div class="seller-info" id="seller-info">
+                    💡 <strong>Eslatma:</strong> Auktsion yaratishda boshlang'ich narxning <strong>1%</strong> garov
+                    to'lovini to'laysiz.
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Ism <span>*</span></label>
+                        <input type="text" class="form-input" id="first_name" placeholder="Ismingiz" />
+                        <div class="err-msg" id="e-first">Ismingizni kiriting</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Familiya <span>*</span></label>
+                        <input type="text" class="form-input" id="last_name" placeholder="Familiyangiz" />
+                        <div class="err-msg" id="e-last">Familiyangizni kiriting</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email <span>*</span></label>
+                    <input type="email" class="form-input" id="reg-email" placeholder="siz@email.com" />
+                    <div class="err-msg" id="e-email">To'g'ri email kiriting</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Telefon <span>*</span></label>
+                    <input type="tel" class="form-input" id="reg-phone" placeholder="+998901234567" />
+                    <div class="err-msg" id="e-phone">Telefon raqamini kiriting</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Parol <span>*</span></label>
+                    <div class="input-wrap">
+                        <input type="password" class="form-input" id="reg-pass" placeholder="Kamida 8 ta belgi"
+                            oninput="checkStrength(this.value)" />
+                        <span class="input-icon" onclick="togglePass('reg-pass',this)">👁️</span>
+                    </div>
+                    <div class="pass-bar">
+                        <div class="pass-fill" id="str-fill"></div>
+                    </div>
+                    <div class="pass-txt" id="str-txt">Parol kuchi</div>
+                    <div class="err-msg" id="e-pass">Kamida 8 ta belgi kiriting</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Parolni tasdiqlang <span>*</span></label>
+                    <div class="input-wrap">
+                        <input type="password" class="form-input" id="reg-pass2" placeholder="Qayta kiriting" />
+                        <span class="input-icon" onclick="togglePass('reg-pass2',this)">👁️</span>
+                    </div>
+                    <div class="err-msg" id="e-pass2">Parollar mos emas</div>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" id="agree" />
+                    <label for="agree"><a href="#">Foydalanish shartlari</a> va <a href="#">Maxfiylik siyosati</a>ga
+                        roziman</label>
+                </div>
+                <div class="err-msg" id="e-agree">Shartlarga rozi bo'ling</div>
+                <button class="btn-submit" id="reg-btn" onclick="handleRegister()">
+                    <span id="reg-txt">Ro'yxatdan o'tish</span>
+                </button>
+                <button class="btn-back" onclick="goStep1()">← Orqaga</button>
+            </div>
+
+            <div class="auth-footer">Hisobingiz bormi? <a href="login.html">Kirish</a></div>
+        </div>
+    </div>
+
+    <script>
+        const API = 'http://127.0.0.1:8000/api';
+        let selectedRole = null;
+
+        if (localStorage.getItem('savdo_token')) location.href = 'index.html';
+
+        function selectRole(role) {
+            selectedRole = role;
+            document.getElementById('role-buyer').classList.toggle('selected', role === 'buyer');
+            document.getElementById('role-seller').classList.toggle('selected', role === 'seller');
+            document.getElementById('role-next').disabled = false;
+        }
+
+        function goStep2() {
+            if (!selectedRole) return;
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+            document.getElementById('seller-info').style.display = selectedRole === 'seller' ? 'block' : 'none';
+            document.getElementById('card-title').textContent = "Ma'lumotlaringizni kiriting";
+            document.getElementById('card-sub').textContent = selectedRole === 'seller' ? 'Sotuvchi hisob' : 'Xaridor hisob';
+            document.getElementById('step-lbl').textContent = "2-qadam: Shaxsiy ma'lumotlar";
+            document.getElementById('s1').className = 'step done';
+            document.getElementById('s2').className = 'step active';
+        }
+
+        function goStep1() {
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step1').style.display = 'block';
+            document.getElementById('card-title').textContent = 'Hisob yarating 🚀';
+            document.getElementById('card-sub').textContent = "Xaridor yoki sotuvchi sifatida ro'yxatdan o'ting";
+            document.getElementById('step-lbl').textContent = '1-qadam: Hisob turini tanlang';
+            document.getElementById('s1').className = 'step active';
+            document.getElementById('s2').className = 'step';
+        }
+
+        function togglePass(id, icon) {
+            const inp = document.getElementById(id);
+            inp.type = inp.type === 'password' ? 'text' : 'password';
+            icon.textContent = inp.type === 'text' ? '🙈' : '👁️';
+        }
+
+        function checkStrength(val) {
+            let score = 0;
+            if (val.length >= 8) score++;
+            if (/[A-Z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+            const levels = [
+                { w: '0%', c: 'var(--bg3)', t: 'Parol kuchi' },
+                { w: '25%', c: 'var(--danger)', t: 'Juda zaif' },
+                { w: '50%', c: 'var(--gold)', t: "O'rtacha" },
+                { w: '75%', c: 'var(--primary2)', t: 'Yaxshi' },
+                { w: '100%', c: 'var(--green)', t: "A'lo" },
+            ];
+            const l = levels[score];
+            const fill = document.getElementById('str-fill');
+            const txt = document.getElementById('str-txt');
+            fill.style.width = l.w; fill.style.background = l.c;
+            txt.textContent = l.t; txt.style.color = l.c;
+        }
+
+        function ve(id, show, msg) {
+            const e = document.getElementById('e-' + id); if (e) { e.classList.toggle('show', show); if (msg) e.textContent = msg; }
+            const i = document.getElementById(id || ''); if (i) i.classList.toggle('error', show);
+            return !show;
+        }
+
+        async function handleRegister() {
+            const fn = document.getElementById('first_name').value.trim();
+            const ln = document.getElementById('last_name').value.trim();
+            const em = document.getElementById('reg-email').value.trim();
+            const ph = document.getElementById('reg-phone').value.trim();
+            const pw = document.getElementById('reg-pass').value;
+            const pw2 = document.getElementById('reg-pass2').value;
+            const agr = document.getElementById('agree').checked;
+
+            let ok = true;
+            if (!ve('first', !fn)) ok = false;
+            if (!ve('last', !ln)) ok = false;
+            if (!ve('email', !em || !em.includes('@'))) ok = false;
+            if (!ve('phone', !ph)) ok = false;
+            if (!ve('pass', pw.length < 8)) ok = false;
+            if (!ve('pass2', pw !== pw2, 'Parollar mos emas')) ok = false;
+            if (!ve('agree', !agr, 'Shartlarga rozi bo\'ling')) ok = false;
+            if (!ok) return;
+
+            document.getElementById('alert-err').classList.remove('show');
+            const btn = document.getElementById('reg-btn');
+            const txt = document.getElementById('reg-txt');
+            btn.disabled = true; txt.innerHTML = '<div class="spinner"></div> Amalga oshirilmoqda…';
+
+            try {
+                const r = await fetch(`${API}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ full_name: `${fn} ${ln}`, email: em, phone: ph, password: pw, role: selectedRole })
+                });
+                const data = await r.json();
+                if (!r.ok) throw new Error(data.detail || 'Xatolik yuz berdi');
+
+                localStorage.setItem('savdo_token', data.access_token);
+                localStorage.setItem('savdo_user', JSON.stringify({
+                    id: data.user.id, full_name: data.user.full_name,
+                    email: data.user.email, role: data.user.role,
+                    initials: `${fn[0]}${ln[0]}`.toUpperCase()
+                }));
+
+                document.getElementById('s2').className = 'step done';
+                document.getElementById('s3').className = 'step active';
+                document.getElementById('alert-ok').classList.add('show');
+                setTimeout(() => location.href = 'index.html', 1200);
+            } catch (err) {
+                document.getElementById('alert-msg').textContent = err.message;
+                document.getElementById('alert-err').classList.add('show');
+            } finally {
+                btn.disabled = false; txt.textContent = "Ro'yxatdan o'tish";
+            }
+        }
+    </script>
+</body>
+
+</html>

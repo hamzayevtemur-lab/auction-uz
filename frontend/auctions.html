@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auktsionlar — Savdo.uz</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #08080F;
+            --bg2: #0E0E1A;
+            --bg3: #141425;
+            --border: rgba(255, 255, 255, 0.08);
+            --primary: #7C5CFC;
+            --primary2: #9B7BFF;
+            --accent: #FC5C7D;
+            --gold: #F5C842;
+            --text: #F0F0FF;
+            --text2: rgba(240, 240, 255, 0.55);
+            --text3: rgba(240, 240, 255, 0.25);
+            --green: #2ECC71;
+            --danger: #E74C3C;
+            --nav-h: 70px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: 'Golos Text', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Unbounded', sans-serif;
+            line-height: 1.2
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-h);
+            background: rgba(8, 8, 15, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .logo-icon {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 20px;
+            border-radius: 11px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(124, 92, 252, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary2);
+        }
+
+        .btn-sm {
+            padding: 7px 14px;
+            font-size: 13px;
+        }
+
+        .nav-avatar {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .hero-strip {
+            padding: calc(var(--nav-h)+30px) 0 30px;
+            background: linear-gradient(135deg, #0e0a1f, var(--bg));
+            border-bottom: 1px solid var(--border);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .hs-accent {
+            color: var(--primary2);
+        }
+
+        .toolbar {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            padding: 18px;
+            border-radius: 18px;
+            margin: 24px 0;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .search-wrap {
+            flex: 2;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-wrap input {
+            width: 100%;
+            padding: 11px 13px 11px 38px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            color: var(--text);
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-wrap input::placeholder {
+            color: var(--text3);
+        }
+
+        .search-wrap input:focus {
+            border-color: var(--primary);
+        }
+
+        .search-wrap .si {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text3);
+            pointer-events: none;
+        }
+
+        .filter-g {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .filter-lbl {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text3);
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .filter-sel {
+            width: 100%;
+            padding: 11px 30px 11px 13px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            color: var(--text);
+            font-size: 14px;
+            font-family: inherit;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='rgba(255,255,255,0.3)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 11px center;
+        }
+
+        .filter-sel:focus {
+            border-color: var(--primary);
+        }
+
+        .filter-sel option {
+            background: #1a1a2e;
+        }
+
+        .quick-btns {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .q-btn {
+            padding: 11px 14px;
+            border-radius: 11px;
+            border: 1px solid var(--border);
+            background: var(--bg3);
+            color: var(--text2);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .q-btn:hover,
+        .q-btn.active {
+            background: rgba(124, 92, 252, 0.12);
+            border-color: var(--primary);
+            color: var(--primary2);
+        }
+
+        .results-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .results-count {
+            font-size: 14px;
+            color: var(--text2);
+        }
+
+        .results-count strong {
+            color: var(--text);
+        }
+
+        .auctions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 18px;
+        }
+
+        .a-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+            animation: cardIn 0.4s ease both;
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .a-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+            border-color: rgba(124, 92, 252, 0.25);
+        }
+
+        .a-img {
+            height: 190px;
+            background: linear-gradient(160deg, #12102a, #0a0818);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .a-img-ov {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.45));
+        }
+
+        .a-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .bl {
+            background: rgba(231, 76, 60, 0.18);
+            color: #ff6b6b;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .bl::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            animation: blink 1.4s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.3
+            }
+        }
+
+        .bs {
+            background: rgba(245, 200, 66, 0.18);
+            color: var(--gold);
+            border: 1px solid rgba(245, 200, 66, 0.3);
+        }
+
+        .be {
+            background: rgba(90, 90, 122, 0.2);
+            color: var(--text3);
+            border: 1px solid var(--border);
+        }
+
+        .a-fav {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 28px;
+            height: 28px;
+            background: rgba(8, 8, 15, 0.7);
+            backdrop-filter: blur(6px);
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+            color: var(--text2);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+
+        .a-fav:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .a-body {
+            padding: 14px 16px;
+        }
+
+        .a-cat {
+            display: inline-block;
+            background: rgba(124, 92, 252, 0.1);
+            color: var(--primary2);
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 9px;
+            border-radius: 100px;
+            margin-bottom: 7px;
+        }
+
+        .a-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 11px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .a-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3px;
+            margin-bottom: 12px;
+        }
+
+        .a-lbl {
+            font-size: 10px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .a-val {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .a-val.timer {
+            color: var(--gold);
+        }
+
+        .a-val.urgent {
+            color: var(--danger);
+            animation: pls 1s infinite;
+        }
+
+        @keyframes pls {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.5
+            }
+        }
+
+        .a-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        .a-seller {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text2);
+        }
+
+        .a-sav {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            font-weight: 700;
+        }
+
+        .empty {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 70px 20px;
+            color: var(--text2);
+        }
+
+        .empty .eico {
+            font-size: 52px;
+            margin-bottom: 14px;
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, var(--bg2) 25%, var(--bg3) 50%, var(--bg2) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 20px;
+            height: 320px;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0
+            }
+
+            100% {
+                background-position: -200% 0
+            }
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 36px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg2);
+            color: var(--text2);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .page-btn:hover,
+        .page-btn.active {
+            background: rgba(124, 92, 252, 0.15);
+            border-color: var(--primary);
+            color: var(--primary2);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 22px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--bg2);
+            border: 1px solid rgba(124, 92, 252, 0.3);
+            color: var(--text);
+            padding: 12px 22px;
+            border-radius: 30px;
+            font-size: 14px;
+            z-index: 9999;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s, opacity 0.3s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @media(max-width:768px) {
+            .toolbar {
+                flex-direction: column;
+            }
+
+            .filter-g,
+            .search-wrap {
+                width: 100%;
+                flex: none;
+            }
+
+            .quick-btns {
+                width: 100%;
+            }
+
+            .q-btn {
+                flex: 1;
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
+        @media(max-width:500px) {
+            .auctions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">
+                <div class="logo-icon">🔨</div>Savdo.uz
+            </a>
+            <div class="nav-right">
+                <a href="login.html" id="nav-login" class="btn btn-outline btn-sm">Kirish</a>
+                <a href="register.html" id="nav-signup" class="btn btn-primary btn-sm">Ro'yxatdan o'tish</a>
+                <div id="nav-user" style="display:none;align-items:center;gap:8px">
+                    <a href="dashboard.html" class="nav-avatar" id="nav-av">??</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero-strip">
+        <div class="container">
+            <h1>🔨 Barcha <span class="hs-accent">Auktsionlar</span></h1>
+            <p style="color:var(--text2);margin-top:6px;font-size:15px">Real vaqtda taklif bering — eng yaxshi narxda
+                yuting</p>
+        </div>
+    </div>
+
+    <div class="container" style="padding-top:16px;padding-bottom:60px">
+        <div class="toolbar">
+            <div class="search-wrap">
+                <span class="si">🔍</span>
+                <input type="text" id="search-inp" placeholder="Auktsion nomini qidiring…"
+                    oninput="debounceSearch(this.value)" />
+            </div>
+            <div class="filter-g">
+                <label class="filter-lbl">Kategoriya</label>
+                <select class="filter-sel" id="cat-sel" onchange="applyFilters()">
+                    <option value="">Barcha kategoriyalar</option>
+                    <option value="1">📱 Elektronika</option>
+                    <option value="2">🚗 Avtomobil</option>
+                    <option value="3">🏠 Ko'chmas mulk</option>
+                    <option value="4">👗 Kiyim-kechak</option>
+                    <option value="5">🎨 San'at</option>
+                    <option value="6">💍 Zargarlik</option>
+                    <option value="7">🪑 Mebel</option>
+                    <option value="8">⚽ Sport</option>
+                    <option value="9">📚 Kitob</option>
+                    <option value="10">🔧 Boshqa</option>
+                </select>
+            </div>
+            <div class="filter-g">
+                <label class="filter-lbl">Holat</label>
+                <select class="filter-sel" id="status-sel" onchange="applyFilters()">
+                    <option value="">Barchasi</option>
+                    <option value="active">🔴 Faol</option>
+                    <option value="pending">🟡 Tez kunda</option>
+                    <option value="ended">⚫ Tugagan</option>
+                </select>
+            </div>
+            <div class="quick-btns">
+                <button class="q-btn" id="q-live" onclick="quickFilter(this,'active')">🔴 Jonli</button>
+                <button class="q-btn" id="q-ending" onclick="quickFilter(this,'ending')">⏰ Tugayapti</button>
+            </div>
+        </div>
+
+        <div class="results-bar">
+            <div class="results-count" id="res-count">Yuklanmoqda…</div>
+        </div>
+
+        <div class="auctions-grid" id="a-grid">
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+        </div>
+        <div class="pagination" id="pagination"></div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        const API = 'http://127.0.0.1:8000/api';
+        const CAT_NAMES = { 1: 'Elektronika', 2: 'Avtomobil', 3: "Ko'chmas mulk", 4: 'Kiyim', 5: "San'at", 6: 'Zargarlik', 7: 'Mebel', 8: 'Sport', 9: 'Kitob', 10: 'Boshqa' };
+        const CAT_ICONS = { 1: '📱', 2: '🚗', 3: '🏠', 4: '👗', 5: '🎨', 6: '💍', 7: '🪑', 8: '⚽', 9: '📚', 10: '🔧' };
+        let currentPage = 1, totalPages = 1, liveTimers = [];
+        let searchTimeout = null, quickActive = null;
+
+        // ── AUTH ─────────────────────────────────────────────────────────────────
+        function checkAuth() {
+            const u = localStorage.getItem('savdo_user');
+            if (!localStorage.getItem('savdo_token') || !u) return;
+            const usr = JSON.parse(u);
+            document.getElementById('nav-login').style.display = 'none';
+            document.getElementById('nav-signup').style.display = 'none';
+            document.getElementById('nav-user').style.display = 'flex';
+            document.getElementById('nav-av').textContent = usr.initials || '??';
+        }
+
+        // ── FETCH ─────────────────────────────────────────────────────────────────
+        async function fetchAuctions(page = 1) {
+            const search = document.getElementById('search-inp').value.trim();
+            const cat = document.getElementById('cat-sel').value;
+            const status = document.getElementById('status-sel').value;
+
+            const params = new URLSearchParams();
+            params.set('page', page);
+            params.set('per_page', 12);
+            if (search) params.set('search', search);
+            if (cat) params.set('category_id', cat);
+            if (status) params.set('status', status);
+
+            const grid = document.getElementById('a-grid');
+            grid.innerHTML = '<div class="skeleton"></div>'.repeat(4);
+
+            try {
+                const r = await fetch(`${API}/auctions?${params}`);
+                if (!r.ok) throw new Error();
+                const data = await r.json();
+                renderCards(data.items || [], data.total || 0);
+                totalPages = data.pages || 1;
+                currentPage = page;
+                renderPagination();
+            } catch {
+                grid.innerHTML = `<div class="empty"><div class="eico">⚠️</div><p>Server bilan bog'lanib bo'lmadi. Backend ishlaytapganini tekshiring.</p></div>`;
+                document.getElementById('res-count').textContent = '';
+            }
+        }
+
+        // ── RENDER ────────────────────────────────────────────────────────────────
+        function renderCards(items, total) {
+            const grid = document.getElementById('a-grid');
+            const count = document.getElementById('res-count');
+            count.innerHTML = `<strong>${total}</strong> ta auktsion topildi`;
+
+            if (!items.length) {
+                grid.innerHTML = `<div class="empty"><div class="eico">🔍</div><p>Hech narsa topilmadi — filtrni o'zgartiring</p></div>`;
+                return;
+            }
+
+            liveTimers = items.map(a => ({ id: a.id, ends: new Date(a.ends_at) }));
+
+            grid.innerHTML = items.map((a, i) => {
+                const t = timeLeft(new Date(a.ends_at));
+                const st = a.status;
+                const badgeCls = st === 'active' ? 'bl' : st === 'pending' ? 'bs' : 'be';
+                const badgeTxt = st === 'active' ? 'Jonli' : st === 'pending' ? 'Tez kunda' : 'Tugadi';
+                const urgent = !t.ended && t.d === 0 && t.h < 1;
+                return `
+    <div class="a-card" style="animation-delay:${i * 40}ms" onclick="location.href='auction-detail.html?id=${a.id}'">
+      <div class="a-img">
+        <span>${CAT_ICONS[a.category_id] || '🏷️'}</span>
+        <div class="a-img-ov"></div>
+        <div class="a-badge ${badgeCls}">${badgeTxt}</div>
+        <button class="a-fav" onclick="event.stopPropagation();this.textContent=this.textContent==='♡'?'❤️':'♡'">♡</button>
+      </div>
+      <div class="a-body">
+        <div class="a-cat">${CAT_NAMES[a.category_id] || 'Boshqa'}</div>
+        <div class="a-title">${a.title}</div>
+        <div class="a-meta">
+          <div><div class="a-lbl">Joriy taklif</div><div class="a-val">${fmtPrice(a.current_bid || a.starting_price)}</div></div>
+          <div><div class="a-lbl">${st === 'pending' ? 'Boshlanadi' : 'Qolgan vaqt'}</div>
+          <div class="a-val ${urgent ? 'urgent' : 'timer'}" id="xt-${a.id}">${fmtTimeStr(t)}</div></div>
+        </div>
+        <div class="a-footer">
+          <div class="a-seller"><div class="a-sav">S</div>Sotuvchi</div>
+          <span style="font-size:11px;color:var(--text3)">→ Ko'rish</span>
+        </div>
+      </div>
+    </div>`;
+            }).join('');
+        }
+
+        function renderPagination() {
+            const pg = document.getElementById('pagination');
+            if (totalPages <= 1) { pg.innerHTML = ''; return; }
+            let html = `<button class="page-btn" onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>←</button>`;
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || Math.abs(i - currentPage) <= 1)
+                    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goPage(${i})">${i}</button>`;
+                else if (Math.abs(i - currentPage) === 2)
+                    html += `<span style="color:var(--text3);padding:0 4px">…</span>`;
+            }
+            html += `<button class="page-btn" onclick="goPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>→</button>`;
+            pg.innerHTML = html;
+        }
+
+        function goPage(p) { fetchAuctions(p); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+        // ── FILTERS ───────────────────────────────────────────────────────────────
+        function applyFilters() { fetchAuctions(1); }
+
+        function debounceSearch(val) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => fetchAuctions(1), 400);
+        }
+
+        function quickFilter(btn, type) {
+            const same = quickActive === type;
+            quickActive = same ? null : type;
+            document.querySelectorAll('.q-btn').forEach(b => b.classList.remove('active'));
+            if (!same) {
+                btn.classList.add('active');
+                if (type === 'active') document.getElementById('status-sel').value = 'active';
+                if (type === 'ending') document.getElementById('status-sel').value = 'active';
+            } else {
+                document.getElementById('status-sel').value = '';
+            }
+            fetchAuctions(1);
+        }
+
+        // ── TIMERS ────────────────────────────────────────────────────────────────
+        setInterval(() => {
+            liveTimers.forEach(({ id, ends }) => {
+                const el = document.getElementById(`xt-${id}`);
+                if (el) {
+                    const t = timeLeft(ends);
+                    el.textContent = fmtTimeStr(t);
+                    el.className = 'a-val ' + (t.d === 0 && t.h < 1 && !t.ended ? 'urgent' : 'timer');
+                }
+            });
+        }, 1000);
+
+        // ── UTILS ─────────────────────────────────────────────────────────────────
+        function fmtPrice(n) { return new Intl.NumberFormat('uz-UZ').format(Math.round(n || 0)) + " so'm"; }
+        function timeLeft(date) {
+            const diff = new Date(date) - Date.now();
+            if (diff <= 0) return { ended: true, d: 0, h: 0, m: 0, s: 0 };
+            return { ended: false, d: Math.floor(diff / 86400000), h: Math.floor((diff % 86400000) / 3600000), m: Math.floor((diff % 3600000) / 60000), s: Math.floor((diff % 60000) / 1000) };
+        }
+        function fmtTimeStr(t) {
+            if (t.ended) return 'Tugadi';
+            if (t.d > 0) return `${t.d}k ${String(t.h).padStart(2, '0')}s`;
+            return `${String(t.h).padStart(2, '0')}:${String(t.m).padStart(2, '0')}:${String(t.s).padStart(2, '0')}`;
+        }
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
+            clearTimeout(t._t); t._t = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(80px)'; }, 2500);
+        }
+
+        // ── URL PARAMS ────────────────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            const p = new URLSearchParams(location.search);
+            if (p.get('cat')) document.getElementById('cat-sel').value = p.get('cat');
+            if (p.get('status')) document.getElementById('status-sel').value = p.get('status');
+            if (p.get('search')) document.getElementById('search-inp').value = p.get('search');
+            fetchAuctions(1);
+        });
+    </script>
+</body>
+
+</html>

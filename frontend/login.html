@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kirish — Savdo.uz</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #08080F;
+            --bg2: #0E0E1A;
+            --bg3: #141425;
+            --border: rgba(255, 255, 255, 0.08);
+            --primary: #7C5CFC;
+            --primary2: #9B7BFF;
+            --accent: #FC5C7D;
+            --text: #F0F0FF;
+            --text2: rgba(240, 240, 255, 0.55);
+            --text3: rgba(240, 240, 255, 0.25);
+            --green: #2ECC71;
+            --danger: #E74C3C;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Golos Text', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        .navbar {
+            height: 64px;
+            background: rgba(8, 8, 15, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .page {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(124, 92, 252, 0.12), transparent 70%);
+            pointer-events: none;
+        }
+
+        .auth-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 440px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-card h1 {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .auth-card .sub {
+            font-size: 14px;
+            color: var(--text2);
+            margin-bottom: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text2);
+            margin-bottom: 7px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 13px 16px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input::placeholder {
+            color: var(--text3);
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            background: rgba(124, 92, 252, 0.04);
+        }
+
+        .form-input.error {
+            border-color: var(--danger);
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap .form-input {
+            padding-right: 44px;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text3);
+            cursor: pointer;
+            font-size: 17px;
+            user-select: none;
+        }
+
+        .err-msg {
+            font-size: 12px;
+            color: var(--danger);
+            margin-top: 5px;
+            display: none;
+        }
+
+        .err-msg.show {
+            display: block;
+        }
+
+        .forgot-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+
+        .forgot-link {
+            font-size: 12px;
+            color: var(--text2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            border-radius: 13px;
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: inherit;
+            box-shadow: 0 4px 20px rgba(124, 92, 252, 0.35);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 22px 0;
+            color: var(--text3);
+            font-size: 12px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .demo-bar {
+            background: rgba(124, 92, 252, 0.08);
+            border: 1px solid rgba(124, 92, 252, 0.2);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 13px;
+            color: var(--text2);
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .demo-bar:hover {
+            background: rgba(124, 92, 252, 0.15);
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 11px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .alert.show {
+            display: flex;
+        }
+
+        .alert-err {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #ff8a80;
+        }
+
+        .alert-ok {
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            color: #69f0ae;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 14px;
+            color: var(--text2);
+        }
+
+        .auth-footer a {
+            color: var(--primary2);
+            font-weight: 600;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <div class="logo-icon">🔨</div>Savdo.uz
+        </a>
+    </nav>
+    <div class="page">
+        <div class="page-bg"></div>
+        <div class="auth-card">
+            <h1>Xush kelibsiz 👋</h1>
+            <p class="sub">Hisobingizga kiring yoki <a href="register.html" style="color:var(--primary2)">yangi hisob
+                    yarating</a></p>
+
+            <!-- Demo hint -->
+            <div class="demo-bar" onclick="fillDemo()">
+                🧪 <strong>Demo:</strong> jasur@test.uz / test1234 — <span style="color:var(--primary2)">bosib
+                    to'ldiring</span>
+            </div>
+
+            <div class="alert alert-err" id="alert-err">⚠️ <span id="alert-msg"></span></div>
+            <div class="alert alert-ok" id="alert-ok">✅ Muvaffaqiyatli! Yo'naltirilmoqda…</div>
+
+            <form onsubmit="handleLogin(event)" novalidate>
+                <div class="form-group">
+                    <label class="form-label">Email yoki telefon raqami</label>
+                    <input type="text" class="form-input" id="identifier" placeholder="jasur@test.uz yoki +998..."
+                        autocomplete="username" />
+                    <div class="err-msg" id="err-identifier">Email yoki telefon raqamini kiriting</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Parol</label>
+                    <div class="input-wrap">
+                        <input type="password" class="form-input" id="password" placeholder="Parolingiz"
+                            autocomplete="current-password" />
+                        <span class="input-icon" onclick="togglePass('password',this)">👁️</span>
+                    </div>
+                    <div class="err-msg" id="err-password">Parolni kiriting</div>
+                </div>
+                <div class="forgot-row"><a href="#" class="forgot-link">Parolni unutdingizmi?</a></div>
+                <button type="submit" class="btn-submit" id="submit-btn">
+                    <span id="btn-txt">Kirish</span>
+                </button>
+            </form>
+
+            <div class="auth-footer">Hisobingiz yo'qmi? <a href="register.html">Ro'yxatdan o'ting</a></div>
+        </div>
+    </div>
+    <script>
+        const API = 'http://127.0.0.1:8000/api';
+
+        function fillDemo() {
+            document.getElementById('identifier').value = 'jasur@test.uz';
+            document.getElementById('password').value = 'test1234';
+        }
+
+        function togglePass(id, icon) {
+            const inp = document.getElementById(id);
+            inp.type = inp.type === 'password' ? 'text' : 'password';
+            icon.textContent = inp.type === 'text' ? '🙈' : '👁️';
+        }
+
+        function showErr(field, show) {
+            document.getElementById('err-' + field).classList.toggle('show', show);
+            document.getElementById(field).classList.toggle('error', show);
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const identifier = document.getElementById('identifier').value.trim();
+            const password = document.getElementById('password').value;
+
+            let ok = true;
+            showErr('identifier', !identifier); if (!identifier) ok = false;
+            showErr('password', !password); if (!password) ok = false;
+            if (!ok) return;
+
+            document.getElementById('alert-err').classList.remove('show');
+            const btn = document.getElementById('submit-btn');
+            const txt = document.getElementById('btn-txt');
+            btn.disabled = true;
+            txt.innerHTML = '<div class="spinner"></div> Kirilmoqda…';
+
+            try {
+                const r = await fetch(`${API}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier, password })
+                });
+                const data = await r.json();
+                if (!r.ok) throw new Error(data.detail || 'Login xatosi');
+
+                // Save token and user
+                localStorage.setItem('savdo_token', data.access_token);
+                localStorage.setItem('savdo_user', JSON.stringify({
+                    id: data.user.id,
+                    full_name: data.user.full_name,
+                    email: data.user.email,
+                    role: data.user.role,
+                    initials: data.user.full_name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+                }));
+
+                document.getElementById('alert-ok').classList.add('show');
+                const next = new URLSearchParams(location.search).get('next') || 'index.html';
+                setTimeout(() => location.href = next, 900);
+
+            } catch (err) {
+                document.getElementById('alert-msg').textContent = err.message;
+                document.getElementById('alert-err').classList.add('show');
+            } finally {
+                btn.disabled = false;
+                txt.textContent = 'Kirish';
+            }
+        }
+
+        // Already logged in?
+        if (localStorage.getItem('savdo_token')) location.href = 'index.html';
+    </script>
+</body>
+
+</html>

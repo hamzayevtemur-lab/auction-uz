@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auktsion — Savdo.uz</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #08080F;
+            --bg2: #0E0E1A;
+            --bg3: #141425;
+            --border: rgba(255, 255, 255, 0.08);
+            --primary: #7C5CFC;
+            --primary2: #9B7BFF;
+            --accent: #FC5C7D;
+            --gold: #F5C842;
+            --text: #F0F0FF;
+            --text2: rgba(240, 240, 255, 0.55);
+            --text3: rgba(240, 240, 255, 0.25);
+            --green: #2ECC71;
+            --danger: #E74C3C;
+            --nav-h: 70px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Golos Text', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Unbounded', sans-serif;
+            line-height: 1.2
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-h);
+            background: rgba(8, 8, 15, 0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .logo-icon {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text2);
+            margin-left: 16px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--text);
+        }
+
+        .breadcrumb span {
+            color: var(--text3);
+        }
+
+        .bc-title {
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 220px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 20px;
+            border-radius: 11px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(124, 92, 252, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(124, 92, 252, 0.5);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary2);
+        }
+
+        .btn-sm {
+            padding: 7px 14px;
+            font-size: 13px;
+        }
+
+        .nav-avatar {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .page-wrap {
+            padding-top: calc(var(--nav-h)+32px);
+            padding-bottom: 80px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 32px;
+            align-items: start;
+        }
+
+        .card-box {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .main-img {
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 150px;
+            background: linear-gradient(160deg, #16103a, #0b0820);
+            position: relative;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .sb-live {
+            background: rgba(231, 76, 60, 0.18);
+            color: #ff6b6b;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .sb-live::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            animation: blink 1.4s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.3
+            }
+        }
+
+        .sb-ended {
+            background: rgba(90, 90, 122, 0.2);
+            color: var(--text3);
+            border: 1px solid var(--border);
+        }
+
+        .sb-pending {
+            background: rgba(245, 200, 66, 0.18);
+            color: var(--gold);
+            border: 1px solid rgba(245, 200, 66, 0.3);
+        }
+
+        .info-block {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 26px;
+            margin-bottom: 18px;
+        }
+
+        .info-block h3 {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 14px;
+        }
+
+        .auction-title-h {
+            font-size: clamp(18px, 2.5vw, 26px);
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .tag {
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .tag-cat {
+            background: rgba(124, 92, 252, 0.12);
+            color: var(--primary2);
+            border: 1px solid rgba(124, 92, 252, 0.2);
+        }
+
+        .tag-cond {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--green);
+            border: 1px solid rgba(46, 204, 113, 0.2);
+        }
+
+        .desc-text {
+            font-size: 14px;
+            color: var(--text2);
+            line-height: 1.8;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .detail-item {
+            background: var(--bg3);
+            border-radius: 11px;
+            padding: 12px 14px;
+        }
+
+        .detail-lbl {
+            font-size: 10px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .detail-val {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* BID PANEL */
+        .bid-panel {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 24px;
+            position: sticky;
+            top: calc(var(--nav-h)+16px);
+        }
+
+        .cd-box {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px;
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .cd-label {
+            font-size: 11px;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 10px;
+        }
+
+        .cd-units {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .cd-unit {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 8px 12px;
+            min-width: 52px;
+        }
+
+        .cd-num {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        .cd-sub {
+            font-size: 9px;
+            color: var(--text3);
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .cd-sep {
+            font-size: 20px;
+            color: var(--text3);
+            margin-bottom: 8px;
+        }
+
+        .cd-urgent .cd-num {
+            color: var(--danger);
+            animation: pls 1s infinite;
+        }
+
+        @keyframes pls {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.55
+            }
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .stat-box {
+            flex: 1;
+            background: var(--bg3);
+            border-radius: 11px;
+            padding: 11px;
+            text-align: center;
+        }
+
+        .stat-box .sv {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--primary2);
+        }
+
+        .stat-box .sl {
+            font-size: 10px;
+            color: var(--text2);
+            margin-top: 2px;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 4px;
+        }
+
+        .price-lbl {
+            font-size: 12px;
+            color: var(--text2);
+        }
+
+        .current-bid-val {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 26px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary2), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .min-next {
+            font-size: 12px;
+            color: var(--text2);
+            margin-bottom: 18px;
+        }
+
+        .min-next strong {
+            color: var(--gold);
+        }
+
+        .bid-presets {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            flex: 1;
+            padding: 9px 6px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg3);
+            color: var(--text2);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 55px;
+            text-align: center;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary2);
+            background: rgba(124, 92, 252, 0.08);
+        }
+
+        .bid-input-wrap {
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .bid-input {
+            width: 100%;
+            padding: 15px 70px 15px 16px;
+            background: var(--bg3);
+            border: 1.5px solid var(--border);
+            border-radius: 13px;
+            color: var(--text);
+            font-size: 17px;
+            font-weight: 700;
+            font-family: 'Unbounded', sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .bid-input:focus {
+            border-color: var(--primary);
+        }
+
+        .bid-input.err {
+            border-color: var(--danger);
+        }
+
+        .bid-currency {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: var(--text3);
+            pointer-events: none;
+        }
+
+        .err-txt {
+            font-size: 12px;
+            color: var(--danger);
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .err-txt.show {
+            display: block;
+        }
+
+        .bid-btn-main {
+            width: 100%;
+            padding: 16px;
+            border-radius: 13px;
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Unbounded', sans-serif;
+            box-shadow: 0 6px 24px rgba(124, 92, 252, 0.4);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            margin-bottom: 10px;
+        }
+
+        .bid-btn-main:hover {
+            transform: translateY(-2px);
+        }
+
+        .bid-btn-main:disabled {
+            opacity: 0.5;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .trust-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .trust-item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: var(--text2);
+            background: var(--bg3);
+            border-radius: 9px;
+            padding: 7px 9px;
+        }
+
+        .part-box {
+            background: rgba(124, 92, 252, 0.07);
+            border: 1px solid rgba(124, 92, 252, 0.2);
+            border-radius: 14px;
+            padding: 18px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .part-box h4 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        .part-box p {
+            font-size: 13px;
+            color: var(--text2);
+            margin-bottom: 14px;
+            line-height: 1.6;
+        }
+
+        .part-fee {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 13px;
+        }
+
+        .bh-item {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .bh-item:last-child {
+            border-bottom: none;
+        }
+
+        .bh-av {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .bh-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .bh-time {
+            font-size: 11px;
+            color: var(--text3);
+        }
+
+        .bh-amount {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary2);
+        }
+
+        .bh-amount.top {
+            color: var(--gold);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 32px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            transform: scale(0.94);
+            transition: transform 0.25s;
+        }
+
+        .modal-overlay.open .modal {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            color: var(--text2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pay-methods {
+            display: flex;
+            gap: 10px;
+            margin: 14px 0;
+        }
+
+        .pay-method {
+            flex: 1;
+            padding: 14px 10px;
+            border-radius: 12px;
+            border: 1.5px solid var(--border);
+            background: var(--bg3);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pay-method:hover,
+        .pay-method.sel {
+            border-color: var(--primary);
+            background: rgba(124, 92, 252, 0.1);
+        }
+
+        .pay-method .pm-ico {
+            font-size: 26px;
+            margin-bottom: 5px;
+        }
+
+        .pay-method .pm-nm {
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .modal-confirm {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .modal-confirm:hover {
+            transform: translateY(-1px);
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 22px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--bg2);
+            border: 1px solid rgba(124, 92, 252, 0.3);
+            color: var(--text);
+            padding: 12px 22px;
+            border-radius: 30px;
+            font-size: 14px;
+            z-index: 9999;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s, opacity 0.3s;
+            opacity: 0;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        @media(max-width:900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bid-panel {
+                position: static;
+            }
+        }
+
+        @media(max-width:600px) {
+            .main-img {
+                height: 260px;
+                font-size: 100px;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">
+                <div class="logo-icon">🔨</div>Savdo.uz
+            </a>
+            <div class="breadcrumb">
+                <a href="index.html">Bosh sahifa</a><span>/</span>
+                <a href="auctions.html">Auktsionlar</a><span>/</span>
+                <span class="bc-title" id="bc-title">Yuklanmoqda…</span>
+            </div>
+            <div class="nav-right">
+                <a href="login.html" id="nav-login" class="btn btn-outline btn-sm">Kirish</a>
+                <a href="register.html" id="nav-signup" class="btn btn-primary btn-sm">Ro'yxatdan o'tish</a>
+                <div id="nav-user" style="display:none;align-items:center;gap:8px">
+                    <a href="dashboard.html" class="nav-avatar" id="nav-av">??</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-wrap">
+        <div class="container">
+            <div class="main-grid" id="main-grid">
+                <div style="grid-column:1/-1;text-align:center;padding:80px 20px;color:var(--text2)">
+                    <div class="spinner" style="margin:0 auto 16px;width:40px;height:40px;border-width:3px"></div>
+                    <p>Yuklanmoqda…</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAYMENT MODAL -->
+    <div class="modal-overlay" id="pay-modal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <div style="font-size:38px;margin-bottom:12px" id="modal-icon">💳</div>
+            <h3 style="font-size:18px;margin-bottom:7px" id="modal-title">To'lov</h3>
+            <p style="font-size:13px;color:var(--text2);margin-bottom:16px" id="modal-desc">To'lov usulini tanlang</p>
+            <div class="pay-methods">
+                <div class="pay-method sel" id="pm-payme" onclick="selPay('payme')">
+                    <div class="pm-ico">💙</div>
+                    <div class="pm-nm">Payme</div>
+                </div>
+                <div class="pay-method" id="pm-click" onclick="selPay('click')">
+                    <div class="pm-ico">🟢</div>
+                    <div class="pm-nm">Click</div>
+                </div>
+                <div class="pay-method" id="pm-uzcard" onclick="selPay('uzcard')">
+                    <div class="pm-ico">💳</div>
+                    <div class="pm-nm">Uzcard</div>
+                </div>
+            </div>
+            <button class="modal-confirm" id="modal-confirm-btn" onclick="confirmPayment()">✅ Tasdiqlash</button>
+        </div>
+    </div>
+
+    <!-- SUCCESS MODAL -->
+    <div class="modal-overlay" id="success-modal">
+        <div class="modal" style="text-align:center">
+            <div style="font-size:60px;margin-bottom:14px">🎉</div>
+            <h3 style="margin-bottom:7px">Muvaffaqiyatli!</h3>
+            <p style="color:var(--text2);font-size:13px;margin-bottom:6px" id="success-msg">Amal bajarildi</p>
+            <div style="font-family:'Unbounded',sans-serif;font-size:22px;font-weight:700;color:var(--gold);margin-bottom:18px"
+                id="success-amount"></div>
+            <button class="modal-confirm"
+                onclick="document.getElementById('success-modal').classList.remove('open')">Yopish</button>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        const API = 'http://127.0.0.1:8000/api';
+        const CAT_NAMES = { 1: 'Elektronika', 2: 'Avtomobil', 3: "Ko'chmas mulk", 4: 'Kiyim', 5: "San'at", 6: 'Zargarlik', 7: 'Mebel', 8: 'Sport', 9: 'Kitob', 10: 'Boshqa' };
+        const CAT_ICONS = { 1: '📱', 2: '🚗', 3: '🏠', 4: '👗', 5: '🎨', 6: '💍', 7: '🪑', 8: '⚽', 9: '📚', 10: '🔧' };
+
+        let auction = null, currentBid = 0, isLoggedIn = false, isParticipating = false;
+        let payMode = null, selPayMethod = 'payme', liveWs = null;
+        const auctionId = parseInt(new URLSearchParams(location.search).get('id')) || 1;
+
+        // ── AUTH ─────────────────────────────────────────────────────────────────
+        function checkAuth() {
+            isLoggedIn = !!localStorage.getItem('savdo_token');
+            const u = localStorage.getItem('savdo_user');
+            if (isLoggedIn && u) {
+                const usr = JSON.parse(u);
+                document.getElementById('nav-login').style.display = 'none';
+                document.getElementById('nav-signup').style.display = 'none';
+                document.getElementById('nav-user').style.display = 'flex';
+                document.getElementById('nav-av').textContent = usr.initials || '??';
+            }
+        }
+
+        // ── FETCH AUCTION ─────────────────────────────────────────────────────────
+        async function loadAuction() {
+            try {
+                const r = await fetch(`${API}/auctions/${auctionId}`);
+                if (!r.ok) throw new Error('Auktsion topilmadi');
+                auction = await r.json();
+                currentBid = parseFloat(auction.current_bid || auction.starting_price);
+                renderPage();
+                startCountdown();
+                loadBids();
+                if (isLoggedIn) checkParticipation();
+                connectWebSocket();
+            } catch (e) {
+                document.getElementById('main-grid').innerHTML =
+                    `<div style="grid-column:1/-1;text-align:center;padding:80px 20px;color:var(--text2)">
+        <div style="font-size:52px;margin-bottom:14px">⚠️</div>
+        <p>${e.message}</p>
+        <a href="auctions.html" class="btn btn-outline" style="margin-top:16px">← Orqaga</a>
+      </div>`;
+            }
+        }
+
+        async function checkParticipation() {
+            try {
+                const token = localStorage.getItem('savdo_token');
+                const r = await fetch(`${API}/auctions/${auctionId}/participants/me`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                if (r.ok) {
+                    const d = await r.json();
+                    isParticipating = d.participating;
+                    updateBidPanel();
+                }
+            } catch { }
+        }
+
+        async function loadBids() {
+            try {
+                const r = await fetch(`${API}/bids/auction/${auctionId}`);
+                if (!r.ok) return;
+                const bids = await r.json();
+                renderBidHistory(bids);
+            } catch { }
+        }
+
+        // ── RENDER PAGE ───────────────────────────────────────────────────────────
+        function renderPage() {
+            const a = auction;
+            document.title = `${a.title} — Savdo.uz`;
+            document.getElementById('bc-title').textContent = a.title;
+
+            const isEnded = a.status === 'ended' || a.status === 'sold';
+            const isPending = a.status === 'pending';
+            const sbCls = isEnded ? 'sb-ended' : isPending ? 'sb-pending' : 'sb-live';
+            const sbTxt = isEnded ? 'Tugadi' : isPending ? 'Tez kunda' : 'Jonli';
+
+            document.getElementById('main-grid').innerHTML = `
+  <div class="left-col">
+    <div class="card-box">
+      <div class="main-img">
+        <span>${CAT_ICONS[a.category_id] || '🏷️'}</span>
+        <div class="status-badge ${sbCls}">${sbTxt}</div>
+      </div>
+    </div>
+    <div class="info-block">
+      <div class="tags">
+        <span class="tag tag-cat">${CAT_NAMES[a.category_id] || 'Boshqa'}</span>
+        ${a.item_condition ? `<span class="tag tag-cond">${a.item_condition}</span>` : ''}
+        ${a.location ? `<span class="tag" style="background:var(--bg3);color:var(--text2);border:1px solid var(--border)">📍 ${a.location}</span>` : ''}
+      </div>
+      <h1 class="auction-title-h">${a.title}</h1>
+      <p class="desc-text">${a.description || 'Tavsif yo\'q'}</p>
+    </div>
+    <div class="info-block">
+      <h3>Tafsilotlar</h3>
+      <div class="detail-grid">
+        <div class="detail-item"><div class="detail-lbl">Boshlang'ich narx</div><div class="detail-val">${fmtPrice(a.starting_price)}</div></div>
+        <div class="detail-item"><div class="detail-lbl">Joriy taklif</div><div class="detail-val" style="color:var(--gold)">${fmtPrice(currentBid)}</div></div>
+        <div class="detail-item"><div class="detail-lbl">Minimal qadam</div><div class="detail-val">${fmtPrice(a.min_step)}</div></div>
+        <div class="detail-item"><div class="detail-lbl">Ishtirok to'lovi</div><div class="detail-val">50 000 so'm</div></div>
+        ${a.delivery ? `<div class="detail-item"><div class="detail-lbl">Yetkazib berish</div><div class="detail-val">${a.delivery}</div></div>` : ''}
+        <div class="detail-item"><div class="detail-lbl">Holat</div><div class="detail-val">${sbTxt}</div></div>
+      </div>
+    </div>
+    <div class="info-block">
+      <h3>Takliflar tarixi</h3>
+      <div id="bid-history"><p style="color:var(--text3);font-size:13px;text-align:center;padding:20px">Hali taklif berilmagan</p></div>
+    </div>
+  </div>
+
+  <div class="right-col">
+    <div class="bid-panel" id="bid-panel">
+      <div class="cd-box" id="cd-box">
+        <div class="cd-label">⏰ Tugashiga qoldi</div>
+        <div class="cd-units">
+          <div class="cd-unit"><div class="cd-num" id="cd-d">00</div><div class="cd-sub">kun</div></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-unit"><div class="cd-num" id="cd-h">00</div><div class="cd-sub">soat</div></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-unit"><div class="cd-num" id="cd-m">00</div><div class="cd-sub">daqiqa</div></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-unit"><div class="cd-num" id="cd-s">00</div><div class="cd-sub">soniya</div></div>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="sv" id="bid-count">0</div><div class="sl">Taklif</div></div>
+        <div class="stat-box"><div class="sv" id="watch-count">1</div><div class="sl">Kuzatuvchi</div></div>
+      </div>
+      <div class="price-row">
+        <div class="price-lbl">Joriy eng yuqori taklif</div>
+        <div class="price-lbl" id="leader-lbl" style="color:var(--gold)">—</div>
+      </div>
+      <div class="current-bid-val" id="current-bid-display">${fmtPrice(currentBid)}</div>
+      <div class="min-next" id="min-next-display">Minimal keyingi: <strong>${fmtPrice(currentBid + parseFloat(a.min_step))}</strong></div>
+      <div id="action-panel"></div>
+      <div class="trust-row">
+        <div class="trust-item">🔒 Xavfsiz</div>
+        <div class="trust-item">📦 Escrow</div>
+        <div class="trust-item">↩️ Kafolat</div>
+      </div>
+    </div>
+  </div>`;
+
+            updateBidPanel();
+        }
+
+        function updateBidPanel() {
+            const a = auction;
+            const isEnded = a.status === 'ended' || a.status === 'sold';
+            const isPending = a.status === 'pending';
+            const panel = document.getElementById('action-panel');
+            if (!panel) return;
+
+            if (isEnded) {
+                panel.innerHTML = `<div style="background:var(--bg3);border-radius:13px;padding:18px;text-align:center;margin-bottom:12px">
+      <div style="font-size:44px;margin-bottom:10px">🏁</div>
+      <h4 style="font-size:15px;margin-bottom:7px">Auktsion tugadi</h4>
+      <p style="font-size:13px;color:var(--text2)">${a.winner_id ? 'G\'olib aniqlandi' : 'G\'olib aniqlanmadi'}</p>
+    </div>`;
+            } else if (!isLoggedIn) {
+                panel.innerHTML = `<div style="background:var(--bg3);border-radius:13px;padding:18px;text-align:center;margin-bottom:12px">
+      <div style="font-size:34px;margin-bottom:9px">🔐</div>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:14px">Taklif berish uchun kiring</p>
+      <div style="display:flex;gap:10px">
+        <a href="login.html?next=auction-detail.html?id=${auctionId}" class="btn btn-outline" style="flex:1;justify-content:center;font-size:13px">Kirish</a>
+        <a href="register.html" class="btn btn-primary" style="flex:1;justify-content:center;font-size:13px">Ro'yxat</a>
+      </div>
+    </div>`;
+            } else if (!isParticipating) {
+                panel.innerHTML = `<div class="part-box">
+      <h4>Auktsiyonga qo'shilish</h4>
+      <p>Taklif berish uchun ishtirok to'lovini to'lang</p>
+      <div class="part-fee">50 000 so'm</div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px" onclick="openPayModal('participate')">💳 To'lab qatnashish</button>
+    </div>`;
+            } else {
+                const minNext = currentBid + parseFloat(a.min_step);
+                panel.innerHTML = `
+      <div class="bid-presets" id="presets"></div>
+      <div class="bid-input-wrap">
+        <input type="number" class="bid-input" id="bid-inp" placeholder="${Math.round(minNext)}" min="${minNext}" oninput="validateBid()"/>
+        <span class="bid-currency">so'm</span>
+      </div>
+      <div class="err-txt" id="bid-err">Minimal taklif miqdorini kiriting</div>
+      <button class="bid-btn-main" id="bid-submit" onclick="placeBid()">🔨 Taklif berish</button>`;
+                renderPresets(minNext);
+            }
+        }
+
+        function renderPresets(minNext) {
+            const step = parseFloat(auction.min_step);
+            const el = document.getElementById('presets');
+            if (!el) return;
+            el.innerHTML = [1, 2, 3, 5].map(m =>
+                `<button class="preset-btn" onclick="setPreset(${currentBid + step * m})">+${fmtK(step * m)}</button>`
+            ).join('');
+        }
+
+        // ── BID HISTORY ────────────────────────────────────────────────────────────
+        function renderBidHistory(bids) {
+            const el = document.getElementById('bid-history');
+            if (!el) return;
+            const count = document.getElementById('bid-count');
+            if (count) count.textContent = bids.length;
+            if (!bids.length) {
+                el.innerHTML = '<p style="color:var(--text3);font-size:13px;text-align:center;padding:20px">Hali taklif berilmagan</p>';
+                return;
+            }
+            el.innerHTML = bids.map((b, i) => `
+    <div class="bh-item">
+      <div class="bh-av">${String(b.bidder_id).slice(-2).padStart(2, 'B')}</div>
+      <div style="flex:1"><div class="bh-name">Xaridor #${b.bidder_id}</div><div class="bh-time">${timeAgo(b.created_at)}</div></div>
+      ${i === 0 ? '<span style="font-size:14px">👑</span>' : ''}
+      <div class="bh-amount ${i === 0 ? 'top' : ''}">${fmtPrice(b.amount)}</div>
+    </div>`).join('');
+        }
+
+        // ── COUNTDOWN ─────────────────────────────────────────────────────────────
+        function startCountdown() {
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
+        function updateCountdown() {
+            if (!auction) return;
+            const diff = new Date(auction.ends_at) - Date.now();
+            if (diff <= 0) {
+                ['d', 'h', 'm', 's'].forEach(u => { const el = document.getElementById('cd-' + u); if (el) el.textContent = '00'; });
+                document.getElementById('cd-box')?.classList.add('cd-urgent');
+                return;
+            }
+            const d = Math.floor(diff / 86400000), h = Math.floor((diff % 86400000) / 3600000), m = Math.floor((diff % 3600000) / 60000), s = Math.floor((diff % 60000) / 1000);
+            const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = String(v).padStart(2, '0'); };
+            set('cd-d', d); set('cd-h', h); set('cd-m', m); set('cd-s', s);
+            if (d === 0 && h === 0 && m < 10) document.getElementById('cd-box')?.classList.add('cd-urgent');
+        }
+
+        // ── WEBSOCKET ─────────────────────────────────────────────────────────────
+        function connectWebSocket() {
+            try {
+                liveWs = new WebSocket(`ws://127.0.0.1:8000/api/auctions/${auctionId}/ws`);
+                liveWs.onmessage = (e) => {
+                    const data = JSON.parse(e.data);
+                    if (data.event === 'new_bid') {
+                        currentBid = data.amount;
+                        // Update price display
+                        const cb = document.getElementById('current-bid-display');
+                        const mn = document.getElementById('min-next-display');
+                        if (cb) cb.textContent = fmtPrice(currentBid);
+                        if (mn) mn.innerHTML = `Minimal keyingi: <strong>${fmtPrice(currentBid + parseFloat(auction.min_step))}</strong>`;
+                        const ll = document.getElementById('leader-lbl');
+                        if (ll) ll.textContent = `👑 ${data.bidder}`;
+                        renderPresets(currentBid + parseFloat(auction.min_step));
+                        loadBids();
+                        if (data.bidder !== (JSON.parse(localStorage.getItem('savdo_user') || '{}').full_name)) {
+                            showToast(`⚡ Yangi taklif: ${fmtPrice(currentBid)}`);
+                        }
+                        // Watchers
+                        const wc = document.getElementById('watch-count');
+                        if (wc) wc.textContent = parseInt(wc.textContent || 1) + Math.floor(Math.random() * 2);
+                    }
+                };
+            } catch { }
+        }
+
+        // ── PLACE BID ─────────────────────────────────────────────────────────────
+        function setPreset(amount) {
+            const inp = document.getElementById('bid-inp');
+            if (inp) { inp.value = Math.round(amount); validateBid(); }
+        }
+
+        function validateBid() {
+            const inp = document.getElementById('bid-inp');
+            const err = document.getElementById('bid-err');
+            if (!inp || !err) return false;
+            const val = parseFloat(inp.value) || 0;
+            const min = currentBid + parseFloat(auction.min_step);
+            const bad = val < min;
+            inp.classList.toggle('err', bad);
+            err.classList.toggle('show', bad);
+            if (bad) err.textContent = `Minimal taklif: ${fmtPrice(min)}`;
+            return !bad;
+        }
+
+        async function placeBid() {
+            if (!validateBid()) return;
+            const amount = parseFloat(document.getElementById('bid-inp').value);
+            const token = localStorage.getItem('savdo_token');
+            const btn = document.getElementById('bid-submit');
+            if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner"></div> Taklif berilmoqda…'; }
+
+            try {
+                const r = await fetch(`${API}/bids`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ auction_id: auctionId, amount })
+                });
+                const data = await r.json();
+                if (!r.ok) throw new Error(data.detail || 'Xatolik');
+
+                currentBid = amount;
+                document.getElementById('bid-inp').value = '';
+                document.getElementById('success-msg').textContent = 'Taklifingiz qabul qilindi!';
+                document.getElementById('success-amount').textContent = fmtPrice(amount);
+                document.getElementById('success-modal').classList.add('open');
+                loadBids();
+            } catch (e) {
+                showToast(`⚠️ ${e.message}`);
+            } finally {
+                if (btn) { btn.disabled = false; btn.innerHTML = '🔨 Taklif berish'; }
+            }
+        }
+
+        // ── PAYMENT ───────────────────────────────────────────────────────────────
+        function openPayModal(mode) {
+            payMode = mode;
+            document.getElementById('modal-icon').textContent = mode === 'participate' ? '🎟️' : '💰';
+            document.getElementById('modal-title').textContent = mode === 'participate' ? "Auktsiyonga qo'shilish" : "Hisobni to'ldirish";
+            document.getElementById('modal-desc').textContent = mode === 'participate' ? `Ishtirok to'lovi: 50 000 so'm` : "To'lov usulini tanlang";
+            document.getElementById('pay-modal').classList.add('open');
+        }
+        function closeModal() {
+            document.getElementById('pay-modal').classList.remove('open');
+        }
+        function selPay(m) {
+            selPayMethod = m;
+            ['payme', 'click', 'uzcard'].forEach(p => document.getElementById('pm-' + p).classList.toggle('sel', p === m));
+        }
+
+        async function confirmPayment() {
+            const btn = document.getElementById('modal-confirm-btn');
+            btn.innerHTML = '<div class="spinner"></div> Amalga oshirilmoqda…';
+            btn.disabled = true;
+            const token = localStorage.getItem('savdo_token');
+
+            try {
+                const url = payMode === 'participate'
+                    ? `${API}/payments/participation/${auctionId}`
+                    : `${API}/payments/escrow/${auctionId}`;
+                const r = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ auction_id: auctionId, method: selPayMethod })
+                });
+                const data = await r.json();
+                if (!r.ok) throw new Error(data.detail || 'Xatolik');
+
+                closeModal();
+                if (payMode === 'participate') {
+                    isParticipating = true;
+                    updateBidPanel();
+                    showToast('🎉 Auktsiyonga muvaffaqiyatli qo\'shildingiz!');
+                }
+            } catch (e) {
+                showToast(`⚠️ ${e.message}`);
+            } finally {
+                btn.innerHTML = '✅ Tasdiqlash';
+                btn.disabled = false;
+            }
+        }
+
+        // ── UTILS ─────────────────────────────────────────────────────────────────
+        function fmtPrice(n) { return new Intl.NumberFormat('uz-UZ').format(Math.round(n || 0)) + " so'm"; }
+        function fmtK(n) { return n >= 1000000 ? (n / 1000000) + 'mln' : (n / 1000) + 'k'; }
+        function timeAgo(dateStr) {
+            const diff = Date.now() - new Date(dateStr);
+            const m = Math.floor(diff / 60000), h = Math.floor(m / 60), d = Math.floor(h / 24);
+            if (d > 0) return `${d} kun oldin`;
+            if (h > 0) return `${h} soat oldin`;
+            return `${m || 1} daqiqa oldin`;
+        }
+        function showToast(msg, ms = 3500) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
+            clearTimeout(t._t); t._t = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(80px)'; }, ms);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            loadAuction();
+        });
+    </script>
+</body>
+
+</html>

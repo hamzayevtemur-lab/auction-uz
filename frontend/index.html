@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Savdo.uz — O'zbekiston Auktsion Platformasi</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #08080F;
+            --bg2: #0E0E1A;
+            --bg3: #141425;
+            --border: rgba(255, 255, 255, 0.08);
+            --primary: #7C5CFC;
+            --primary2: #9B7BFF;
+            --accent: #FC5C7D;
+            --gold: #F5C842;
+            --text: #F0F0FF;
+            --text2: rgba(240, 240, 255, 0.55);
+            --text3: rgba(240, 240, 255, 0.25);
+            --green: #2ECC71;
+            --nav-h: 70px;
+            --radius: 16px;
+            --radius-lg: 24px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: 'Golos Text', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        ul {
+            list-style: none
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Unbounded', sans-serif;
+            line-height: 1.2
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary2), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(124, 92, 252, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(124, 92, 252, 0.55);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary2);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        .btn-lg {
+            padding: 16px 36px;
+            font-size: 17px;
+            border-radius: 16px;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-h);
+            background: rgba(8, 8, 15, 0.88);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            margin-left: 24px;
+        }
+
+        .nav-links a {
+            padding: 8px 13px;
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--text2);
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .nav-search {
+            flex: 1;
+            max-width: 340px;
+            position: relative;
+            margin-left: auto;
+        }
+
+        .nav-search input {
+            width: 100%;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 16px 10px 40px;
+            color: var(--text);
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        .nav-search input::placeholder {
+            color: var(--text3);
+        }
+
+        .nav-search input:focus {
+            border-color: var(--primary);
+        }
+
+        .nav-search .si {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text3);
+            pointer-events: none;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: var(--nav-h);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 80% 60% at 65% 40%, rgba(124, 92, 252, 0.16) 0%, transparent 70%), radial-gradient(ellipse 50% 45% at 80% 70%, rgba(252, 92, 125, 0.10) 0%, transparent 65%);
+        }
+
+        .hero-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 60px 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+
+        .hero-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(124, 92, 252, 0.12);
+            border: 1px solid rgba(124, 92, 252, 0.28);
+            border-radius: 100px;
+            padding: 6px 16px;
+            font-size: 13px;
+            color: var(--primary2);
+            margin-bottom: 22px;
+        }
+
+        .hero-title {
+            font-size: clamp(34px, 4.5vw, 62px);
+            font-weight: 900;
+            margin-bottom: 18px;
+        }
+
+        .hero-desc {
+            font-size: 16px;
+            color: var(--text2);
+            max-width: 440px;
+            line-height: 1.75;
+            margin-bottom: 34px;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 44px;
+        }
+
+        .hero-stats {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            padding: 20px 28px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            max-width: 460px;
+        }
+
+        .hstat-val {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary2), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hstat-lbl {
+            font-size: 12px;
+            color: var(--text2);
+            margin-top: 2px;
+        }
+
+        .hstat-div {
+            width: 1px;
+            height: 38px;
+            background: var(--border);
+        }
+
+        /* FEATURED CARD */
+        .featured-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .featured-card::before {
+            content: '';
+            position: absolute;
+            inset: -1.5px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, var(--primary), var(--accent), var(--gold), var(--primary));
+            background-size: 300% 300%;
+            animation: gradShift 4s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradShift {
+            0% {
+                background-position: 0% 50%
+            }
+
+            50% {
+                background-position: 100% 50%
+            }
+
+            100% {
+                background-position: 0% 50%
+            }
+        }
+
+        .fc-img {
+            height: 270px;
+            background: linear-gradient(160deg, #16103a, #0b0820);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            font-size: 130px;
+        }
+
+        .fc-img .glow-ring {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border: 1px solid rgba(124, 92, 252, 0.2);
+            border-radius: 50%;
+            animation: rotateSlow 20s linear infinite;
+        }
+
+        .fc-img .glow-ring::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            background: var(--primary2);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary2);
+        }
+
+        @keyframes rotateSlow {
+            from {
+                transform: rotate(0deg)
+            }
+
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .big-emoji {
+            animation: floatAnim 5s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes floatAnim {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-14px)
+            }
+        }
+
+        .fc-featured-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: linear-gradient(135deg, var(--gold), #F09819);
+            color: #1a1200;
+            padding: 5px 13px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        .fc-body {
+            padding: 20px;
+        }
+
+        .fc-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .fc-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .fc-lbl {
+            font-size: 10px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .fc-val {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .fc-val.timer {
+            color: var(--gold);
+        }
+
+        .fc-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .fc-actions .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .float-chip {
+            position: absolute;
+            background: rgba(14, 14, 26, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .float-chip-1 {
+            top: 12%;
+            right: -14px;
+            animation: floatAnim 4s ease-in-out infinite;
+        }
+
+        .float-chip-2 {
+            bottom: 18%;
+            left: -14px;
+            animation: floatAnim 5s ease-in-out infinite 0.8s;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: clamp(22px, 2.8vw, 32px);
+            margin-bottom: 4px;
+        }
+
+        .section-sub {
+            font-size: 14px;
+            color: var(--text2);
+        }
+
+        .view-all {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            color: var(--primary2);
+            transition: gap 0.2s;
+        }
+
+        .view-all:hover {
+            gap: 9px;
+        }
+
+        /* CATEGORIES */
+        .cats-scroll {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            scrollbar-width: none;
+        }
+
+        .cats-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .cat-chip {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+            padding: 14px 18px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 84px;
+            flex-shrink: 0;
+        }
+
+        .cat-chip:hover,
+        .cat-chip.active {
+            background: rgba(124, 92, 252, 0.1);
+            border-color: var(--primary);
+            color: var(--primary2);
+        }
+
+        .cat-chip .ci {
+            font-size: 26px;
+        }
+
+        .cat-chip .cl {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* AUCTION CARDS */
+        .auctions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(262px, 1fr));
+            gap: 18px;
+        }
+
+        .a-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+            animation: cardIn 0.4s ease both;
+            cursor: pointer;
+        }
+
+        .a-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 14px 44px rgba(0, 0, 0, 0.5);
+            border-color: rgba(124, 92, 252, 0.28);
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(18px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .a-img {
+            height: 196px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(160deg, #12102a, #0a0818);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 78px;
+        }
+
+        .a-img-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.5));
+        }
+
+        .a-badge {
+            position: absolute;
+            top: 11px;
+            left: 11px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 11px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-live {
+            background: rgba(231, 76, 60, 0.18);
+            color: #ff6b6b;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .badge-live::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            animation: blink 1.4s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.3
+            }
+        }
+
+        .badge-soon {
+            background: rgba(245, 200, 66, 0.18);
+            color: var(--gold);
+            border: 1px solid rgba(245, 200, 66, 0.3);
+        }
+
+        .badge-ended {
+            background: rgba(90, 90, 122, 0.2);
+            color: var(--text3);
+            border: 1px solid var(--border);
+        }
+
+        .a-fav {
+            position: absolute;
+            top: 11px;
+            right: 11px;
+            width: 30px;
+            height: 30px;
+            background: rgba(8, 8, 15, 0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+            color: var(--text2);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .a-fav:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .a-body {
+            padding: 15px 16px;
+        }
+
+        .a-cat {
+            display: inline-block;
+            background: rgba(124, 92, 252, 0.1);
+            color: var(--primary2);
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 9px;
+            border-radius: 100px;
+            margin-bottom: 7px;
+        }
+
+        .a-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 11px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .a-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3px;
+        }
+
+        .a-lbl {
+            font-size: 10px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .a-val {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .a-val.timer {
+            color: var(--gold);
+        }
+
+        .a-footer {
+            padding: 11px 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .a-seller {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            color: var(--text2);
+        }
+
+        .a-sav {
+            width: 22px;
+            height: 22px;
+            border-radius: 5px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .a-bids {
+            font-size: 11px;
+            color: var(--text3);
+        }
+
+        .a-bid-btn {
+            font-size: 12px;
+            padding: 6px 13px;
+        }
+
+        /* HOW IT WORKS */
+        .how-section {
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .how-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .how-card {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 26px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .how-card::before {
+            content: attr(data-n);
+            position: absolute;
+            top: -8px;
+            right: 12px;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 76px;
+            font-weight: 900;
+            color: rgba(124, 92, 252, 0.05);
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .how-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 14px;
+        }
+
+        .how-card:nth-child(1) .how-icon {
+            background: rgba(124, 92, 252, 0.15);
+        }
+
+        .how-card:nth-child(2) .how-icon {
+            background: rgba(245, 200, 66, 0.15);
+        }
+
+        .how-card:nth-child(3) .how-icon {
+            background: rgba(46, 204, 113, 0.15);
+        }
+
+        .how-card:nth-child(4) .how-icon {
+            background: rgba(252, 92, 125, 0.15);
+        }
+
+        .how-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .how-desc {
+            font-size: 13px;
+            color: var(--text2);
+            line-height: 1.65;
+        }
+
+        /* SELLERS */
+        .sellers-wrap {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .seller-row {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .seller-row:last-child {
+            border-bottom: none;
+        }
+
+        .seller-rank {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 12px;
+            color: var(--text3);
+            width: 22px;
+            text-align: center;
+        }
+
+        .seller-rank.gold {
+            color: var(--gold);
+        }
+
+        .seller-av {
+            width: 38px;
+            height: 38px;
+            border-radius: 9px;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .seller-info {
+            flex: 1;
+        }
+
+        .seller-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .seller-sub {
+            font-size: 11px;
+            color: var(--text2);
+        }
+
+        .seller-amt {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary2);
+        }
+
+        /* CTA */
+        .cta-box {
+            background: linear-gradient(135deg, rgba(124, 92, 252, 0.14), rgba(252, 92, 125, 0.09));
+            border: 1px solid rgba(124, 92, 252, 0.22);
+            border-radius: 26px;
+            padding: 60px 48px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-box h2 {
+            font-size: clamp(26px, 3.5vw, 44px);
+            margin-bottom: 14px;
+        }
+
+        .cta-box p {
+            font-size: 16px;
+            color: var(--text2);
+            max-width: 460px;
+            margin: 0 auto 32px;
+        }
+
+        .cta-btns {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            padding: 56px 0 28px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 44px;
+        }
+
+        .footer-brand p {
+            color: var(--text2);
+            font-size: 13px;
+            margin-top: 10px;
+            line-height: 1.75;
+            max-width: 240px;
+        }
+
+        .footer-col h4 {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text2);
+            margin-bottom: 14px;
+        }
+
+        .footer-col a {
+            display: block;
+            font-size: 13px;
+            color: var(--text2);
+            padding: 3px 0;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: var(--text);
+        }
+
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 22px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text3);
+        }
+
+        .socials {
+            display: flex;
+            gap: 8px;
+        }
+
+        .socials a {
+            width: 34px;
+            height: 34px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .socials a:hover {
+            border-color: var(--primary);
+            color: var(--primary2);
+        }
+
+        /* LOADING / EMPTY */
+        .skeleton {
+            background: linear-gradient(90deg, var(--bg2) 25%, var(--bg3) 50%, var(--bg2) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: var(--radius-lg);
+            height: 320px;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0
+            }
+
+            100% {
+                background-position: -200% 0
+            }
+        }
+
+        .empty-state {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text2);
+        }
+
+        .empty-state .ei {
+            font-size: 52px;
+            margin-bottom: 14px;
+        }
+
+        /* REVEAL */
+        .reveal {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity 0.65s ease, transform 0.65s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media(max-width:960px) {
+            .hero-inner {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-right {
+                display: none;
+            }
+
+            .how-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .sellers-wrap {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media(max-width:640px) {
+
+            .nav-links,
+            .nav-search {
+                display: none;
+            }
+
+            .how-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-box {
+                padding: 36px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">
+                <div class="logo-icon">🔨</div>Savdo.uz
+            </a>
+            <div class="nav-links">
+                <a href="auctions.html" class="active">Auktsionlar</a>
+                <a href="auctions.html?cat=1">Elektronika</a>
+                <a href="auctions.html?cat=2">Avtomobil</a>
+                <a href="create-auction.html">Sotish</a>
+            </div>
+            <div class="nav-search">
+                <span class="si">🔍</span>
+                <input type="text" id="navSearch" placeholder="Auktsion qidiring…"
+                    oninput="handleNavSearch(this.value)" />
+            </div>
+            <div class="nav-right">
+                <a href="login.html" id="nav-login" class="btn btn-outline btn-sm">Kirish</a>
+                <a href="register.html" id="nav-signup" class="btn btn-primary btn-sm">Ro'yxatdan o'tish</a>
+                <div id="nav-user" style="display:none;align-items:center;gap:8px">
+                    <a href="dashboard.html" class="nav-avatar" id="nav-av">??</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-inner">
+            <div>
+                <div class="hero-pill">🇺🇿 O'zbekistonning №1 auktsion platformasi</div>
+                <h1 class="hero-title">Taklif Bering.<br /><span class="gradient-text">G'alaba
+                        Qiling.</span><br />Egalang.</h1>
+                <p class="hero-desc">Noyob mahsulotlarni past narxdan boshlang va eng yaxshi taklif bilan yutib oling.
+                    Sotuvchilar uchun qulay, xaridorlar uchun ishonchli platforma.</p>
+                <div class="hero-btns">
+                    <a href="auctions.html" class="btn btn-primary btn-lg">Auktsionlarni ko'rish →</a>
+                    <a href="create-auction.html" class="btn btn-outline btn-lg">Sotish</a>
+                </div>
+                <div class="hero-stats">
+                    <div>
+                        <div class="hstat-val" id="stat-auctions">0+</div>
+                        <div class="hstat-lbl">Faol auktsion</div>
+                    </div>
+                    <div class="hstat-div"></div>
+                    <div>
+                        <div class="hstat-val" id="stat-users">0+</div>
+                        <div class="hstat-lbl">Foydalanuvchi</div>
+                    </div>
+                    <div class="hstat-div"></div>
+                    <div>
+                        <div class="hstat-val" id="stat-sold">0+</div>
+                        <div class="hstat-lbl">Sotilgan</div>
+                    </div>
+                </div>
+            </div>
+            <div style="position:relative">
+                <div class="featured-card">
+                    <div class="fc-img">
+                        <div class="glow-ring"></div>
+                        <span class="big-emoji" id="featured-emoji">💎</span>
+                        <span class="fc-featured-badge">⭐ Tanlangan</span>
+                    </div>
+                    <div class="fc-body">
+                        <div class="fc-title" id="featured-title">Yuklanmoqda…</div>
+                        <div class="fc-row">
+                            <div>
+                                <div class="fc-lbl">Joriy taklif</div>
+                                <div class="fc-val" id="featured-bid">—</div>
+                            </div>
+                            <div>
+                                <div class="fc-lbl">Qolgan vaqt</div>
+                                <div class="fc-val timer" id="featured-timer">—</div>
+                            </div>
+                        </div>
+                        <div class="fc-actions">
+                            <a href="#" class="btn btn-primary" id="featured-link">Taklif berish →</a>
+                            <button class="btn btn-outline">♡</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="float-chip float-chip-1">🔥 Real vaqt bidding</div>
+                <div class="float-chip float-chip-2">✅ Xavfsiz Escrow to'lov</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section class="section" style="padding-bottom:50px">
+        <div class="container">
+            <div class="section-head reveal">
+                <div>
+                    <h2 class="section-title">Kategoriyalar</h2>
+                    <p class="section-sub">Qiziqtirgan toifani tanlang</p>
+                </div>
+                <a href="auctions.html" class="view-all">Hammasini ko'rish →</a>
+            </div>
+            <div class="cats-scroll reveal" id="cats-row">
+                <div class="cat-chip active" onclick="filterCat(this,0)"><span class="ci">🔥</span><span
+                        class="cl">Hammasi</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LIVE AUCTIONS -->
+    <section class="section" style="padding-top:0">
+        <div class="container">
+            <div class="section-head reveal">
+                <div>
+                    <h2 class="section-title">
+                        <span
+                            style="display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:100px;font-size:13px;background:rgba(231,76,60,0.15);color:#ff6b6b;border:1px solid rgba(231,76,60,0.28);margin-right:8px;vertical-align:middle;">
+                            <span
+                                style="width:5px;height:5px;border-radius:50%;background:#ff6b6b;animation:blink 1.4s infinite"></span>Jonli
+                        </span>Faol auktsionlar
+                    </h2>
+                    <p class="section-sub">Hozir taklif berishingiz mumkin</p>
+                </div>
+                <a href="auctions.html" class="view-all">Barchasini ko'rish →</a>
+            </div>
+            <div class="auctions-grid" id="live-grid">
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section how-section">
+        <div class="container">
+            <div class="section-head reveal">
+                <div>
+                    <h2 class="section-title">Qanday ishlaydi?</h2>
+                    <p class="section-sub">To'rtta qadam — siz g'olib</p>
+                </div>
+            </div>
+            <div class="how-grid">
+                <div class="how-card reveal" data-n="01">
+                    <div class="how-icon">🏷️</div>
+                    <div class="how-title">Lotni joylashtiring</div>
+                    <div class="how-desc">Mahsulot kartochkasini yarating. Boshlang'ich narxning <strong>1% garov
+                            to'lovini</strong> to'lang.</div>
+                </div>
+                <div class="how-card reveal" data-n="02">
+                    <div class="how-icon">💳</div>
+                    <div class="how-title">Qatnashish uchun to'lang</div>
+                    <div class="how-desc">Xaridorlar auktsiyonga qo'shilish uchun <strong>ishtirok to'lovini</strong>
+                        to'laydi. Payme yoki Click orqali.</div>
+                </div>
+                <div class="how-card reveal" data-n="03">
+                    <div class="how-icon">⚡</div>
+                    <div class="how-title">Real vaqtda taklif bering</div>
+                    <div class="how-desc">Har yangi taklif haqida <strong>SMS/Telegram</strong> orqali darhol xabar
+                        olasiz.</div>
+                </div>
+                <div class="how-card reveal" data-n="04">
+                    <div class="how-icon">🏆</div>
+                    <div class="how-title">G'alaba qiling va oling</div>
+                    <div class="how-desc">G'olib <strong>escrow</strong> hisobidan to'laydi. Pul faqat buyumni olgach
+                        o'tkaziladi.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SELLERS -->
+    <section class="section">
+        <div class="container">
+            <div class="sellers-wrap">
+                <div class="reveal">
+                    <div class="section-head" style="margin-bottom:8px">
+                        <div>
+                            <h2 class="section-title" style="font-size:22px">Top sotuvchilar</h2>
+                            <p class="section-sub">Eng ishonchli sotuvchilar</p>
+                        </div>
+                    </div>
+                    <div id="top-sellers"></div>
+                </div>
+                <div class="reveal">
+                    <div class="section-head" style="margin-bottom:8px">
+                        <div>
+                            <h2 class="section-title" style="font-size:22px">So'ngi sotuvlar</h2>
+                            <p class="section-sub">Yaqinda tugagan auktsionlar</p>
+                        </div>
+                    </div>
+                    <div id="recent-sales"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section" style="padding-top:0">
+        <div class="container">
+            <div class="cta-box reveal">
+                <div style="font-size:52px;margin-bottom:18px">🚀</div>
+                <h2>Bugun boshlang!</h2>
+                <p>Minglab foydalanuvchilar bilan qo'shiling. Sotish ham, sotib olish ham — hammasi bir joyda.</p>
+                <div class="cta-btns">
+                    <a href="register.html" class="btn btn-primary btn-lg">Ro'yxatdan o'tish — bepul</a>
+                    <a href="auctions.html" class="btn btn-outline btn-lg">Auktsionlarni ko'rish</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="nav-logo" style="font-size:17px">
+                        <div class="logo-icon">🔨</div>Savdo.uz
+                    </div>
+                    <p>O'zbekistonning eng ishonchli auktsion platformasi. Xavfsiz to'lov, real vaqt bidding.</p>
+                    <div class="socials" style="margin-top:14px"><a href="#">✈️</a><a href="#">📸</a><a href="#">👍</a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Platforma</h4><a href="auctions.html">Barcha auktsionlar</a><a
+                        href="auctions.html?status=active">Faol auktsionlar</a><a href="create-auction.html">Auktsion
+                        yaratish</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Hisob</h4><a href="dashboard.html">Kabinet</a><a
+                        href="dashboard.html?tab=bids">Takliflarim</a><a
+                        href="dashboard.html?tab=payments">To'lovlar</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Yordam</h4><a href="#">Qanday ishlaydi</a><a href="#">To'lov usullari</a><a
+                        href="#">Bog'lanish</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2024 Savdo.uz</span>
+                <span>Payme & Click orqali xavfsiz to'lov 💳</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const API = 'http://127.0.0.1:8000/api';
+        const CAT_ICONS = { 1: '📱', 2: '🚗', 3: '🏠', 4: '👗', 5: '🎨', 6: '💍', 7: '🪑', 8: '⚽', 9: '📚', 10: '🔧' };
+        let allAuctions = [], featuredEnd = null;
+
+        // ── AUTH ────────────────────────────────────────────────────────────────
+        function checkAuth() {
+            const u = localStorage.getItem('savdo_user');
+            if (!localStorage.getItem('savdo_token') || !u) return;
+            const usr = JSON.parse(u);
+            document.getElementById('nav-login').style.display = 'none';
+            document.getElementById('nav-signup').style.display = 'none';
+            document.getElementById('nav-user').style.display = 'flex';
+            document.getElementById('nav-av').textContent = usr.initials || '??';
+        }
+
+        // ── FETCH HELPERS ───────────────────────────────────────────────────────
+        async function apiFetch(url) {
+            try {
+                const r = await fetch(API + url);
+                if (!r.ok) throw new Error('API error');
+                return await r.json();
+            } catch { return null; }
+        }
+
+        // ── LOAD STATS ──────────────────────────────────────────────────────────
+        async function loadStats() {
+            try {
+                // Active auctions count
+                const active = await apiFetch('/auctions?status=active&per_page=1');
+                if (active) animateNum('stat-auctions', active.total || 0);
+
+                // Sold auctions count
+                const sold = await apiFetch('/auctions?status=sold&per_page=1');
+                if (sold) animateNum('stat-sold', sold.total || 0);
+
+                // Real user count
+                const users = await apiFetch('/users/stats/count');
+                if (users) animateNum('stat-users', users.total_users || 0);
+            } catch {
+                animateNum('stat-auctions', 0);
+                animateNum('stat-users', 0);
+                animateNum('stat-sold', 0);
+            }
+        }
+
+        function animateNum(id, target) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            let cur = 0, step = Math.max(1, Math.ceil(target / 50));
+            const iv = setInterval(() => {
+                cur = Math.min(cur + step, target);
+                el.textContent = cur.toLocaleString('uz-UZ') + '+';
+                if (cur >= target) clearInterval(iv);
+            }, 20);
+        }
+
+        // ── LOAD CATEGORIES ─────────────────────────────────────────────────────
+        async function loadCategories() {
+            const cats = await apiFetch('/auctions?per_page=1');
+            const row = document.getElementById('cats-row');
+            const names = ['Hammasi', 'Elektronika', 'Avtomobil', 'Ko\'chmas mulk', 'Kiyim', 'San\'at', 'Zargarlik', 'Mebel', 'Sport', 'Kitob', 'Boshqa'];
+            const icons = ['🔥', '📱', '🚗', '🏠', '👗', '🎨', '💍', '🪑', '⚽', '📚', '🔧'];
+            row.innerHTML = names.map((n, i) =>
+                `<div class="cat-chip ${i === 0 ? 'active' : ''}" onclick="filterCat(this,${i})">
+      <span class="ci">${icons[i]}</span><span class="cl">${n}</span>
+    </div>`
+            ).join('');
+        }
+
+        // ── LOAD AUCTIONS ───────────────────────────────────────────────────────
+        async function loadAuctions(categoryId = 0) {
+            const grid = document.getElementById('live-grid');
+            grid.innerHTML = '<div class="skeleton"></div>'.repeat(4);
+
+            const url = categoryId > 0
+                ? `/auctions?status=active&category_id=${categoryId}&per_page=8`
+                : `/auctions?status=active&per_page=8`;
+
+            const data = await apiFetch(url);
+
+            if (!data || !data.items || data.items.length === 0) {
+                grid.innerHTML = `<div class="empty-state"><div class="ei">🔍</div><p>Hozirda faol auktsion yo'q</p></div>`;
+                return;
+            }
+
+            allAuctions = data.items;
+
+            // Featured card — birinchi auktsion
+            const f = allAuctions[0];
+            if (f) {
+                featuredEnd = new Date(f.ends_at);
+                document.getElementById('featured-emoji').textContent = CAT_ICONS[f.category_id] || '🏷️';
+                document.getElementById('featured-title').textContent = f.title;
+                document.getElementById('featured-bid').textContent = fmtPrice(f.current_bid || f.starting_price);
+                document.getElementById('featured-link').href = `auction-detail.html?id=${f.id}`;
+            }
+
+            grid.innerHTML = allAuctions.map((a, i) => {
+                const ends = new Date(a.ends_at);
+                const t = timeLeft(ends);
+                const urgent = !t.ended && t.d === 0 && t.h < 1;
+                return `
+    <div class="a-card" style="animation-delay:${i * 50}ms" onclick="location.href='auction-detail.html?id=${a.id}'">
+      <div class="a-img">
+        <span>${CAT_ICONS[a.category_id] || '🏷️'}</span>
+        <div class="a-img-overlay"></div>
+        <div class="a-badge badge-live">Jonli</div>
+        <button class="a-fav" onclick="event.stopPropagation();this.textContent=this.textContent==='♡'?'❤️':'♡'">♡</button>
+      </div>
+      <div class="a-body">
+        <div class="a-cat" id="cat-name-${a.id}">Yuklanmoqda</div>
+        <div class="a-title">${a.title}</div>
+        <div class="a-meta">
+          <div><div class="a-lbl">Joriy taklif</div><div class="a-val">${fmtPrice(a.current_bid || a.starting_price)}</div></div>
+          <div><div class="a-lbl">Qolgan vaqt</div><div class="a-val timer ${urgent ? '' : ''}'" id="xt-${a.id}">${fmtTimeStr(t)}</div></div>
+        </div>
+      </div>
+      <div class="a-footer">
+        <div class="a-seller"><div class="a-sav">S</div>Sotuvchi</div>
+        <div class="a-bids">🔥 Taklif bering</div>
+      </div>
+    </div>`;
+            }).join('');
+
+            // Load category names
+            allAuctions.forEach(a => loadCatName(a.id, a.category_id));
+        }
+
+        async function loadCatName(auctionId, catId) {
+            const names = ['', 'Elektronika', 'Avtomobil', 'Ko\'chmas mulk', 'Kiyim', 'San\'at', 'Zargarlik', 'Mebel', 'Sport', 'Kitob', 'Boshqa'];
+            const el = document.getElementById(`cat-name-${auctionId}`);
+            if (el && names[catId]) el.textContent = names[catId];
+        }
+
+        // ── SELLERS (static for now) ────────────────────────────────────────────
+        async function renderSellers() {
+            const medals = ['🥇', '🥈', '🥉'];
+
+            // Top sellers — real API
+            const topEl = document.getElementById('top-sellers');
+            topEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:16px 0">Yuklanmoqda…</div>';
+            try {
+                const sellers = await apiFetch('/auctions/stats/top-sellers');
+                if (!sellers || !sellers.length) {
+                    topEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:16px 0">Hali sotuvchi yoq</div>';
+                } else {
+                    topEl.innerHTML = sellers.map((s, i) =>
+                        `<div class="seller-row">
+          <div class="seller-rank gold">${medals[i] || i + 1}</div>
+          <div class="seller-av">${s.initials}</div>
+          <div class="seller-info">
+            <div class="seller-name">${s.full_name}</div>
+            <div class="seller-sub">${s.auction_count} ta auktsion</div>
+          </div>
+          <div class="seller-amt">${s.total_volume >= 1000000 ? (s.total_volume / 1000000).toFixed(1) + ' mln' : fmtPrice(s.total_volume)}</div>
+        </div>`).join('');
+                }
+            } catch {
+                topEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:16px 0">Yuklab bolmadi</div>';
+            }
+
+            // Recent sold — real API
+            const salesEl = document.getElementById('recent-sales');
+            salesEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:16px 0">Yuklanmoqda…</div>';
+            try {
+                const sales = await apiFetch('/auctions/stats/recent-sold');
+                if (!sales || !sales.length) {
+                    salesEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:16px 0">Hali sotilgan mahsulot yoq</div>';
+                } else {
+                    salesEl.innerHTML = sales.map(s => {
+                        const ago = timeAgo(s.ends_at);
+                        return `<div class="seller-row" onclick="location.href='auction-detail.html?id=${s.id}'" style="cursor:pointer">
+          <div style="font-size:22px">${CAT_ICONS[s.category_id] || '🏷️'}</div>
+          <div class="seller-info">
+            <div class="seller-name">${s.title}</div>
+            <div class="seller-sub">${s.status === 'sold' ? ago + ' sotildi' : 'Tugadi'}</div>
+          </div>
+          <div class="seller-amt" style="font-size:11px;text-align:right">${fmtPrice(s.final_price)}</div>
+        </div>`;
+                    }).join('');
+                }
+            } catch {
+                salesEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:16px 0">Yuklab bolmadi</div>';
+            }
+        }
+
+        // ── CATEGORY FILTER ─────────────────────────────────────────────────────
+        function filterCat(el, idx) {
+            document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            loadAuctions(idx);
+        }
+
+        // ── NAV SEARCH ──────────────────────────────────────────────────────────
+        function handleNavSearch(val) {
+            if (!val.trim()) { loadAuctions(); return; }
+            location.href = `auctions.html?search=${encodeURIComponent(val.trim())}`;
+        }
+
+        // ── TIMERS ───────────────────────────────────────────────────────────────
+        function startTimers() {
+            setInterval(() => {
+                allAuctions.forEach(a => {
+                    const el = document.getElementById(`xt-${a.id}`);
+                    if (el) el.textContent = fmtTimeStr(timeLeft(new Date(a.ends_at)));
+                });
+                if (featuredEnd) {
+                    document.getElementById('featured-timer').textContent = fmtTimeStr(timeLeft(featuredEnd));
+                }
+            }, 1000);
+        }
+
+        // ── UTILS ────────────────────────────────────────────────────────────────
+        function fmtPrice(n) { return new Intl.NumberFormat('uz-UZ').format(Math.round(n)) + " so'm"; }
+        function timeLeft(date) {
+            const diff = new Date(date) - Date.now();
+            if (diff <= 0) return { ended: true, d: 0, h: 0, m: 0, s: 0 };
+            return { ended: false, d: Math.floor(diff / 86400000), h: Math.floor((diff % 86400000) / 3600000), m: Math.floor((diff % 3600000) / 60000), s: Math.floor((diff % 60000) / 1000) };
+        }
+        function fmtTimeStr(t) {
+            if (t.ended) return 'Tugadi';
+            if (t.d > 0) return `${t.d}k ${String(t.h).padStart(2, '0')}s`;
+            return `${String(t.h).padStart(2, '0')}:${String(t.m).padStart(2, '0')}:${String(t.s).padStart(2, '0')}`;
+        }
+        function initReveal() {
+            const io = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } }), { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+        }
+
+        function timeAgo(dateStr) {
+            if (!dateStr) return '';
+            const diff = Date.now() - new Date(dateStr);
+            const m = Math.floor(diff / 60000), h = Math.floor(m / 60), d = Math.floor(h / 24);
+            if (d > 0) return d + ' kun';
+            if (h > 0) return h + ' soat';
+            return (m || 1) + ' daqiqa';
+        }
+
+        // ── INIT ─────────────────────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            loadStats();
+            loadCategories();
+            loadAuctions();
+            renderSellers();
+            startTimers();
+            initReveal();
+        });
+    </script>
+</body>
+
+</html>

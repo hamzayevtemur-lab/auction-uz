@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kabinet — Savdo.uz</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #08080F;
+            --bg2: #0E0E1A;
+            --bg3: #141425;
+            --border: rgba(255, 255, 255, 0.08);
+            --primary: #7C5CFC;
+            --primary2: #9B7BFF;
+            --accent: #FC5C7D;
+            --gold: #F5C842;
+            --text: #F0F0FF;
+            --text2: rgba(240, 240, 255, 0.55);
+            --text3: rgba(240, 240, 255, 0.25);
+            --green: #2ECC71;
+            --danger: #E74C3C;
+            --nav-h: 70px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Golos Text', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Unbounded', sans-serif;
+            line-height: 1.2
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-h);
+            background: rgba(8, 8, 15, 0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .nav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 20px;
+            border-radius: 11px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary2);
+        }
+
+        .btn-sm {
+            padding: 7px 14px;
+            font-size: 13px;
+        }
+
+        /* LAYOUT */
+        .page-wrap {
+            padding-top: var(--nav-h);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 255px;
+            flex-shrink: 0;
+            background: var(--bg2);
+            border-right: 1px solid var(--border);
+            min-height: calc(100vh - var(--nav-h));
+            padding: 24px 14px;
+            position: sticky;
+            top: var(--nav-h);
+            height: calc(100vh - var(--nav-h));
+            overflow-y: auto;
+        }
+
+        .user-card {
+            text-align: center;
+            padding: 18px 0 22px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 18px;
+        }
+
+        .user-av {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 22px;
+            margin: 0 auto 10px;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--text2);
+            margin-bottom: 10px;
+        }
+
+        .user-balance {
+            background: rgba(124, 92, 252, 0.1);
+            border: 1px solid rgba(124, 92, 252, 0.2);
+            border-radius: 9px;
+            padding: 9px 13px;
+        }
+
+        .ub-lbl {
+            font-size: 11px;
+            color: var(--text2);
+            margin-bottom: 2px;
+        }
+
+        .ub-val {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary2);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li a,
+        .nav-menu li button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 10px 13px;
+            border-radius: 11px;
+            font-size: 13px;
+            color: var(--text2);
+            transition: all 0.2s;
+            background: none;
+            text-align: left;
+        }
+
+        .nav-menu li a:hover,
+        .nav-menu li button:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+        }
+
+        .nav-menu li a.active {
+            background: rgba(124, 92, 252, 0.12);
+            color: var(--primary2);
+            font-weight: 600;
+        }
+
+        .nav-menu .mi {
+            font-size: 17px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-menu .badge {
+            margin-left: auto;
+            background: var(--accent);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 100px;
+        }
+
+        .menu-sep {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text3);
+            padding: 12px 13px 5px;
+            font-weight: 700;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 26px 26px 60px;
+            min-width: 0;
+        }
+
+        /* STAT CARDS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: attr(data-icon);
+            position: absolute;
+            right: -6px;
+            top: -6px;
+            font-size: 60px;
+            opacity: 0.06;
+        }
+
+        .sc-lbl {
+            font-size: 11px;
+            color: var(--text2);
+            margin-bottom: 7px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sc-val {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .sc-sub {
+            font-size: 11px;
+            color: var(--text2);
+            margin-top: 4px;
+        }
+
+        /* TABLE */
+        .table-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 18px;
+        }
+
+        .table-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-head h3 {
+            font-size: 14px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text3);
+            font-weight: 600;
+            padding: 11px 18px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg3);
+        }
+
+        .data-table td {
+            padding: 13px 18px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.015);
+        }
+
+        .item-cell {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .item-emoji {
+            width: 38px;
+            height: 38px;
+            border-radius: 9px;
+            background: linear-gradient(160deg, #16103a, #0b0820);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .item-name {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 1px;
+        }
+
+        .item-sub {
+            font-size: 11px;
+            color: var(--text3);
+        }
+
+        .sp {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 9px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .sp-active {
+            background: rgba(231, 76, 60, 0.15);
+            color: #ff6b6b;
+            border: 1px solid rgba(231, 76, 60, 0.25);
+        }
+
+        .sp-active::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            animation: blink 1.4s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.3
+            }
+        }
+
+        .sp-won {
+            background: rgba(46, 204, 113, 0.12);
+            color: var(--green);
+            border: 1px solid rgba(46, 204, 113, 0.2);
+        }
+
+        .sp-lost {
+            background: rgba(90, 90, 122, 0.2);
+            color: var(--text3);
+            border: 1px solid var(--border);
+        }
+
+        .sp-pending {
+            background: rgba(245, 200, 66, 0.12);
+            color: var(--gold);
+            border: 1px solid rgba(245, 200, 66, 0.2);
+        }
+
+        .sp-sold {
+            background: rgba(46, 204, 113, 0.12);
+            color: var(--green);
+        }
+
+        .amt {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* NOTIFICATIONS */
+        .notif-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .notif-item:last-child {
+            border-bottom: none;
+        }
+
+        .notif-item:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .notif-item.unread {
+            background: rgba(124, 92, 252, 0.04);
+        }
+
+        .notif-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .ni-outbid {
+            background: rgba(252, 92, 125, 0.12);
+        }
+
+        .ni-win {
+            background: rgba(245, 200, 66, 0.12);
+        }
+
+        .ni-pay {
+            background: rgba(46, 204, 113, 0.12);
+        }
+
+        .ni-start {
+            background: rgba(124, 92, 252, 0.12);
+        }
+
+        .notif-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .notif-msg {
+            font-size: 12px;
+            color: var(--text2);
+            line-height: 1.5;
+        }
+
+        .notif-time {
+            font-size: 11px;
+            color: var(--text3);
+            margin-top: 2px;
+        }
+
+        .notif-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--primary);
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+
+        /* PROFILE */
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text2);
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 11px 14px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+        }
+
+        .form-input:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .prof-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* LOADING */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text2);
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--bg3);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 14px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text2);
+        }
+
+        .empty-state .ei {
+            font-size: 44px;
+            margin-bottom: 12px;
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 22px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--bg2);
+            border: 1px solid rgba(124, 92, 252, 0.3);
+            color: var(--text);
+            padding: 11px 22px;
+            border-radius: 30px;
+            font-size: 14px;
+            z-index: 9999;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s, opacity 0.3s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @media(max-width:900px) {
+            .sidebar {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media(max-width:500px) {
+            .main-content {
+                padding: 14px 14px 60px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .data-table th:nth-child(n+4),
+            .data-table td:nth-child(n+4) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">
+                <div class="logo-icon">🔨</div>Savdo.uz
+            </a>
+            <div class="nav-right">
+                <a href="create-auction.html" class="btn btn-primary btn-sm">+ Auktsion</a>
+                <a href="auctions.html" class="btn btn-outline btn-sm">Auktsionlar</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-wrap">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="user-card">
+                <div class="user-av" id="sb-av">??</div>
+                <div class="user-name" id="sb-name">Yuklanmoqda…</div>
+                <div class="user-role" id="sb-role">—</div>
+                <div class="user-balance">
+                    <div class="ub-lbl">Escrow balansi</div>
+                    <div class="ub-val" id="sb-bal">0 so'm</div>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#" class="active" onclick="switchTab('overview',this)"><span class="mi">📊</span>Umumiy
+                        ko'rinish</a></li>
+                <li><a href="#" onclick="switchTab('bids',this)"><span class="mi">🔨</span>Takliflarim<span
+                            class="badge" id="badge-bids">—</span></a></li>
+                <li><a href="#" onclick="switchTab('auctions',this)"><span class="mi">🏷️</span>Auktsionlarim</a></li>
+                <li><a href="#" onclick="switchTab('payments',this)"><span class="mi">💳</span>To'lovlar</a></li>
+                <li><a href="#" onclick="switchTab('notifications',this)"><span
+                            class="mi">🔔</span>Bildirishnomalar<span class="badge" id="badge-notif">—</span></a></li>
+                <div class="menu-sep">Sozlamalar</div>
+                <li><a href="#" onclick="switchTab('profile',this)"><span class="mi">👤</span>Profil</a></li>
+                <li><button onclick="logout()" style="color:var(--danger)"><span class="mi">🚪</span>Chiqish</button>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main-content">
+
+            <!-- OVERVIEW -->
+            <div id="tab-overview">
+                <h1 style="font-size:20px;margin-bottom:4px">Xush kelibsiz, <span id="greet-name"
+                        style="color:var(--primary2)">—</span> 👋</h1>
+                <p style="color:var(--text2);font-size:13px;margin-bottom:22px">Hisobingiz holati</p>
+                <div class="stats-grid">
+                    <div class="stat-card" data-icon="🔨">
+                        <div class="sc-lbl">Faol takliflar</div>
+                        <div class="sc-val" id="ov-active-bids" style="color:var(--primary2)">—</div>
+                        <div class="sc-sub">auktsion</div>
+                    </div>
+                    <div class="stat-card" data-icon="🏆">
+                        <div class="sc-lbl">Yutilgan</div>
+                        <div class="sc-val" id="ov-won" style="color:var(--gold)">—</div>
+                        <div class="sc-sub">g'alaba</div>
+                    </div>
+                    <div class="stat-card" data-icon="💰">
+                        <div class="sc-lbl">Jami to'lovlar</div>
+                        <div class="sc-val" id="ov-paid" style="font-size:16px">—</div>
+                        <div class="sc-sub">so'm</div>
+                    </div>
+                    <div class="stat-card" data-icon="🏷️">
+                        <div class="sc-lbl">Auktsionlarim</div>
+                        <div class="sc-val" id="ov-auctions" style="color:var(--accent)">—</div>
+                        <div class="sc-sub">joylashtirilgan</div>
+                    </div>
+                </div>
+                <div class="table-card">
+                    <div class="table-head">
+                        <h3>🔥 Faol takliflarim</h3><a href="#" onclick="switchTab('bids',null)"
+                            class="btn btn-outline btn-sm">Barchasi →</a>
+                    </div>
+                    <div id="ov-bids-content">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Yuklanmoqda…</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-card">
+                    <div class="table-head">
+                        <h3>🏷️ Auktsionlarim</h3><a href="create-auction.html" class="btn btn-primary btn-sm">+
+                            Yangi</a>
+                    </div>
+                    <div id="ov-auctions-content">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Yuklanmoqda…</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BIDS -->
+            <div id="tab-bids" style="display:none">
+                <h2 style="font-size:19px;margin-bottom:18px">🔨 Barcha takliflarim</h2>
+                <div class="table-card">
+                    <div id="bids-content">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Yuklanmoqda…</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AUCTIONS -->
+            <div id="tab-auctions" style="display:none">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+                    <h2 style="font-size:19px">🏷️ Auktsionlarim</h2>
+                    <a href="create-auction.html" class="btn btn-primary btn-sm">+ Yangi auktsion</a>
+                </div>
+                <div class="table-card">
+                    <div id="auctions-content">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Yuklanmoqda…</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAYMENTS -->
+            <div id="tab-payments" style="display:none">
+                <h2 style="font-size:19px;margin-bottom:18px">💳 To'lovlar tarixi</h2>
+                <div class="table-card">
+                    <div id="payments-content">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Yuklanmoqda…</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NOTIFICATIONS -->
+            <div id="tab-notifications" style="display:none">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+                    <h2 style="font-size:19px">🔔 Bildirishnomalar</h2>
+                    <button class="btn btn-outline btn-sm" onclick="markAllRead()">Hammasini o'qilgan deb
+                        belgilash</button>
+                </div>
+                <div class="table-card">
+                    <div id="notif-content">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Yuklanmoqda…</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROFILE -->
+            <div id="tab-profile" style="display:none">
+                <h2 style="font-size:19px;margin-bottom:20px">👤 Profil ma'lumotlari</h2>
+                <div class="table-card" style="padding:26px">
+                    <div
+                        style="display:flex;align-items:center;gap:18px;margin-bottom:24px;padding-bottom:22px;border-bottom:1px solid var(--border)">
+                        <div style="width:68px;height:68px;border-radius:16px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:24px"
+                            id="prof-av">??</div>
+                        <div>
+                            <div style="font-family:'Unbounded',sans-serif;font-size:16px;font-weight:700"
+                                id="prof-name">—</div>
+                            <div style="color:var(--text2);font-size:13px;margin-top:2px" id="prof-email">—</div>
+                            <div style="margin-top:8px"><span id="prof-role-badge" class="sp sp-pending">—</span></div>
+                        </div>
+                    </div>
+                    <div class="prof-grid" style="gap:16px">
+                        <div class="form-group"><label class="form-label">To'liq ism</label><input type="text"
+                                class="form-input" id="pf-name" placeholder="Ismingiz" /></div>
+                        <div class="form-group"><label class="form-label">Email</label><input type="email"
+                                class="form-input" id="pf-email" disabled /></div>
+                        <div class="form-group"><label class="form-label">Telefon</label><input type="tel"
+                                class="form-input" id="pf-phone" placeholder="+998..." /></div>
+                        <div class="form-group"><label class="form-label">Hisob turi</label><input type="text"
+                                class="form-input" id="pf-role" disabled /></div>
+                    </div>
+                    <div style="margin-top:20px;display:flex;gap:12px">
+                        <button class="btn btn-primary" onclick="saveProfile()">💾 Saqlash</button>
+                        <button class="btn btn-outline" onclick="loadProfile()">↺ Bekor qilish</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    <div id="toast"></div>
+
+    <script>
+        const API = 'http://127.0.0.1:8000/api';
+        const CAT_ICONS = { 1: '📱', 2: '🚗', 3: '🏠', 4: '👗', 5: '🎨', 6: '💍', 7: '🪑', 8: '⚽', 9: '📚', 10: '🔧' };
+        let user = null, myBids = [], myAuctions = [], myPayments = [], notifs = [], auctionCache = {};
+
+        // ── AUTH CHECK ─────────────────────────────────────────────────────────────
+        function requireAuth() {
+            const token = localStorage.getItem('savdo_token');
+            if (!token) { location.href = 'login.html?next=dashboard.html'; return false; }
+            const u = localStorage.getItem('savdo_user');
+            if (u) user = JSON.parse(u);
+            return true;
+        }
+
+        // ── API HELPERS ────────────────────────────────────────────────────────────
+        async function apiFetch(url, opts = {}) {
+            const token = localStorage.getItem('savdo_token');
+            const r = await fetch(API + url, {
+                ...opts,
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...opts.headers }
+            });
+            if (r.status === 401) { logout(); return null; }
+            if (!r.ok) { const d = await r.json().catch(() => ({})); throw new Error(d.detail || 'Xatolik'); }
+            return r.json();
+        }
+
+        // ── INIT ────────────────────────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!requireAuth()) return;
+            await loadUserInfo();
+            renderSidebarUser();
+            loadOverview();
+
+            // Handle URL tab
+            const tab = new URLSearchParams(location.search).get('tab');
+            if (tab) switchTab(tab, null);
+        });
+
+        async function loadUserInfo() {
+            try {
+                const data = await apiFetch('/users/me');
+                if (data) {
+                    user = {
+                        ...user, ...data,
+                        initials: data.full_name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+                    };
+                    localStorage.setItem('savdo_user', JSON.stringify(user));
+                }
+            } catch { }
+        }
+
+        function renderSidebarUser() {
+            if (!user) return;
+            document.getElementById('sb-av').textContent = user.initials || '??';
+            document.getElementById('sb-name').textContent = user.full_name || '—';
+            document.getElementById('sb-role').textContent = user.role === 'seller' ? '🏷️ Sotuvchi' : user.role === 'admin' ? '⚙️ Admin' : '🛒 Xaridor';
+            document.getElementById('sb-bal').textContent = fmtPrice(user.balance || 0);
+            document.getElementById('greet-name').textContent = (user.full_name || '').split(' ')[0];
+        }
+
+        // ── TAB SWITCH ─────────────────────────────────────────────────────────────
+        function switchTab(tab, linkEl) {
+            ['overview', 'bids', 'auctions', 'payments', 'notifications', 'profile'].forEach(t => {
+                document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none';
+            });
+            document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
+            if (linkEl) linkEl.classList.add('active');
+
+            // Load data on first visit
+            if (tab === 'bids') loadBids();
+            if (tab === 'auctions') loadMyAuctions();
+            if (tab === 'payments') loadPayments();
+            if (tab === 'notifications') loadNotifications();
+            if (tab === 'profile') loadProfile();
+        }
+
+        // ── OVERVIEW ───────────────────────────────────────────────────────────────
+        async function loadOverview() {
+            await Promise.all([loadBids(true), loadMyAuctions(true), loadPayments(true)]);
+
+            // Stats from real data
+            const activeBids = myBids.filter(b => !b.is_winner).length;
+            const wonBids = myBids.filter(b => b.is_winner).length;
+            const totalPaid = myPayments
+                .filter(p => p.status === 'completed')
+                .reduce((s, p) => s + parseFloat(p.amount), 0);
+
+            document.getElementById('ov-active-bids').textContent = activeBids || '0';
+            document.getElementById('ov-won').textContent = wonBids || '0';
+            document.getElementById('ov-paid').textContent = totalPaid > 0 ? fmtK(totalPaid) : '0';
+            document.getElementById('ov-auctions').textContent = myAuctions.length || '0';
+            document.getElementById('badge-bids').textContent = activeBids || '0';
+
+            // Notification badge — unread count
+            try {
+                const notifData = await apiFetch('/users/me/notifications');
+                if (notifData) {
+                    const unread = notifData.filter(n => !n.is_read).length;
+                    document.getElementById('badge-notif').textContent = unread || '0';
+                }
+            } catch { }
+
+            // Overview tables
+            renderOverviewBids();
+            renderOverviewAuctions();
+        }
+
+        function renderOverviewBids() {
+            const el = document.getElementById('ov-bids-content');
+            const list = myBids.slice(0, 4);
+            if (!list.length) { el.innerHTML = emptyHTML('🔨', 'Hali taklif berilmagan'); return; }
+            el.innerHTML = tableHTML(['Buyum', 'Taklifim', 'Holat', ''],
+                list.map(b => `<tr onclick="location.href='auction-detail.html?id=${b.auction_id}'" style="cursor:pointer">
+      <td><div class="item-cell"><div class="item-emoji">${CAT_ICONS[1] || '🏷️'}</div><div><div class="item-name">Auktsion #${b.auction_id}</div></div></div></td>
+      <td><div class="amt" style="color:var(--gold)">${fmtPrice(b.amount)}</div></td>
+      <td><span class="sp ${b.is_winner ? 'sp-won' : 'sp-active'}">${b.is_winner ? '👑 G\'olib' : '⚡ Faol'}</span></td>
+      <td><a href="auction-detail.html?id=${b.auction_id}" class="btn btn-outline btn-sm" style="font-size:12px" onclick="event.stopPropagation()">Ko'rish</a></td>
+    </tr>`).join('')
+            );
+        }
+
+        function renderOverviewAuctions() {
+            const el = document.getElementById('ov-auctions-content');
+            const list = myAuctions.slice(0, 4);
+            if (!list.length) { el.innerHTML = emptyHTML('🏷️', "Hali auktsion joylashtirilmagan. <a href='create-auction.html' style='color:var(--primary2)'>Yaratish →</a>"); return; }
+            el.innerHTML = tableHTML(['Sarlavha', 'Boshlang\'ich', 'Joriy taklif', 'Holat'],
+                list.map(a => `<tr onclick="location.href='auction-detail.html?id=${a.id}'" style="cursor:pointer">
+      <td><div class="item-cell"><div class="item-emoji">${CAT_ICONS[a.category_id] || '🏷️'}</div><div><div class="item-name">${a.title}</div></div></div></td>
+      <td>${fmtPrice(a.starting_price)}</td>
+      <td><div class="amt" style="color:var(--gold)">${fmtPrice(a.current_bid || a.starting_price)}</div></td>
+      <td><span class="sp ${statusCls(a.status)}">${statusTxt(a.status)}</span></td>
+    </tr>`).join('')
+            );
+        }
+
+        // ── BIDS ───────────────────────────────────────────────────────────────────
+        async function loadBids(silent = false) {
+            if (!silent) document.getElementById('bids-content').innerHTML = loadingHTML();
+            try {
+                myBids = await apiFetch('/bids/my') || [];
+                // Cache auction info for each bid
+                for (const b of myBids) {
+                    if (!auctionCache[b.auction_id]) {
+                        try {
+                            const a = await apiFetch('/auctions/' + b.auction_id);
+                            if (a) auctionCache[b.auction_id] = {
+                                title: a.title,
+                                icon: CAT_ICONS[a.category_id] || '🏷️',
+                                status: a.status
+                            };
+                        } catch { }
+                    }
+                }
+                if (!silent) renderBids();
+            } catch { if (!silent) document.getElementById('bids-content').innerHTML = errHTML(); }
+        }
+
+        function renderBids() {
+            const el = document.getElementById('bids-content');
+            if (!myBids.length) { el.innerHTML = emptyHTML('🔨', 'Hali taklif berilmagan'); return; }
+            el.innerHTML = tableHTML(['Auktsion', 'Taklif miqdori', 'Holat', 'Sana'],
+                myBids.map(b => `<tr onclick="location.href='auction-detail.html?id=${b.auction_id}'" style="cursor:pointer">
+      <td><div class="item-cell">
+        <div class="item-emoji">${auctionCache[b.auction_id]?.icon || '🏷️'}</div>
+        <div><div class="item-name">${auctionCache[b.auction_id]?.title || 'Auktsion #' + b.auction_id}</div></div>
+      </div></td>
+      <td><div class="amt" style="color:var(--gold)">${fmtPrice(b.amount)}</div></td>
+      <td><span class="sp ${b.is_winner ? 'sp-won' : 'sp-active'}">${b.is_winner ? '👑 G\'olib' : '⚡ Faol'}</span></td>
+      <td style="color:var(--text2);font-size:12px">${timeAgo(b.created_at)}</td>
+    </tr>`).join('')
+            );
+        }
+
+        // ── MY AUCTIONS ────────────────────────────────────────────────────────────
+        async function loadMyAuctions(silent = false) {
+            if (!silent) document.getElementById('auctions-content').innerHTML = loadingHTML();
+            try {
+                myAuctions = await apiFetch('/auctions/my') || [];
+                if (!silent) renderMyAuctions();
+            } catch { if (!silent) document.getElementById('auctions-content').innerHTML = errHTML(); }
+        }
+
+        function renderMyAuctions() {
+            const el = document.getElementById('auctions-content');
+            if (!myAuctions.length) { el.innerHTML = emptyHTML('🏷️', "Hali auktsion yo'q. <a href='create-auction.html' style='color:var(--primary2)'>Yaratish →</a>"); return; }
+            el.innerHTML = tableHTML(['Sarlavha', 'Boshlang\'ich', 'Joriy taklif', 'Holat', 'Amal'],
+                myAuctions.map(a => `<tr>
+      <td><div class="item-cell"><div class="item-emoji">${CAT_ICONS[a.category_id] || '🏷️'}</div><div><div class="item-name" style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.title}</div></div></div></td>
+      <td>${fmtPrice(a.starting_price)}</td>
+      <td><div class="amt" style="color:var(--gold)">${fmtPrice(a.current_bid || a.starting_price)}</div></td>
+      <td><span class="sp ${statusCls(a.status)}">${statusTxt(a.status)}</span></td>
+      <td><a href="auction-detail.html?id=${a.id}" class="btn btn-outline btn-sm" style="font-size:12px">Ko'rish</a></td>
+    </tr>`).join('')
+            );
+        }
+
+        // ── PAYMENTS ───────────────────────────────────────────────────────────────
+        async function loadPayments(silent = false) {
+            if (!silent) document.getElementById('payments-content').innerHTML = loadingHTML();
+            try {
+                myPayments = await apiFetch('/payments/my') || [];
+                if (!silent) renderPayments();
+            } catch { if (!silent) document.getElementById('payments-content').innerHTML = errHTML(); }
+        }
+
+        function renderPayments() {
+            const el = document.getElementById('payments-content');
+            if (!myPayments.length) { el.innerHTML = emptyHTML('💳', "Hali to'lov yo'q"); return; }
+            const typeNames = { seller_fee: "Garov to'lovi", participation_fee: "Ishtirok to'lovi", escrow: "Escrow to'lovi", payout: "To'lov", refund: "Qaytarish" };
+            el.innerHTML = tableHTML(['Sana', "Turi", 'Miqdor', 'Holat', 'Usul'],
+                myPayments.map(p => `<tr>
+      <td style="color:var(--text2);font-size:12px">${timeAgo(p.created_at)}</td>
+      <td>${typeNames[p.type] || p.type}</td>
+      <td><div class="amt" style="color:${p.status === 'refunded' ? 'var(--green)' : 'var(--text)'}">${p.status === 'refunded' ? '+' : ''}${fmtPrice(p.amount)}</div></td>
+      <td><span class="sp ${p.status === 'completed' ? 'sp-won' : p.status === 'refunded' ? 'sp-pending' : 'sp-lost'}">${p.status === 'completed' ? '✅ Bajarildi' : p.status === 'refunded' ? '↩️ Qaytarildi' : '❌ Xato'}</span></td>
+      <td style="color:var(--text2);font-size:12px">${p.method}</td>
+    </tr>`).join('')
+            );
+        }
+
+        // ── NOTIFICATIONS ──────────────────────────────────────────────────────────
+        async function loadNotifications() {
+            document.getElementById('notif-content').innerHTML = loadingHTML();
+            try {
+                notifs = await apiFetch('/users/me/notifications') || [];
+                document.getElementById('badge-notif').textContent = notifs.filter(n => !n.is_read).length || '0';
+                renderNotifs();
+            } catch { document.getElementById('notif-content').innerHTML = errHTML(); }
+        }
+
+        function renderNotifs() {
+            const el = document.getElementById('notif-content');
+            if (!notifs.length) { el.innerHTML = emptyHTML('🔔', "Bildirishnoma yo'q"); return; }
+            const icons = { outbid: '😱', winner: '🏆', payment: '💰', auction_start: '🔔', auction_end: '📣' };
+            const cls = { outbid: 'ni-outbid', winner: 'ni-win', payment: 'ni-pay', auction_start: 'ni-start', auction_end: 'ni-start' };
+            el.innerHTML = notifs.map(n => `
+    <div class="notif-item ${n.is_read ? '' : 'unread'}" onclick="markRead(${n.id},this)">
+      <div class="notif-icon ${cls[n.type] || 'ni-start'}">${icons[n.type] || '🔔'}</div>
+      <div style="flex:1">
+        <div class="notif-title">${n.title}</div>
+        <div class="notif-msg">${n.message || ''}</div>
+        <div class="notif-time">${timeAgo(n.created_at)}</div>
+      </div>
+      ${!n.is_read ? '<div class="notif-dot"></div>' : ''}
+    </div>`).join('');
+        }
+
+        async function markRead(id, el) {
+            el.classList.remove('unread');
+            el.querySelector('.notif-dot')?.remove();
+        }
+
+        async function markAllRead() {
+            try {
+                await apiFetch('/users/me/notifications/read-all', { method: 'PUT' });
+                document.querySelectorAll('.notif-item').forEach(el => { el.classList.remove('unread'); el.querySelector('.notif-dot')?.remove(); });
+                document.getElementById('badge-notif').textContent = '0';
+                showToast('✅ Barchasi o\'qilgan deb belgilandi');
+            } catch { showToast('⚠️ Xatolik yuz berdi'); }
+        }
+
+        // ── PROFILE ────────────────────────────────────────────────────────────────
+        function loadProfile() {
+            if (!user) return;
+            document.getElementById('prof-av').textContent = user.initials || '??';
+            document.getElementById('prof-name').textContent = user.full_name || '—';
+            document.getElementById('prof-email').textContent = user.email || '—';
+            document.getElementById('prof-role-badge').textContent = user.role === 'seller' ? 'Sotuvchi' : user.role === 'admin' ? 'Admin' : 'Xaridor';
+            document.getElementById('pf-name').value = user.full_name || '';
+            document.getElementById('pf-email').value = user.email || '';
+            document.getElementById('pf-phone').value = user.phone || '';
+            document.getElementById('pf-role').value = user.role === 'seller' ? 'Sotuvchi' : user.role === 'admin' ? 'Admin' : 'Xaridor';
+        }
+
+        async function saveProfile() {
+            const name = document.getElementById('pf-name').value.trim();
+            const phone = document.getElementById('pf-phone').value.trim();
+            if (!name) { showToast('⚠️ Ismingizni kiriting'); return; }
+            try {
+                const data = await apiFetch('/users/me', { method: 'PUT', body: JSON.stringify({ full_name: name, phone }) });
+                if (data) {
+                    user = { ...user, ...data, initials: data.full_name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) };
+                    localStorage.setItem('savdo_user', JSON.stringify(user));
+                    renderSidebarUser(); loadProfile();
+                    showToast('✅ Profil muvaffaqiyatli saqlandi!');
+                }
+            } catch (e) { showToast('⚠️ ' + e.message); }
+        }
+
+        // ── LOGOUT ─────────────────────────────────────────────────────────────────
+        function logout() {
+            localStorage.removeItem('savdo_token');
+            localStorage.removeItem('savdo_user');
+            location.href = 'index.html';
+        }
+
+        // ── HELPERS ────────────────────────────────────────────────────────────────
+        function statusCls(s) { return { active: 'sp-active', pending: 'sp-pending', ended: 'sp-lost', sold: 'sp-sold', cancelled: 'sp-lost' }[s] || 'sp-lost'; }
+        function statusTxt(s) { return { active: 'Faol', pending: 'Kutilmoqda', ended: 'Tugadi', sold: 'Sotildi', cancelled: 'Bekor' }[s] || s; }
+        function fmtPrice(n) { return new Intl.NumberFormat('uz-UZ').format(Math.round(n || 0)) + " so'm"; }
+        function fmtK(n) { return n >= 1000000 ? (n / 1000000).toFixed(1) + ' mln' : n >= 1000 ? (n / 1000).toFixed(0) + 'k' : n; }
+        function timeAgo(d) {
+            const diff = Date.now() - new Date(d);
+            const m = Math.floor(diff / 60000), h = Math.floor(m / 60), day = Math.floor(h / 24);
+            if (day > 0) return day + ' kun oldin'; if (h > 0) return h + ' soat oldin'; return (m || 1) + ' daqiqa oldin';
+        }
+        function tableHTML(headers, rows) {
+            return `<table class="data-table"><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`;
+        }
+        function loadingHTML() { return '<div class="loading"><div class="spinner"></div><p>Yuklanmoqda…</p></div>'; }
+        function errHTML() { return '<div class="empty-state"><div class="ei">⚠️</div><p>Ma\'lumotlarni yuklashda xatolik</p></div>'; }
+        function emptyHTML(icon, msg) { return `<div class="empty-state"><div class="ei">${icon}</div><p>${msg}</p></div>`; }
+        function showToast(msg, ms = 3000) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
+            clearTimeout(t._t); t._t = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(80px)'; }, ms);
+        }
+    </script>
+</body>
+
+</html>

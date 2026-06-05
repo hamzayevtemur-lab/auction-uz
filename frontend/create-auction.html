@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auktsion Yaratish — Savdo.uz</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #08080F;
+            --bg2: #0E0E1A;
+            --bg3: #141425;
+            --border: rgba(255, 255, 255, 0.08);
+            --primary: #7C5CFC;
+            --primary2: #9B7BFF;
+            --accent: #FC5C7D;
+            --gold: #F5C842;
+            --text: #F0F0FF;
+            --text2: rgba(240, 240, 255, 0.55);
+            --text3: rgba(240, 240, 255, 0.25);
+            --green: #2ECC71;
+            --danger: #E74C3C;
+            --nav-h: 70px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Golos Text', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Unbounded', sans-serif;
+            line-height: 1.2
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-h);
+            background: rgba(8, 8, 15, 0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .nav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 20px;
+            border-radius: 11px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(124, 92, 252, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary2);
+        }
+
+        .btn-sm {
+            padding: 7px 14px;
+            font-size: 13px;
+        }
+
+        .nav-avatar {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .page-wrap {
+            padding-top: calc(var(--nav-h)+32px);
+            padding-bottom: 80px;
+        }
+
+        /* STEP TRACKER */
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-header h1 {
+            font-size: clamp(20px, 3vw, 30px);
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            color: var(--text2);
+            font-size: 14px;
+        }
+
+        .step-track {
+            display: flex;
+            align-items: center;
+            margin-top: 22px;
+        }
+
+        .st-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .st-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: 'Unbounded', sans-serif;
+            flex-shrink: 0;
+            transition: all 0.3s;
+            background: var(--bg2);
+        }
+
+        .st-circle.active {
+            border-color: var(--primary);
+            background: rgba(124, 92, 252, 0.15);
+            color: var(--primary2);
+        }
+
+        .st-circle.done {
+            border-color: var(--green);
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--green);
+        }
+
+        .st-lbl {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text3);
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+
+        .st-lbl.active {
+            color: var(--text);
+        }
+
+        .st-lbl.done {
+            color: var(--green);
+        }
+
+        .st-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+            margin: 0 12px;
+            transition: background 0.3s;
+        }
+
+        .st-line.done {
+            background: var(--green);
+        }
+
+        /* GRID */
+        .create-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 26px;
+            align-items: start;
+        }
+
+        /* FORM CARDS */
+        .form-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 18px;
+        }
+
+        .form-card h2 {
+            font-size: 17px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text2);
+            margin-bottom: 6px;
+        }
+
+        .form-label span {
+            color: var(--accent);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            color: var(--text);
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input::placeholder {
+            color: var(--text3);
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            background: rgba(124, 92, 252, 0.03);
+        }
+
+        .form-input.error {
+            border-color: var(--danger);
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.6;
+        }
+
+        select.form-input {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='rgba(255,255,255,0.3)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 13px center;
+            background-color: var(--bg3);
+            padding-right: 34px;
+            cursor: pointer;
+        }
+
+        select.form-input option {
+            background: #1a1a2e;
+        }
+
+        .err-msg {
+            font-size: 12px;
+            color: var(--danger);
+            margin-top: 4px;
+            display: none;
+        }
+
+        .err-msg.show {
+            display: block;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: var(--text3);
+            margin-top: 4px;
+            line-height: 1.5;
+        }
+
+        .price-wrap {
+            position: relative;
+        }
+
+        .price-wrap .form-input {
+            padding-right: 55px;
+        }
+
+        .price-sfx {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: var(--text3);
+            pointer-events: none;
+        }
+
+        /* DURATION PILLS */
+        .dur-pills {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+        }
+
+        .dur-pill {
+            padding: 9px 16px;
+            border-radius: 11px;
+            border: 1px solid var(--border);
+            background: var(--bg3);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text2);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dur-pill:hover,
+        .dur-pill.active {
+            border-color: var(--primary);
+            background: rgba(124, 92, 252, 0.1);
+            color: var(--primary2);
+        }
+
+        /* FEE BOX */
+        .fee-box {
+            background: rgba(245, 200, 66, 0.07);
+            border: 1px solid rgba(245, 200, 66, 0.2);
+            border-radius: 13px;
+            padding: 16px;
+        }
+
+        .fee-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            font-size: 14px;
+        }
+
+        .fee-row:not(:last-child) {
+            border-bottom: 1px solid rgba(245, 200, 66, 0.1);
+        }
+
+        .fee-row .fr-lbl {
+            color: var(--text2);
+        }
+
+        .fee-row .fr-val {
+            font-weight: 700;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 12px;
+        }
+
+        .fee-row.total .fr-val {
+            color: var(--gold);
+            font-size: 15px;
+        }
+
+        /* PAYMENT STEP */
+        .pay-methods {
+            display: flex;
+            gap: 10px;
+            margin: 14px 0;
+        }
+
+        .pay-method {
+            flex: 1;
+            padding: 14px 10px;
+            border-radius: 13px;
+            border: 1.5px solid var(--border);
+            background: var(--bg3);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pay-method:hover,
+        .pay-method.sel {
+            border-color: var(--primary);
+            background: rgba(124, 92, 252, 0.1);
+        }
+
+        .pay-method .pm-ico {
+            font-size: 26px;
+            margin-bottom: 5px;
+        }
+
+        .pay-method .pm-nm {
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .card-input-wrap {
+            background: var(--bg3);
+            border-radius: 13px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        /* SUBMIT */
+        .btn-main {
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Unbounded', sans-serif;
+            box-shadow: 0 6px 24px rgba(124, 92, 252, 0.4);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 32px rgba(124, 92, 252, 0.55);
+        }
+
+        .btn-main:disabled {
+            opacity: 0.5;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .btn-back-main {
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            background: transparent;
+            border: 1.5px solid var(--border);
+            color: var(--text2);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+
+        .btn-back-main:hover {
+            border-color: var(--primary2);
+            color: var(--text);
+        }
+
+        /* SIDEBAR */
+        .sidebar-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 22px;
+            margin-bottom: 16px;
+            position: sticky;
+            top: calc(var(--nav-h)+16px);
+        }
+
+        .prev-card-box {
+            background: var(--bg3);
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 14px;
+        }
+
+        .prev-img {
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            background: linear-gradient(160deg, #16103a, #0b0820);
+        }
+
+        .prev-body {
+            padding: 13px;
+        }
+
+        .prev-title {
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 7px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text3);
+        }
+
+        .prev-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+        }
+
+        .prev-lbl {
+            font-size: 10px;
+            color: var(--text3);
+            text-transform: uppercase;
+        }
+
+        .prev-val {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .tips-list {
+            list-style: none;
+        }
+
+        .tips-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text2);
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+            line-height: 1.5;
+        }
+
+        .tips-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* SELLER ONLY WARNING */
+        .seller-only {
+            background: rgba(252, 92, 125, 0.08);
+            border: 1px solid rgba(252, 92, 125, 0.2);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .seller-only h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .seller-only p {
+            font-size: 13px;
+            color: var(--text2);
+            margin-bottom: 16px;
+        }
+
+        /* SUCCESS */
+        .success-box {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 56px 40px;
+            text-align: center;
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 22px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--bg2);
+            border: 1px solid rgba(124, 92, 252, 0.3);
+            color: var(--text);
+            padding: 12px 22px;
+            border-radius: 30px;
+            font-size: 14px;
+            z-index: 9999;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s, opacity 0.3s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        @media(max-width:900px) {
+            .create-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar-card {
+                position: static;
+            }
+        }
+
+        @media(max-width:600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .step-track .st-lbl {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">
+                <div class="logo-icon">🔨</div>Savdo.uz
+            </a>
+            <div class="nav-right">
+                <a href="auctions.html" class="btn btn-outline btn-sm">← Auktsionlar</a>
+                <div id="nav-user" style="display:none;align-items:center;gap:8px">
+                    <a href="dashboard.html" class="nav-avatar" id="nav-av">??</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-wrap">
+        <div class="container">
+
+            <!-- HEADER + STEPS -->
+            <div class="page-header">
+                <h1>🏷️ Yangi auktsion yaratish</h1>
+                <p>Mahsulotingizni tasvirlab, narxini belgilab, sotuvga qo'ying</p>
+                <div class="step-track">
+                    <div class="st-item">
+                        <div class="st-circle active" id="sc1">1</div>
+                        <div class="st-lbl active" id="sl1">Ma'lumotlar</div>
+                    </div>
+                    <div class="st-line" id="line1"></div>
+                    <div class="st-item">
+                        <div class="st-circle" id="sc2">2</div>
+                        <div class="st-lbl" id="sl2">Narx & Muddat</div>
+                    </div>
+                    <div class="st-line" id="line2"></div>
+                    <div class="st-item">
+                        <div class="st-circle" id="sc3">3</div>
+                        <div class="st-lbl" id="sl3">Garov to'lov</div>
+                    </div>
+                    <div class="st-line" id="line3"></div>
+                    <div class="st-item">
+                        <div class="st-circle" id="sc4">4</div>
+                        <div class="st-lbl" id="sl4">Tayyor!</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="create-grid">
+                <div id="left-col">
+
+                    <!-- SELLER CHECK (shown if not seller) -->
+                    <div id="not-seller-box" style="display:none">
+                        <div class="seller-only">
+                            <div style="font-size:48px;margin-bottom:12px">🏷️</div>
+                            <h3>Sotuvchi hisobi kerak</h3>
+                            <p>Auktsion yaratish uchun hisobingiz <strong>sotuvchi</strong> sifatida ro'yxatdan o'tgan
+                                bo'lishi kerak.</p>
+                            <div style="display:flex;gap:10px;justify-content:center">
+                                <a href="register.html" class="btn btn-primary">Sotuvchi sifatida ro'yxat</a>
+                                <a href="auctions.html" class="btn btn-outline">Orqaga</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 1: MA'LUMOTLAR -->
+                    <div id="step1">
+                        <div class="form-card">
+                            <h2>
+                                <div class="card-icon" style="background:rgba(124,92,252,0.15)">📝</div>Asosiy
+                                ma'lumotlar
+                            </h2>
+                            <div class="form-group">
+                                <label class="form-label">Sarlavha <span>*</span></label>
+                                <input type="text" class="form-input" id="f-title"
+                                    placeholder="Masalan: iPhone 15 Pro Max 256GB" maxlength="120"
+                                    oninput="livePreview();charCount('f-title','title-cnt',120)" />
+                                <div class="hint" id="title-cnt">0 / 120</div>
+                                <div class="err-msg" id="e-title">Kamida 10 ta belgi kiriting</div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Kategoriya <span>*</span></label>
+                                    <select class="form-input" id="f-cat" onchange="livePreview()">
+                                        <option value="">— Tanlang —</option>
+                                        <option value="1">📱 Elektronika</option>
+                                        <option value="2">🚗 Avtomobil</option>
+                                        <option value="3">🏠 Ko'chmas mulk</option>
+                                        <option value="4">👗 Kiyim-kechak</option>
+                                        <option value="5">🎨 San'at</option>
+                                        <option value="6">💍 Zargarlik</option>
+                                        <option value="7">🪑 Mebel</option>
+                                        <option value="8">⚽ Sport</option>
+                                        <option value="9">📚 Kitob</option>
+                                        <option value="10">🔧 Boshqa</option>
+                                    </select>
+                                    <div class="err-msg" id="e-cat">Kategoriya tanlang</div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Holat <span>*</span></label>
+                                    <select class="form-input" id="f-cond">
+                                        <option value="">— Tanlang —</option>
+                                        <option>Yangi (quti ochilmagan)</option>
+                                        <option>Yangi kabi</option>
+                                        <option>Yaxshi holat</option>
+                                        <option>O'rtacha holat</option>
+                                        <option>Antik / Vintage</option>
+                                    </select>
+                                    <div class="err-msg" id="e-cond">Holatni tanlang</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tavsif <span>*</span></label>
+                                <textarea class="form-input" id="f-desc"
+                                    placeholder="Mahsulot haqida batafsil: holati, xususiyatlari, o'lchamlari…"
+                                    maxlength="2000" oninput="charCount('f-desc','desc-cnt',2000)"></textarea>
+                                <div class="hint" id="desc-cnt">0 / 2000</div>
+                                <div class="err-msg" id="e-desc">Kamida 30 ta belgi kiriting</div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Shahar</label>
+                                    <select class="form-input" id="f-city">
+                                        <option>Toshkent</option>
+                                        <option>Samarqand</option>
+                                        <option>Buxoro</option>
+                                        <option>Namangan</option>
+                                        <option>Andijon</option>
+                                        <option>Farg'ona</option>
+                                        <option>Qashqadaryo</option>
+                                        <option>Surxondaryo</option>
+                                        <option>Boshqa</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Yetkazib berish</label>
+                                    <select class="form-input" id="f-delivery">
+                                        <option>Bor (xaridor to'laydi)</option>
+                                        <option>Bor (sotuvchi to'laydi)</option>
+                                        <option>Faqat shaxsan topshirish</option>
+                                        <option>Kelishiladi</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-main" onclick="goStep2()">Davom etish →</button>
+                    </div>
+
+                    <!-- STEP 2: NARX & MUDDAT -->
+                    <div id="step2" style="display:none">
+                        <div class="form-card">
+                            <h2>
+                                <div class="card-icon" style="background:rgba(245,200,66,0.15)">💰</div>Narx sozlamalari
+                            </h2>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Boshlang'ich narx <span>*</span></label>
+                                    <div class="price-wrap">
+                                        <input type="number" class="form-input" id="f-start" placeholder="1 000 000"
+                                            min="1000" oninput="calcFee();livePreview()" />
+                                        <span class="price-sfx">so'm</span>
+                                    </div>
+                                    <div class="err-msg" id="e-start">Kamida 1 000 so'm</div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Minimal qadam</label>
+                                    <div class="price-wrap">
+                                        <input type="number" class="form-input" id="f-step" placeholder="100 000"
+                                            min="1000" value="100000" />
+                                        <span class="price-sfx">so'm</span>
+                                    </div>
+                                    <div class="hint">Har bid shu miqdordan ko'p bo'lishi kerak</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Kafolatlangan narx (ixtiyoriy)</label>
+                                <div class="price-wrap">
+                                    <input type="number" class="form-input" id="f-reserve"
+                                        placeholder="Belgilanmasa istalgan narxda tugaydi" />
+                                    <span class="price-sfx">so'm</span>
+                                </div>
+                                <div class="hint">Bu narxga yetilmasa mahsulot sotilmaydi</div>
+                            </div>
+                        </div>
+                        <div class="form-card">
+                            <h2>
+                                <div class="card-icon" style="background:rgba(46,204,113,0.15)">⏱️</div>Muddat
+                            </h2>
+                            <div class="form-group">
+                                <label class="form-label">Davomiyligi <span>*</span></label>
+                                <div class="dur-pills">
+                                    <div class="dur-pill" onclick="setDur(this,1)">1 kun</div>
+                                    <div class="dur-pill active" onclick="setDur(this,3)">3 kun</div>
+                                    <div class="dur-pill" onclick="setDur(this,5)">5 kun</div>
+                                    <div class="dur-pill" onclick="setDur(this,7)">7 kun</div>
+                                    <div class="dur-pill" onclick="setDur(this,14)">14 kun</div>
+                                </div>
+                                <input type="hidden" id="f-dur" value="3" />
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Boshlanish vaqti</label>
+                                    <input type="datetime-local" class="form-input" id="f-starts" />
+                                    <div class="hint">Bo'sh qoldirsangiz hozirdan boshlanadi</div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Tugash vaqti (taxminiy)</label>
+                                    <input type="text" class="form-input" id="f-ends-calc" readonly
+                                        style="color:var(--text2);" placeholder="Avtomatik" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-card">
+                            <h2>
+                                <div class="card-icon" style="background:rgba(252,92,125,0.15)">🧾</div>To'lov
+                                hisob-kitobi
+                            </h2>
+                            <div class="fee-box">
+                                <div class="fee-row"><span class="fr-lbl">Boshlang'ich narx</span><span class="fr-val"
+                                        id="fee-start">—</span></div>
+                                <div class="fee-row"><span class="fr-lbl">Garov to'lov (1%)</span><span class="fr-val"
+                                        id="fee-amt" style="color:var(--gold)">—</span></div>
+                                <div class="fee-row"><span class="fr-lbl">Platforma komissiyasi</span><span
+                                        class="fr-val" style="color:var(--text2)">Sotilgandan keyin (3%)</span></div>
+                                <div class="fee-row total"><span class="fr-lbl" style="font-weight:700">Hozir
+                                        to'lash</span><span class="fr-val" id="fee-total">—</span></div>
+                            </div>
+                            <p class="hint" style="margin-top:10px">💡 Garov to'lovi sizning jiddiyligingizni
+                                tasdiqlaydi. Buyum topshirilsa, qaytariladi.</p>
+                        </div>
+                        <div style="display:flex;gap:12px">
+                            <button class="btn-outline"
+                                style="flex:1;padding:15px;border-radius:14px;font-size:14px;font-weight:600;justify-content:center;display:flex"
+                                onclick="showStep(1)">← Orqaga</button>
+                            <button class="btn-main" style="flex:2" onclick="goStep3()">Garov to'lovga o'tish →</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: TO'LOV -->
+                    <div id="step3" style="display:none">
+                        <div class="form-card">
+                            <h2>
+                                <div class="card-icon" style="background:rgba(245,200,66,0.15)">💳</div>Garov to'lovini
+                                amalga oshiring
+                            </h2>
+                            <!-- Summary -->
+                            <div style="background:var(--bg3);border-radius:13px;padding:16px;margin-bottom:18px">
+                                <div
+                                    style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)">
+                                    <span style="color:var(--text2)">Sarlavha</span><span id="pay-s-title"
+                                        style="max-width:180px;text-align:right;font-size:12px">—</span>
+                                </div>
+                                <div
+                                    style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)">
+                                    <span style="color:var(--text2)">Boshlang'ich narx</span><span id="pay-s-price"
+                                        style="font-weight:700">—</span>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0">
+                                    <span style="color:var(--text2)">Garov to'lov (1%)</span><span id="pay-s-fee"
+                                        style="font-weight:700;color:var(--gold)">—</span>
+                                </div>
+                            </div>
+                            <!-- Pay method -->
+                            <div class="form-label" style="margin-bottom:10px">To'lov usulini tanlang</div>
+                            <div class="pay-methods">
+                                <div class="pay-method sel" id="pm-payme" onclick="selPay('payme')">
+                                    <div class="pm-ico">💙</div>
+                                    <div class="pm-nm">Payme</div>
+                                </div>
+                                <div class="pay-method" id="pm-click" onclick="selPay('click')">
+                                    <div class="pm-ico">🟢</div>
+                                    <div class="pm-nm">Click</div>
+                                </div>
+                                <div class="pay-method" id="pm-uzcard" onclick="selPay('uzcard')">
+                                    <div class="pm-ico">💳</div>
+                                    <div class="pm-nm">Uzcard</div>
+                                </div>
+                            </div>
+                            <!-- Card inputs -->
+                            <div class="card-input-wrap">
+                                <div class="form-group" style="margin-bottom:13px">
+                                    <label class="form-label">Karta raqami</label>
+                                    <input type="text" class="form-input" id="card-num"
+                                        placeholder="0000 0000 0000 0000" maxlength="19" oninput="fmtCard(this)" />
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group" style="margin-bottom:0">
+                                        <label class="form-label">Amal qilish muddati</label>
+                                        <input type="text" class="form-input" id="card-exp" placeholder="MM/YY"
+                                            maxlength="5" oninput="fmtExp(this)" />
+                                    </div>
+                                    <div class="form-group" style="margin-bottom:0">
+                                        <label class="form-label">SMS tasdiqlash kodi</label>
+                                        <input type="text" class="form-input" id="card-sms" placeholder="6 raqam"
+                                            maxlength="6" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:12px">
+                                <button class="btn-outline"
+                                    style="flex:1;padding:14px;border-radius:14px;font-size:14px;font-weight:600;display:flex;justify-content:center"
+                                    onclick="showStep(2)">← Orqaga</button>
+                                <button class="btn-main" style="flex:2" id="pay-btn" onclick="processPayment()">
+                                    <span id="pay-btn-txt">💳 To'lovni tasdiqlash</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: SUCCESS -->
+                    <div id="step4" style="display:none">
+                        <div class="success-box">
+                            <div style="font-size:74px;margin-bottom:18px">🎉</div>
+                            <h2 style="font-size:24px;margin-bottom:12px">Auktsion joylashtirildi!</h2>
+                            <p
+                                style="color:var(--text2);font-size:14px;line-height:1.7;max-width:380px;margin:0 auto 24px">
+                                Garov to'lovi qabul qilindi. Auktsioningiz faollashtirildi va xaridorlar taklif bera
+                                boshlaydi.</p>
+                            <div
+                                style="background:var(--bg3);border-radius:14px;padding:18px;margin-bottom:24px;text-align:left">
+                                <div
+                                    style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)">
+                                    <span style="color:var(--text2)">Auktsion ID</span>
+                                    <span id="succ-id"
+                                        style="font-family:'Unbounded',sans-serif;color:var(--primary2);font-size:12px">—</span>
+                                </div>
+                                <div
+                                    style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)">
+                                    <span style="color:var(--text2)">Sarlavha</span><span id="succ-title"
+                                        style="max-width:200px;text-align:right;font-size:12px">—</span>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0">
+                                    <span style="color:var(--text2)">Boshlang'ich narx</span>
+                                    <span id="succ-price" style="color:var(--gold);font-weight:700">—</span>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+                                <a href="#" id="succ-view-btn" class="btn btn-primary"
+                                    style="padding:13px 26px">Auktsionni ko'rish →</a>
+                                <a href="dashboard.html" class="btn btn-outline" style="padding:13px 26px">Kabinetga
+                                    o'tish</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- /left-col -->
+
+                <!-- SIDEBAR PREVIEW -->
+                <div>
+                    <div class="sidebar-card">
+                        <h3 style="font-size:14px;margin-bottom:13px">👁️ Oldindan ko'rish</h3>
+                        <div class="prev-card-box">
+                            <div class="prev-img" id="prev-emoji">🏷️</div>
+                            <div class="prev-body">
+                                <div class="prev-title" id="prev-title">Sarlavha kiriting…</div>
+                                <div class="prev-meta">
+                                    <div>
+                                        <div class="prev-lbl">Narx</div>
+                                        <div class="prev-val" id="prev-price" style="color:var(--text3);font-size:11px">
+                                            —</div>
+                                    </div>
+                                    <div>
+                                        <div class="prev-lbl">Muddat</div>
+                                        <div class="prev-val" id="prev-dur" style="font-size:11px;color:var(--text3)">3
+                                            kun</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h4
+                            style="font-size:12px;color:var(--text2);margin-bottom:9px;text-transform:uppercase;letter-spacing:0.8px">
+                            💡 Maslahatlar</h4>
+                        <ul class="tips-list">
+                            <li><span>📸</span>Yuqori sifatli rasm sotuvni 3x oshiradi</li>
+                            <li><span>✍️</span>Batafsil tavsif xaridorlar ishonchini oshiradi</li>
+                            <li><span>💰</span>Past boshlang'ich narx ko'proq taklif jalb qiladi</li>
+                            <li><span>⏰</span>3–7 kunlik muddat eng yaxshi natija beradi</li>
+                            <li><span>🏷️</span>To'g'ri kategoriya qidiruvda yuqoriga chiqaradi</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div><!-- /create-grid -->
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        const API = 'http://127.0.0.1:8000/api';
+        const CAT_ICONS = { '1': '📱', '2': '🚗', '3': '🏠', '4': '👗', '5': '🎨', '6': '💍', '7': '🪑', '8': '⚽', '9': '📚', '10': '🔧' };
+        let selPayMethod = 'payme';
+        let createdAuctionId = null;
+
+        // ── AUTH & ROLE CHECK ──────────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('savdo_token');
+            if (!token) { location.href = 'login.html?next=create-auction.html'; return; }
+
+            const u = localStorage.getItem('savdo_user');
+            if (u) {
+                const usr = JSON.parse(u);
+                document.getElementById('nav-user').style.display = 'flex';
+                document.getElementById('nav-av').textContent = usr.initials || '??';
+
+                // Only sellers can create auctions
+                if (usr.role !== 'seller' && usr.role !== 'admin') {
+                    document.getElementById('step1').style.display = 'none';
+                    document.getElementById('not-seller-box').style.display = 'block';
+                    return;
+                }
+            }
+
+            // Set default start time
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + 5);
+            document.getElementById('f-starts').value = now.toISOString().slice(0, 16);
+            calcEndDate();
+            document.getElementById('f-starts').addEventListener('change', calcEndDate);
+        });
+
+        // ── STEP NAVIGATION ─────────────────────────────────────────────────────────
+        function showStep(n) {
+            [1, 2, 3, 4].forEach(i => {
+                const el = document.getElementById('step' + i);
+                if (el) el.style.display = i === n ? 'block' : 'none';
+            });
+            // Update tracker
+            for (let i = 1; i <= 4; i++) {
+                const c = document.getElementById('sc' + i), l = document.getElementById('sl' + i);
+                if (c) { c.className = 'st-circle' + (i < n ? ' done' : i === n ? ' active' : ''); c.textContent = i < n ? '✓' : i; }
+                if (l) { l.className = 'st-lbl' + (i < n ? ' done' : i === n ? ' active' : ''); }
+                const line = document.getElementById('line' + i);
+                if (line) line.className = 'st-line' + (i < n ? ' done' : '');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goStep2() {
+            if (!validateStep1()) return;
+            showStep(2);
+            calcFee();
+            calcEndDate();
+        }
+
+        function goStep3() {
+            if (!validateStep2()) return;
+            showStep(3);
+            const title = document.getElementById('f-title').value;
+            const start = parseInt(document.getElementById('f-start').value) || 0;
+            const fee = Math.ceil(start * 0.01);
+            document.getElementById('pay-s-title').textContent = title;
+            document.getElementById('pay-s-price').textContent = fmtPrice(start);
+            document.getElementById('pay-s-fee').textContent = fmtPrice(fee);
+        }
+
+        // ── VALIDATION ─────────────────────────────────────────────────────────────
+        function ve(id, bad, msg) {
+            const e = document.getElementById('e-' + id); if (e) { e.classList.toggle('show', bad); if (msg && bad) e.textContent = msg; }
+            const inp = document.getElementById('f-' + id); if (inp) inp.classList.toggle('error', bad);
+            return !bad;
+        }
+
+        function validateStep1() {
+            const t = document.getElementById('f-title').value.trim();
+            const c = document.getElementById('f-cat').value;
+            const cn = document.getElementById('f-cond').value;
+            const d = document.getElementById('f-desc').value.trim();
+            let ok = true;
+            if (!ve('title', t.length < 10, 'Kamida 10 ta belgi kiriting')) ok = false;
+            if (!ve('cat', !c, 'Kategoriya tanlang')) ok = false;
+            if (!ve('cond', !cn, 'Holatni tanlang')) ok = false;
+            if (!ve('desc', d.length < 30, 'Kamida 30 ta belgi kiriting')) ok = false;
+            return ok;
+        }
+
+        function validateStep2() {
+            const s = parseInt(document.getElementById('f-start').value) || 0;
+            return ve('start', s < 1000, 'Kamida 1 000 so\'m kiriting');
+        }
+
+        // ── LIVE PREVIEW ───────────────────────────────────────────────────────────
+        function livePreview() {
+            const title = document.getElementById('f-title').value || 'Sarlavha kiriting…';
+            const cat = document.getElementById('f-cat').value;
+            const start = parseInt(document.getElementById('f-start').value) || 0;
+            const dur = document.getElementById('f-dur').value;
+            document.getElementById('prev-title').textContent = title;
+            document.getElementById('prev-price').textContent = start ? fmtPrice(start) : '—';
+            document.getElementById('prev-dur').textContent = dur + ' kun';
+            if (cat && CAT_ICONS[cat]) document.getElementById('prev-emoji').textContent = CAT_ICONS[cat];
+        }
+
+        function charCount(inputId, countId, max) {
+            const v = document.getElementById(inputId).value.length;
+            document.getElementById(countId).textContent = `${v} / ${max}`;
+        }
+
+        function calcFee() {
+            const s = parseInt(document.getElementById('f-start').value) || 0;
+            const fee = Math.ceil(s * 0.01);
+            document.getElementById('fee-start').textContent = s ? fmtPrice(s) : '—';
+            document.getElementById('fee-amt').textContent = s ? fmtPrice(fee) : '—';
+            document.getElementById('fee-total').textContent = s ? fmtPrice(fee) : '—';
+        }
+
+        function setDur(el, days) {
+            document.querySelectorAll('.dur-pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('f-dur').value = days;
+            document.getElementById('prev-dur').textContent = days + ' kun';
+            calcEndDate();
+        }
+
+        function calcEndDate() {
+            const startVal = document.getElementById('f-starts').value;
+            const dur = parseInt(document.getElementById('f-dur').value) || 3;
+            const start = startVal ? new Date(startVal) : new Date();
+            const end = new Date(start.getTime() + dur * 86400000);
+            document.getElementById('f-ends-calc').value =
+                end.toLocaleString('uz-UZ', { dateStyle: 'medium', timeStyle: 'short' });
+        }
+
+        // ── PAYMENT ────────────────────────────────────────────────────────────────
+        function selPay(m) {
+            selPayMethod = m;
+            ['payme', 'click', 'uzcard'].forEach(p => document.getElementById('pm-' + p).classList.toggle('sel', p === m));
+        }
+        function fmtCard(inp) {
+            let v = inp.value.replace(/\D/g, '').slice(0, 16);
+            inp.value = v.replace(/(\d{4})/g, '$1 ').trim();
+        }
+        function fmtExp(inp) {
+            let v = inp.value.replace(/\D/g, '').slice(0, 4);
+            if (v.length >= 2) v = v.slice(0, 2) + '/' + v.slice(2);
+            inp.value = v;
+        }
+
+        // ── MAIN PROCESS: Create auction then pay fee ──────────────────────────────
+        async function processPayment() {
+            const cardNum = document.getElementById('card-num').value.replace(/\s/g, '');
+            const exp = document.getElementById('card-exp').value;
+            if (cardNum.length < 16 || !exp.includes('/')) {
+                showToast('⚠️ Karta ma\'lumotlarini to\'g\'ri kiriting'); return;
+            }
+
+            const btn = document.getElementById('pay-btn');
+            const txt = document.getElementById('pay-btn-txt');
+            btn.disabled = true;
+            txt.innerHTML = '<div class="spinner"></div> Auktsion yaratilmoqda…';
+
+            const token = localStorage.getItem('savdo_token');
+
+            try {
+                // Step 1: Create auction via API
+                const startVal = document.getElementById('f-starts').value;
+                const dur = parseInt(document.getElementById('f-dur').value) || 3;
+                const startsAt = startVal ? new Date(startVal) : new Date();
+                const endsAt = new Date(startsAt.getTime() + dur * 86400000);
+
+                const auctionData = {
+                    category_id: parseInt(document.getElementById('f-cat').value),
+                    title: document.getElementById('f-title').value.trim(),
+                    description: document.getElementById('f-desc').value.trim(),
+                    item_condition: document.getElementById('f-cond').value,
+                    location: document.getElementById('f-city').value,
+                    delivery: document.getElementById('f-delivery').value,
+                    starting_price: parseFloat(document.getElementById('f-start').value),
+                    min_step: parseFloat(document.getElementById('f-step').value) || 100000,
+                    reserve_price: parseFloat(document.getElementById('f-reserve').value) || null,
+                    starts_at: startsAt.toISOString(),
+                    ends_at: endsAt.toISOString(),
+                };
+
+                txt.innerHTML = '<div class="spinner"></div> Auktsion saqlanmoqda…';
+
+                const r1 = await fetch(`${API}/auctions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify(auctionData)
+                });
+                const auction = await r1.json();
+                if (!r1.ok) throw new Error(auction.detail || 'Auktsion yaratishda xatolik');
+                createdAuctionId = auction.id;
+
+                // Step 2: Pay seller fee
+                txt.innerHTML = '<div class="spinner"></div> Garov to\'lov amalga oshirilmoqda…';
+
+                const r2 = await fetch(`${API}/payments/seller-fee/${auction.id}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ auction_id: auction.id, method: selPayMethod })
+                });
+                const payment = await r2.json();
+                if (!r2.ok) throw new Error(payment.detail || 'To\'lov amalga oshmadi');
+
+                // Success
+                document.getElementById('succ-id').textContent = `#AUC-${String(auction.id).padStart(4, '0')}`;
+                document.getElementById('succ-title').textContent = auction.title;
+                document.getElementById('succ-price').textContent = fmtPrice(auction.starting_price);
+                document.getElementById('succ-view-btn').href = `auction-detail.html?id=${auction.id}`;
+                showStep(4);
+                showToast('🎉 Auktsioningiz muvaffaqiyatli joylashtirildi!');
+
+            } catch (e) {
+                showToast('⚠️ ' + e.message);
+            } finally {
+                btn.disabled = false;
+                txt.textContent = '💳 To\'lovni tasdiqlash';
+            }
+        }
+
+        // ── UTILS ──────────────────────────────────────────────────────────────────
+        function fmtPrice(n) { return new Intl.NumberFormat('uz-UZ').format(Math.round(n || 0)) + " so'm"; }
+        function showToast(msg, ms = 3500) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
+            clearTimeout(t._t); t._t = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(80px)'; }, ms);
+        }
+    </script>
+</body>
+
+</html>
