@@ -14,18 +14,34 @@ INSERT INTO categories (name_uz, name_ru, icon, slug) VALUES
 ('Boshqa',         'Другое',       '🔧', 'other')
 ON DUPLICATE KEY UPDATE name_uz = VALUES(name_uz);
 
--- Foydalanuvchilar (parol hammasi: test1234)
+-- Foydalanuvchilar
+-- Barcha parollar: test1234 (bcrypt 5.0.0 bilan hash qilingan)
 INSERT INTO users (full_name, email, phone, password, role, is_verified, balance) VALUES
-('Admin User',      'admin@savdo.uz',  '+998901234567',
- '$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'admin',  TRUE, 0),
-('Jasur Karimov',   'jasur@test.uz',   '+998901111111',
- '$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'buyer',  TRUE, 5000000),
-('Malika Rahimova', 'malika@test.uz',  '+998902222222',
- '$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'seller', TRUE, 0),
-('Bobur Sobirov',   'bobur@test.uz',   '+998903333333',
- '$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'seller', TRUE, 0),
-('Nilufar Azimova', 'nilufar@test.uz', '+998904444444',
- '$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'buyer',  TRUE, 3000000)
+('Admin User',
+ 'admin@savdo.uz', '+998901234567',
+ '$2b$12$EC7P6Toc03U7zbd5TjZyGuL4nPpbi8Tjvolho0yFKMM/FhYln9jBW',
+ 'admin', TRUE, 0),
+
+('Jasur Karimov',
+ 'jasur@test.uz', '+998901111111',
+ '$2b$12$wGNdguE7rbchHTtaBrRQe.tyDgS5LjyoUgOLCKam2g4oWjShmPDyy',
+ 'buyer', TRUE, 5000000),
+
+('Malika Rahimova',
+ 'malika@test.uz', '+998902222222',
+ '$2b$12$SqxpBB1cmU8kEjTCBnjvo.KHtSnuBGn5OftLsrVNJBMEY7ae1XvT.',
+ 'seller', TRUE, 0),
+
+('Bobur Sobirov',
+ 'bobur@test.uz', '+998903333333',
+ '$2b$12$0ADhRVMxt0nTAm8w/daMTu46Wbu6LL.zIBpRK5q144MAdrs9U/xIK',
+ 'seller', TRUE, 0),
+
+('Nilufar Azimova',
+ 'nilufar@test.uz', '+998904444444',
+ '$2b$12$t6PD3ELdBj4xgTuEwlx3f.dhkkG1FRs2/Nn4H/JIOjX.i0I1GHZym',
+ 'buyer', TRUE, 3000000)
+
 ON DUPLICATE KEY UPDATE full_name = VALUES(full_name);
 
 -- Auktsionlar
@@ -57,7 +73,7 @@ VALUES
 
 (4, 1,
  'MacBook Pro M3 14 dyuym 512GB Space Black',
- 'Apple MacBook Pro M3 chip, 16GB RAM, 512GB SSD. 2024-yil yanvar oyi. Ideal holat.',
+ 'Apple MacBook Pro M3 chip, 16GB RAM, 512GB SSD. 2024-yil yanvar. Ideal holat.',
  'Yangi kabi', 'Toshkent, Chilonzor', 'Bor (xaridor tolaydi)',
  22000000, 300000, 23500000, 'active',
  NOW() - INTERVAL 1 DAY, NOW() + INTERVAL 4 DAY, TRUE, 220000),
@@ -95,7 +111,9 @@ VALUES
  'Apple iPad Pro M2. Liquid Retina XDR display. Apple Pencil bilan.',
  'Yangi kabi', 'Toshkent', 'Bor (xaridor tolaydi)',
  9000000, 100000, 11500000, 'sold',
- NOW() - INTERVAL 10 DAY, NOW() - INTERVAL 3 DAY, TRUE, 90000);
+ NOW() - INTERVAL 10 DAY, NOW() - INTERVAL 3 DAY, TRUE, 90000)
+
+ON DUPLICATE KEY UPDATE title = VALUES(title);
 
 -- Takliflar
 INSERT INTO bids (auction_id, bidder_id, amount, created_at) VALUES
@@ -122,26 +140,25 @@ ON DUPLICATE KEY UPDATE fee_paid = TRUE;
 
 -- Tolovlar
 INSERT INTO payments (user_id, auction_id, type, amount, status, method, description) VALUES
-(3, 1, 'seller_fee',       85000,   'completed', 'payme', 'iPhone garov tolovi'),
-(3, 2, 'seller_fee',       32000,   'completed', 'click', 'Gilam garov tolovi'),
-(4, 3, 'seller_fee',       120000,  'completed', 'payme', 'Samsung TV garov tolovi'),
-(2, 1, 'participation_fee',50000,   'completed', 'payme', 'iPhone auktsioniga qatnashish'),
-(5, 1, 'participation_fee',50000,   'completed', 'click', 'iPhone auktsioniga qatnashish'),
-(2, 2, 'participation_fee',50000,   'completed', 'payme', 'Gilam auktsioniga qatnashish');
+(3, 1, 'seller_fee',        85000,   'completed', 'payme', 'iPhone garov tolovi'),
+(3, 2, 'seller_fee',        32000,   'completed', 'click', 'Gilam garov tolovi'),
+(4, 3, 'seller_fee',        120000,  'completed', 'payme', 'Samsung TV garov tolovi'),
+(2, 1, 'participation_fee', 50000,   'completed', 'payme', 'iPhone auktsioniga qatnashish'),
+(5, 1, 'participation_fee', 50000,   'completed', 'click', 'iPhone auktsioniga qatnashish'),
+(2, 2, 'participation_fee', 50000,   'completed', 'payme', 'Gilam auktsioniga qatnashish');
 
 -- Bildirishnomalar
 INSERT INTO notifications (user_id, type, title, message, is_read) VALUES
-(2, 'outbid', 'Taklifingizdan otildi!',
+(2, 'outbid',  'Taklifingizdan otildi!',
  'iPhone auktsionida yangi taklif: 9 200 000 som', FALSE),
-(5, 'outbid', 'Taklifingizdan otildi!',
+(5, 'outbid',  'Taklifingizdan otildi!',
  'MacBook Pro auktsionida yangi taklif: 23 500 000 som', FALSE),
-(3, 'payment','Garov tolovi qabul qilindi',
+(3, 'payment', 'Garov tolovi qabul qilindi',
  'iPhone auktsioningiz faollashtirildi', TRUE),
-(2, 'winner', 'Tabriklaymiz! Siz golib boldingiz!',
+(2, 'winner',  'Tabriklaymiz! Siz golib boldingiz!',
  'iPad Pro auktsionida siz golib boldingiz 11 500 000 som', TRUE);
 
 SELECT 'Seed muvaffaqiyatli yuklandi!' AS natija;
 SELECT CONCAT('Foydalanuvchilar: ', COUNT(*)) AS info FROM users;
 SELECT CONCAT('Auktsionlar: ',      COUNT(*)) AS info FROM auctions;
 SELECT CONCAT('Takliflar: ',        COUNT(*)) AS info FROM bids;
-SELECT CONCAT('Kategoriyalar: ',    COUNT(*)) AS info FROM categories;
