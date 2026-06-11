@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel — Savdo.uz</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #08080F;
+            --bg2: #0E0E1A;
+            --bg3: #141425;
+            --border: rgba(255, 255, 255, 0.08);
+            --primary: #7C5CFC;
+            --primary2: #9B7BFF;
+            --accent: #FC5C7D;
+            --gold: #F5C842;
+            --text: #F0F0FF;
+            --text2: rgba(240, 240, 255, 0.55);
+            --text3: rgba(240, 240, 255, 0.25);
+            --green: #2ECC71;
+            --danger: #E74C3C;
+            --nav-h: 64px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Golos Text', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Unbounded', sans-serif;
+            line-height: 1.2
+        }
+
+        /* ── ENTRY SCREEN ── */
+        .entry-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .entry-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(231, 76, 60, 0.12), transparent 70%);
+        }
+
+        .entry-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 44px 40px;
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .entry-icon {
+            font-size: 56px;
+            margin-bottom: 18px;
+        }
+
+        .entry-card h1 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .entry-card p {
+            font-size: 14px;
+            color: var(--text2);
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text2);
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 13px 16px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input::placeholder {
+            color: var(--text3);
+        }
+
+        .form-input:focus {
+            border-color: var(--danger);
+        }
+
+        .form-input.error {
+            border-color: var(--danger);
+        }
+
+        .code-input {
+            letter-spacing: 4px;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .btn-entry {
+            width: 100%;
+            padding: 14px;
+            border-radius: 13px;
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: inherit;
+            box-shadow: 0 4px 20px rgba(231, 76, 60, 0.35);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .btn-entry:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-entry:disabled {
+            opacity: 0.6;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 11px;
+            font-size: 13px;
+            margin-bottom: 14px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .alert.show {
+            display: flex;
+        }
+
+        .alert-err {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #ff8a80;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 18px;
+            font-size: 13px;
+            color: var(--text2);
+        }
+
+        .back-link:hover {
+            color: var(--text);
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            height: var(--nav-h);
+            background: rgba(8, 8, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(231, 76, 60, 0.2);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .nav-badge {
+            background: var(--danger);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 100px;
+            margin-left: 4px;
+        }
+
+        .nav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-user {
+            font-size: 13px;
+            color: var(--text2);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-danger-soft {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.25);
+            color: #ff8a80;
+        }
+
+        .btn-danger-soft:hover {
+            background: rgba(231, 76, 60, 0.2);
+        }
+
+        .btn-success {
+            background: rgba(46, 204, 113, 0.12);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            color: var(--green);
+        }
+
+        .btn-success:hover {
+            background: rgba(46, 204, 113, 0.22);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text2);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--primary);
+            color: var(--primary2);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* ── LAYOUT ── */
+        .page-wrap {
+            display: flex;
+            min-height: calc(100vh - var(--nav-h));
+        }
+
+        .sidebar {
+            width: 220px;
+            flex-shrink: 0;
+            background: var(--bg2);
+            border-right: 1px solid var(--border);
+            padding: 18px 12px;
+            position: sticky;
+            top: var(--nav-h);
+            height: calc(100vh - var(--nav-h));
+            overflow-y: auto;
+        }
+
+        .menu-sep {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text3);
+            font-weight: 700;
+            padding: 10px 12px 4px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            color: var(--text2);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 2px;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+        }
+
+        .menu-item.active {
+            background: rgba(231, 76, 60, 0.1);
+            color: #ff8a80;
+            font-weight: 600;
+        }
+
+        .menu-item .mi {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .mn-badge {
+            margin-left: auto;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 100px;
+            color: #fff;
+        }
+
+        .main {
+            flex: 1;
+            padding: 24px;
+            min-width: 0;
+        }
+
+        /* ── STATS ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .stat-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: attr(data-icon);
+            position: absolute;
+            right: -4px;
+            top: -4px;
+            font-size: 56px;
+            opacity: 0.06;
+            pointer-events: none;
+        }
+
+        .sc-lbl {
+            font-size: 11px;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .sc-val {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .sc-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .sc-mini .lbl {
+            font-size: 11px;
+            color: var(--text3);
+        }
+
+        .sc-mini .val {
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 3px;
+        }
+
+        /* ── TOOLBAR ── */
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 9px 12px 9px 34px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+        }
+
+        .search-box input::placeholder {
+            color: var(--text3);
+        }
+
+        .search-box .si {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text3);
+            pointer-events: none;
+            font-size: 13px;
+        }
+
+        .fsel {
+            padding: 9px 26px 9px 11px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M1 1l3 3 3-3' stroke='rgba(255,255,255,0.3)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 9px center;
+        }
+
+        .fsel option {
+            background: #1a1a2e;
+        }
+
+        /* ── TABLE ── */
+        .tcard {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 18px;
+        }
+
+        .thead {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .thead h3 {
+            font-size: 14px;
+        }
+
+        .tcnt {
+            font-size: 12px;
+            color: var(--text2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text3);
+            font-weight: 600;
+            padding: 10px 16px;
+            background: var(--bg3);
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 11px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.015);
+        }
+
+        .cell-user {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .av {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+            color: #fff;
+        }
+
+        .av.seller {
+            background: linear-gradient(135deg, #F5C842, #F09819);
+            color: #1a1200;
+        }
+
+        .av.admin {
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+        }
+
+        .cname {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .csub {
+            font-size: 11px;
+            color: var(--text3);
+        }
+
+        .amt {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .b-active {
+            background: rgba(231, 76, 60, 0.15);
+            color: #ff6b6b;
+            border: 1px solid rgba(231, 76, 60, 0.25);
+        }
+
+        .b-active::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            animation: blink 1.4s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.3
+            }
+        }
+
+        .b-pending {
+            background: rgba(245, 200, 66, 0.12);
+            color: var(--gold);
+        }
+
+        .b-sold {
+            background: rgba(46, 204, 113, 0.12);
+            color: var(--green);
+        }
+
+        .b-ended,
+        .b-blocked {
+            background: rgba(90, 90, 122, 0.2);
+            color: var(--text3);
+        }
+
+        .b-cancelled {
+            background: rgba(231, 76, 60, 0.08);
+            color: #ff8a80;
+        }
+
+        .b-buyer {
+            background: rgba(124, 92, 252, 0.1);
+            color: var(--primary2);
+        }
+
+        .b-seller {
+            background: rgba(245, 200, 66, 0.1);
+            color: var(--gold);
+        }
+
+        .b-admin {
+            background: rgba(231, 76, 60, 0.1);
+            color: #ff8a80;
+        }
+
+        .b-ok {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--green);
+        }
+
+        /* ── PAGINATION ── */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        .pg {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg2);
+            color: var(--text2);
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .pg:hover,
+        .pg.active {
+            background: rgba(231, 76, 60, 0.15);
+            border-color: var(--danger);
+            color: #ff8a80;
+        }
+
+        .pg:disabled {
+            opacity: 0.35;
+            cursor: default;
+        }
+
+        /* ── MODAL ── */
+        .modal-ov {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .modal-ov.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            transform: scale(0.94);
+            transition: transform 0.2s;
+        }
+
+        .modal-ov.open .modal {
+            transform: scale(1);
+        }
+
+        .modal-x {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            color: var(--text2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-acts {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .modal-acts .btn {
+            flex: 1;
+            justify-content: center;
+            padding: 12px;
+        }
+
+        /* ── MISC ── */
+        .empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text2);
+        }
+
+        .empty .ei {
+            font-size: 44px;
+            margin-bottom: 12px;
+        }
+
+        .spinner-w {
+            display: flex;
+            justify-content: center;
+            padding: 48px;
+        }
+
+        .spin {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--bg3);
+            border-top: 3px solid var(--danger);
+            border-radius: 50%;
+            animation: sp 0.8s linear infinite;
+        }
+
+        @keyframes sp {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .bid-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .bid-row:last-child {
+            border-bottom: none;
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--bg2);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: var(--text);
+            padding: 11px 20px;
+            border-radius: 28px;
+            font-size: 13px;
+            z-index: 9999;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s, opacity 0.3s;
+            opacity: 0;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .spinner-sm {
+            width: 15px;
+            height: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            animation: sp 0.7s linear infinite;
+        }
+
+        @media(max-width:900px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+        }
+
+        @media(max-width:500px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .main {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════════════
+     ENTRY SCREEN — shown first
+═══════════════════════════════════════ -->
+    <div id="entry-screen" class="entry-screen">
+        <div class="entry-bg"></div>
+        <div class="entry-card">
+            <div class="entry-icon">🔐</div>
+            <h1>Admin Panel</h1>
+            <p>Kirish uchun avval hisobingizga kiring, so'ng maxfiy admin kodini kiriting.</p>
+
+            <div class="alert alert-err" id="entry-err">⚠️ <span id="entry-err-msg"></span></div>
+
+            <!-- Step 1: Login -->
+            <div id="entry-step1">
+                <div class="form-group">
+                    <label class="form-label">Email yoki telefon</label>
+                    <input type="text" class="form-input" id="e-identifier" placeholder="admin@savdo.uz" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Parol</label>
+                    <input type="password" class="form-input" id="e-password" placeholder="Parolingiz"
+                        onkeydown="if(event.key==='Enter')entryLogin()" />
+                </div>
+                <button class="btn-entry" id="login-btn" onclick="entryLogin()">
+                    <span id="login-btn-txt">Kirish →</span>
+                </button>
+            </div>
+
+            <!-- Step 2: Admin code -->
+            <div id="entry-step2" style="display:none">
+                <div
+                    style="background:rgba(245,200,66,0.08);border:1px solid rgba(245,200,66,0.2);border-radius:12px;padding:14px;margin-bottom:18px;font-size:13px;color:rgba(245,200,66,0.9)">
+                    ✅ Tizimga kirdingiz. Endi admin kodini kiriting.
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Admin kirish kodi</label>
+                    <input type="password" class="form-input code-input" id="e-code" placeholder="••••••••"
+                        maxlength="50" onkeydown="if(event.key==='Enter')entryCode()" />
+                    <div style="font-size:12px;color:var(--text3);margin-top:5px">Bu kod .env faylidagi
+                        ADMIN_SECRET_CODE</div>
+                </div>
+                <button class="btn-entry" id="code-btn" onclick="entryCode()">
+                    <span id="code-btn-txt">🔓 Admin paneliga kirish</span>
+                </button>
+                <button onclick="entryReset()"
+                    style="width:100%;margin-top:8px;padding:10px;background:none;border:1px solid var(--border);border-radius:10px;color:var(--text2);font-size:13px;cursor:pointer;">←
+                    Orqaga</button>
+            </div>
+
+            <a href="index.html" class="back-link">← Bosh sahifaga qaytish</a>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+     ADMIN PANEL — shown after auth
+═══════════════════════════════════════ -->
+    <div id="admin-panel" style="display:none">
+
+        <nav class="navbar">
+            <div class="nav-brand">🔨 Savdo.uz <span class="nav-badge">ADMIN</span></div>
+            <div class="nav-right">
+                <span class="nav-user" id="nav-name">—</span>
+                <a href="index.html" class="btn btn-ghost btn-sm" target="_blank">🌐 Sayt</a>
+                <button class="btn btn-danger-soft btn-sm" onclick="adminLogout()">🚪 Chiqish</button>
+            </div>
+        </nav>
+
+        <div class="page-wrap">
+            <aside class="sidebar">
+                <div class="menu-sep">Asosiy</div>
+                <div class="menu-item active" onclick="switchTab('dashboard',this)"><span class="mi">📊</span>Dashboard
+                </div>
+                <div class="menu-sep">Boshqaruv</div>
+                <div class="menu-item" onclick="switchTab('users',this)">
+                    <span class="mi">👥</span>Foydalanuvchilar
+                    <span class="mn-badge" id="bdg-users" style="background:var(--primary)">—</span>
+                </div>
+                <div class="menu-item" onclick="switchTab('auctions',this)">
+                    <span class="mi">🔨</span>Auktsionlar
+                    <span class="mn-badge" id="bdg-auctions" style="background:var(--danger)">—</span>
+                </div>
+                <div class="menu-item" onclick="switchTab('bids',this)"><span class="mi">⚡</span>Takliflar</div>
+                <div class="menu-item" onclick="switchTab('payments',this)"><span class="mi">💳</span>To'lovlar</div>
+            </aside>
+
+            <main class="main">
+
+                <!-- DASHBOARD -->
+                <div id="tab-dashboard">
+                    <h2 style="font-size:20px;margin-bottom:4px">📊 Dashboard</h2>
+                    <p style="color:var(--text2);font-size:13px;margin-bottom:18px">Platforma real vaqt holati</p>
+                    <div class="stats-grid" id="stats-grid">
+                        <div class="spinner-w" style="grid-column:1/-1">
+                            <div class="spin"></div>
+                        </div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                        <div class="tcard">
+                            <div class="thead">
+                                <h3>👥 So'ngi foydalanuvchilar</h3>
+                            </div>
+                            <div id="dash-users">
+                                <div class="spinner-w">
+                                    <div class="spin"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tcard">
+                            <div class="thead">
+                                <h3>⚡ So'ngi takliflar</h3>
+                                <button class="btn btn-ghost btn-sm" onclick="loadDashboard()">↺</button>
+                            </div>
+                            <div id="dash-bids">
+                                <div class="spinner-w">
+                                    <div class="spin"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USERS -->
+                <div id="tab-users" style="display:none">
+                    <h2 style="font-size:20px;margin-bottom:16px">👥 Foydalanuvchilar</h2>
+                    <div class="toolbar">
+                        <div class="search-box"><span class="si">🔍</span>
+                            <input type="text" id="u-search" placeholder="Ism, email, telefon…"
+                                oninput="debounce(loadUsers,400)()" />
+                        </div>
+                        <select class="fsel" id="u-role" onchange="loadUsers()">
+                            <option value="">Barcha rollar</option>
+                            <option value="buyer">🛒 Xaridorlar</option>
+                            <option value="seller">🏷️ Sotuvchilar</option>
+                            <option value="admin">⚙️ Adminlar</option>
+                        </select>
+                        <select class="fsel" id="u-blocked" onchange="loadUsers()">
+                            <option value="">Barchasi</option>
+                            <option value="false">✅ Faol</option>
+                            <option value="true">🚫 Bloklangan</option>
+                        </select>
+                    </div>
+                    <div class="tcard">
+                        <div class="thead">
+                            <h3>Foydalanuvchilar ro'yxati</h3><span class="tcnt" id="u-cnt">—</span>
+                        </div>
+                        <div id="u-table">
+                            <div class="spinner-w">
+                                <div class="spin"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pagination" id="u-pages"></div>
+                </div>
+
+                <!-- AUCTIONS -->
+                <div id="tab-auctions" style="display:none">
+                    <h2 style="font-size:20px;margin-bottom:16px">🔨 Auktsionlar</h2>
+                    <div class="toolbar">
+                        <div class="search-box"><span class="si">🔍</span>
+                            <input type="text" id="a-search" placeholder="Sarlavha bo'yicha…"
+                                oninput="debounce(loadAuctions,400)()" />
+                        </div>
+                        <select class="fsel" id="a-status" onchange="loadAuctions()">
+                            <option value="">Barcha holatlar</option>
+                            <option value="active">🔴 Faol</option>
+                            <option value="pending">🟡 Kutilmoqda</option>
+                            <option value="sold">✅ Sotildi</option>
+                            <option value="ended">⚫ Tugadi</option>
+                            <option value="cancelled">❌ Bekor</option>
+                        </select>
+                    </div>
+                    <div class="tcard">
+                        <div class="thead">
+                            <h3>Auktsionlar ro'yxati</h3><span class="tcnt" id="a-cnt">—</span>
+                        </div>
+                        <div id="a-table">
+                            <div class="spinner-w">
+                                <div class="spin"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pagination" id="a-pages"></div>
+                </div>
+
+                <!-- BIDS -->
+                <div id="tab-bids" style="display:none">
+                    <h2 style="font-size:20px;margin-bottom:16px">⚡ So'ngi takliflar</h2>
+                    <div class="tcard">
+                        <div class="thead">
+                            <h3>Real vaqt taklif tarixi</h3>
+                            <button class="btn btn-ghost btn-sm" onclick="loadBids()">↺ Yangilash</button>
+                        </div>
+                        <div id="b-table">
+                            <div class="spinner-w">
+                                <div class="spin"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAYMENTS -->
+                <div id="tab-payments" style="display:none">
+                    <h2 style="font-size:20px;margin-bottom:16px">💳 To'lovlar tarixi</h2>
+                    <div class="tcard">
+                        <div class="thead">
+                            <h3>Barcha to'lovlar</h3><span class="tcnt" id="p-cnt">—</span>
+                        </div>
+                        <div id="p-table">
+                            <div class="spinner-w">
+                                <div class="spin"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pagination" id="p-pages"></div>
+                </div>
+
+            </main>
+        </div>
+    </div><!-- /admin-panel -->
+
+    <!-- CONFIRM MODAL -->
+    <div class="modal-ov" id="confirm-modal">
+        <div class="modal">
+            <button class="modal-x" onclick="closeModal()">✕</button>
+            <div style="font-size:36px;margin-bottom:12px" id="m-icon">⚠️</div>
+            <h3 id="m-title" style="font-size:16px;margin-bottom:6px">Tasdiqlash</h3>
+            <p id="m-desc" style="font-size:13px;color:var(--text2);line-height:1.6"></p>
+            <div class="modal-acts">
+                <button class="btn btn-ghost" onclick="closeModal()">Bekor qilish</button>
+                <button class="btn" id="m-confirm" onclick="runAction()">Tasdiqlash</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        const API = 'http://127.0.0.1:8000/api';
+        const CAT_ICONS = { 1: '📱', 2: '🚗', 3: '🏠', 4: '👗', 5: '🎨', 6: '💍', 7: '🪑', 8: '⚽', 9: '📚', 10: '🔧' };
+        const CAT_NAMES = { 1: 'Elektronika', 2: 'Avtomobil', 3: "Ko'chmas mulk", 4: 'Kiyim', 5: "San'at", 6: 'Zargarlik', 7: 'Mebel', 8: 'Sport', 9: 'Kitob', 10: 'Boshqa' };
+        let pendingAction = null, uPage = 1, aPage = 1, pPage = 1;
+
+        // ── ENTRY FLOW ────────────────────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', () => {
+            // If already admin in session, skip entry
+            const token = localStorage.getItem('savdo_token');
+            const user = JSON.parse(localStorage.getItem('savdo_user') || '{}');
+            if (token && user.role === 'admin') {
+                showAdminPanel(user.full_name);
+            }
+        });
+
+        async function entryLogin() {
+            const identifier = document.getElementById('e-identifier').value.trim();
+            const password = document.getElementById('e-password').value;
+            if (!identifier || !password) { showEntryErr('Email va parolni kiriting'); return; }
+
+            const btn = document.getElementById('login-btn');
+            const txt = document.getElementById('login-btn-txt');
+            btn.disabled = true; txt.innerHTML = '<div class="spinner-sm"></div>';
+
+            try {
+                const r = await fetch(`${API}/auth/login`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier, password })
+                });
+                const data = await r.json();
+                if (!r.ok) throw new Error(data.detail || 'Login xatosi');
+
+                // Save token temporarily
+                localStorage.setItem('savdo_token', data.access_token);
+                localStorage.setItem('savdo_user', JSON.stringify({
+                    id: data.user.id, full_name: data.user.full_name,
+                    email: data.user.email, role: data.user.role,
+                    initials: data.user.full_name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+                }));
+
+                // If already admin, go straight in
+                if (data.user.role === 'admin') {
+                    showAdminPanel(data.user.full_name);
+                    return;
+                }
+
+                // Otherwise ask for admin code
+                document.getElementById('entry-step1').style.display = 'none';
+                document.getElementById('entry-step2').style.display = 'block';
+                document.getElementById('entry-err').classList.remove('show');
+                document.getElementById('e-code').focus();
+
+            } catch (e) { showEntryErr(e.message); }
+            finally { btn.disabled = false; txt.textContent = 'Kirish →'; }
+        }
+
+        async function entryCode() {
+            const code = document.getElementById('e-code').value.trim();
+            if (!code) { showEntryErr("Admin kodini kiriting"); return; }
+
+            const btn = document.getElementById('code-btn');
+            const txt = document.getElementById('code-btn-txt');
+            btn.disabled = true; txt.innerHTML = '<div class="spinner-sm"></div>';
+
+            try {
+                const token = localStorage.getItem('savdo_token');
+                const r = await fetch(`${API}/admin/verify-code`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ code })
+                });
+                const data = await r.json();
+                if (!r.ok) throw new Error(data.detail || "Noto'g'ri kod");
+
+                // Update stored user role
+                const user = JSON.parse(localStorage.getItem('savdo_user') || '{}');
+                user.role = 'admin';
+                localStorage.setItem('savdo_user', JSON.stringify(user));
+
+                showAdminPanel(user.full_name);
+
+            } catch (e) { showEntryErr(e.message); }
+            finally { btn.disabled = false; txt.textContent = '🔓 Admin paneliga kirish'; }
+        }
+
+        function entryReset() {
+            document.getElementById('entry-step1').style.display = 'block';
+            document.getElementById('entry-step2').style.display = 'none';
+            document.getElementById('entry-err').classList.remove('show');
+            document.getElementById('e-code').value = '';
+        }
+
+        function showEntryErr(msg) {
+            document.getElementById('entry-err-msg').textContent = msg;
+            document.getElementById('entry-err').classList.add('show');
+        }
+
+        function showAdminPanel(name) {
+            document.getElementById('entry-screen').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'block';
+            document.getElementById('nav-name').textContent = name || 'Admin';
+            loadDashboard();
+        }
+
+        function adminLogout() {
+            localStorage.removeItem('savdo_token');
+            localStorage.removeItem('savdo_user');
+            location.reload();
+        }
+
+        // ── API ───────────────────────────────────────────────────────────────────────
+        async function apiFetch(url, opts = {}) {
+            const token = localStorage.getItem('savdo_token');
+            const r = await fetch(API + url, {
+                ...opts,
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...opts.headers }
+            });
+            if (!r.ok) { const d = await r.json().catch(() => ({ detail: 'Xatolik' })); throw new Error(d.detail); }
+            return r.json();
+        }
+
+        // ── TAB ───────────────────────────────────────────────────────────────────────
+        function switchTab(tab, el) {
+            ['dashboard', 'users', 'auctions', 'bids', 'payments'].forEach(t =>
+                document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none'
+            );
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            if (el) el.classList.add('active');
+            if (tab === 'users') loadUsers();
+            if (tab === 'auctions') loadAuctions();
+            if (tab === 'bids') loadBids();
+            if (tab === 'payments') loadPayments();
+        }
+
+        // ── DASHBOARD ─────────────────────────────────────────────────────────────────
+        async function loadDashboard() {
+            try {
+                const [stats, recentUsers, recentBids] = await Promise.all([
+                    apiFetch('/admin/stats'),
+                    apiFetch('/admin/users?per_page=5'),
+                    apiFetch('/admin/bids/recent?limit=8'),
+                ]);
+
+                document.getElementById('bdg-users').textContent = stats.users.total;
+                document.getElementById('bdg-auctions').textContent = stats.auctions.active;
+
+                document.getElementById('stats-grid').innerHTML = `
+      <div class="stat-card" data-icon="👥">
+        <div class="sc-lbl">Foydalanuvchilar</div>
+        <div class="sc-val" style="color:var(--primary2)">${stats.users.total}</div>
+        <div class="sc-row">
+          <div class="sc-mini"><span class="lbl">Xaridor</span><span class="val">${stats.users.buyers}</span></div>
+          <div class="sc-mini"><span class="lbl">Sotuvchi</span><span class="val">${stats.users.sellers}</span></div>
+          <div class="sc-mini"><span class="lbl" style="color:var(--danger)">Bloklangan</span><span class="val" style="color:var(--danger)">${stats.users.blocked}</span></div>
+        </div>
+      </div>
+      <div class="stat-card" data-icon="🔨">
+        <div class="sc-lbl">Auktsionlar</div>
+        <div class="sc-val" style="color:var(--gold)">${stats.auctions.total}</div>
+        <div class="sc-row">
+          <div class="sc-mini"><span class="lbl" style="color:#ff6b6b">Faol</span><span class="val" style="color:#ff6b6b">${stats.auctions.active}</span></div>
+          <div class="sc-mini"><span class="lbl" style="color:var(--green)">Sotildi</span><span class="val" style="color:var(--green)">${stats.auctions.sold}</span></div>
+          <div class="sc-mini"><span class="lbl">Kutilmoqda</span><span class="val">${stats.auctions.pending}</span></div>
+        </div>
+      </div>
+      <div class="stat-card" data-icon="⚡">
+        <div class="sc-lbl">Jami takliflar</div>
+        <div class="sc-val" style="color:var(--accent)">${stats.bids.total}</div>
+        <div class="sc-sub">Barcha vaqt</div>
+      </div>
+      <div class="stat-card" data-icon="💰">
+        <div class="sc-lbl">Jami tushum</div>
+        <div class="sc-val" style="font-size:18px;color:var(--green)">${fmtK(stats.revenue.total)}</div>
+        <div class="sc-row">
+          <div class="sc-mini"><span class="lbl">Garov</span><span class="val">${fmtK(stats.revenue.seller_fees)}</span></div>
+          <div class="sc-mini"><span class="lbl">Ishtirok</span><span class="val">${fmtK(stats.revenue.part_fees)}</span></div>
+        </div>
+      </div>`;
+
+                document.getElementById('dash-users').innerHTML = recentUsers.items.map(u => `
+      <div class="bid-row">
+        <div class="av ${u.role}">${u.full_name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600">${u.full_name}</div>
+          <div style="font-size:11px;color:var(--text3)">${u.email}</div>
+        </div>
+        <span class="badge b-${u.role}">${u.role}</span>
+      </div>`).join('');
+
+                document.getElementById('dash-bids').innerHTML = recentBids.map(b => `
+      <div class="bid-row">
+        <div style="font-size:18px">${CAT_ICONS[1] || '🏷️'}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${b.auction_title || '—'}</div>
+          <div style="font-size:11px;color:var(--text3)">${b.bidder_name} • ${timeAgo(b.created_at)}</div>
+        </div>
+        <div class="amt" style="color:var(--gold);flex-shrink:0">${fmtPrice(b.amount)}</div>
+      </div>`).join('');
+            } catch (e) { showToast('⚠️ ' + e.message); }
+        }
+
+        // ── USERS ─────────────────────────────────────────────────────────────────────
+        async function loadUsers(page = uPage) {
+            uPage = page;
+            document.getElementById('u-table').innerHTML = spinHTML();
+            const search = document.getElementById('u-search').value.trim();
+            const role = document.getElementById('u-role').value;
+            const blocked = document.getElementById('u-blocked').value;
+            const p = new URLSearchParams({ page, per_page: 15 });
+            if (search) p.set('search', search);
+            if (role) p.set('role', role);
+            if (blocked) p.set('blocked', blocked);
+            try {
+                const d = await apiFetch('/admin/users?' + p);
+                document.getElementById('u-cnt').textContent = `Jami: ${d.total}`;
+                if (!d.items.length) { document.getElementById('u-table').innerHTML = emptyH('👥', 'Topilmadi'); return; }
+                document.getElementById('u-table').innerHTML = `<table>
+      <thead><tr><th>Foydalanuvchi</th><th>Rol</th><th>Auktsion</th><th>Taklif</th><th>Holat</th><th>Sana</th><th>Amal</th></tr></thead>
+      <tbody>${d.items.map(u => `<tr>
+        <td><div class="cell-user">
+          <div class="av ${u.role}">${u.full_name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}</div>
+          <div><div class="cname">${u.full_name}</div><div class="csub">${u.email}</div></div>
+        </div></td>
+        <td><span class="badge b-${u.role}">${u.role === 'buyer' ? '🛒 Xaridor' : u.role === 'seller' ? '🏷️ Sotuvchi' : '⚙️ Admin'}</span></td>
+        <td style="font-weight:600">${u.auction_count}</td>
+        <td style="font-weight:600">${u.bid_count}</td>
+        <td><span class="badge ${u.is_active ? 'b-ok' : 'b-blocked'}">${u.is_active ? '✅ Faol' : '🚫 Blok'}</span></td>
+        <td style="color:var(--text3);font-size:11px">${timeAgo(u.created_at)}</td>
+        <td><div style="display:flex;gap:6px">
+          ${u.role !== 'admin' ? `
+          <button class="btn btn-sm ${u.is_active ? 'btn-danger-soft' : 'btn-success'}"
+            onclick="confirmBlock(${u.id},'${u.full_name.replace("'", "\\'")}',${u.is_active})">
+            ${u.is_active ? '🚫' : '✅'}
+          </button>
+          <select class="fsel" style="font-size:11px;padding:5px 20px 5px 7px"
+            onchange="changeRole(${u.id},this.value);this.value='${u.role}'">
+            <option value="${u.role}" selected>${u.role}</option>
+            ${u.role !== 'buyer' ? '<option value="buyer">buyer</option>' : ''}
+            ${u.role !== 'seller' ? '<option value="seller">seller</option>' : ''}
+          </select>`: '<span style="color:var(--text3);font-size:11px">—</span>'}
+        </div></td>
+      </tr>`).join('')}</tbody></table>`;
+                renderPages('u-pages', d.page, d.pages, p => loadUsers(p));
+            } catch (e) { document.getElementById('u-table').innerHTML = errH(e.message); }
+        }
+
+        // ── AUCTIONS ──────────────────────────────────────────────────────────────────
+        async function loadAuctions(page = aPage) {
+            aPage = page;
+            document.getElementById('a-table').innerHTML = spinHTML();
+            const search = document.getElementById('a-search').value.trim();
+            const status = document.getElementById('a-status').value;
+            const p = new URLSearchParams({ page, per_page: 15 });
+            if (search) p.set('search', search);
+            if (status) p.set('status', status);
+            const stB = s => ({
+                active: '<span class="badge b-active">Faol</span>',
+                pending: '<span class="badge b-pending">Kutilmoqda</span>',
+                sold: '<span class="badge b-sold">Sotildi</span>',
+                ended: '<span class="badge b-ended">Tugadi</span>',
+                cancelled: '<span class="badge b-cancelled">Bekor</span>',
+            }[s] || s);
+            try {
+                const d = await apiFetch('/admin/auctions?' + p);
+                document.getElementById('a-cnt').textContent = `Jami: ${d.total}`;
+                if (!d.items.length) { document.getElementById('a-table').innerHTML = emptyH('🔨', 'Topilmadi'); return; }
+                document.getElementById('a-table').innerHTML = `<table>
+      <thead><tr><th>Sarlavha</th><th>Sotuvchi</th><th>Boshlang'ich</th><th>Joriy bid</th><th>Bid</th><th>Holat</th><th>Tugaydi</th><th>Amal</th></tr></thead>
+      <tbody>${d.items.map(a => `<tr>
+        <td><div class="cell-user">
+          <div style="font-size:18px">${CAT_ICONS[a.category_id] || '🏷️'}</div>
+          <div><div class="cname" style="max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.title}</div>
+          <div class="csub">#${a.id} · ${CAT_NAMES[a.category_id] || '?'}</div></div>
+        </div></td>
+        <td style="font-size:12px;color:var(--text2)">${a.seller_name || '—'}</td>
+        <td style="font-size:12px">${fmtPrice(a.starting_price)}</td>
+        <td><div class="amt" style="color:var(--gold)">${fmtPrice(a.current_bid)}</div></td>
+        <td style="text-align:center;font-weight:600">${a.bid_count}</td>
+        <td>${stB(a.status)}</td>
+        <td style="color:var(--text3);font-size:11px">${a.ends_at ? new Date(a.ends_at).toLocaleDateString('uz-UZ') : '-'}</td>
+        <td><div style="display:flex;gap:5px">
+          <a href="auction-detail.html?id=${a.id}" class="btn btn-ghost btn-sm" target="_blank">👁️</a>
+          ${a.status === 'active' ? `<button class="btn btn-danger-soft btn-sm" onclick="confirmCancel(${a.id},'${a.title.slice(0, 25).replace("'", "\\'")}')">❌</button>` : ''}
+          ${a.status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="activateAuction(${a.id})">✅</button>` : ''}
+        </div></td>
+      </tr>`).join('')}</tbody></table>`;
+                renderPages('a-pages', d.page, d.pages, p => loadAuctions(p));
+            } catch (e) { document.getElementById('a-table').innerHTML = errH(e.message); }
+        }
+
+        // ── BIDS ──────────────────────────────────────────────────────────────────────
+        async function loadBids() {
+            document.getElementById('b-table').innerHTML = spinHTML();
+            try {
+                const bids = await apiFetch('/admin/bids/recent?limit=50');
+                if (!bids.length) { document.getElementById('b-table').innerHTML = emptyH('⚡', 'Hali taklif yo\'q'); return; }
+                document.getElementById('b-table').innerHTML = `<table>
+      <thead><tr><th>Xaridor</th><th>Auktsion</th><th>Miqdor</th><th>Vaqt</th></tr></thead>
+      <tbody>${bids.map(b => `<tr>
+        <td><div class="cell-user">
+          <div class="av">${(b.bidder_name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}</div>
+          <div><div class="cname">${b.bidder_name || '—'}</div><div class="csub">ID: ${b.bidder_id}</div></div>
+        </div></td>
+        <td><div class="cname" style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${b.auction_title || '—'}</div>
+        <div class="csub">#${b.auction_id}</div></td>
+        <td><div class="amt" style="color:var(--gold)">${fmtPrice(b.amount)}</div></td>
+        <td style="color:var(--text3);font-size:11px">${timeAgo(b.created_at)}</td>
+      </tr>`).join('')}</tbody></table>`;
+            } catch (e) { document.getElementById('b-table').innerHTML = errH(e.message); }
+        }
+
+        // ── PAYMENTS ──────────────────────────────────────────────────────────────────
+        async function loadPayments(page = pPage) {
+            pPage = page;
+            document.getElementById('p-table').innerHTML = spinHTML();
+            const typeN = { seller_fee: "Garov to'lovi", participation_fee: "Ishtirok", escrow: "Escrow", payout: "To'lov", refund: "Qaytarish" };
+            try {
+                const d = await apiFetch(`/admin/payments?page=${page}&per_page=15`);
+                document.getElementById('p-cnt').textContent = `Jami: ${d.total}`;
+                document.getElementById('p-table').innerHTML = `<table>
+      <thead><tr><th>Foydalanuvchi</th><th>Turi</th><th>Miqdor</th><th>Holat</th><th>Usul</th><th>Vaqt</th></tr></thead>
+      <tbody>${d.items.map(p => `<tr>
+        <td><div class="cname">${p.user_name || '—'}</div><div class="csub">ID: ${p.user_id}</div></td>
+        <td style="font-size:12px">${typeN[p.type] || p.type}</td>
+        <td><div class="amt" style="color:${p.status === 'completed' ? 'var(--green)' : 'var(--text)'}">${fmtPrice(p.amount)}</div></td>
+        <td><span class="badge ${p.status === 'completed' ? 'b-sold' : 'b-cancelled'}">${p.status === 'completed' ? '✅ Bajarildi' : '❌ ' + p.status}</span></td>
+        <td style="font-size:12px;color:var(--text2)">${p.method}</td>
+        <td style="color:var(--text3);font-size:11px">${timeAgo(p.created_at)}</td>
+      </tr>`).join('')}</tbody></table>`;
+                renderPages('p-pages', d.page, d.pages, p => loadPayments(p));
+            } catch (e) { document.getElementById('p-table').innerHTML = errH(e.message); }
+        }
+
+        // ── ACTIONS ───────────────────────────────────────────────────────────────────
+        function confirmBlock(id, name, isActive) {
+            pendingAction = async () => {
+                const d = await apiFetch(`/admin/users/${id}/block`, { method: 'PUT' });
+                showToast(d.message); closeModal(); loadUsers();
+            };
+            document.getElementById('m-icon').textContent = isActive ? '🚫' : '✅';
+            document.getElementById('m-title').textContent = isActive ? 'Foydalanuvchini bloklash' : 'Blokdan chiqarish';
+            document.getElementById('m-desc').textContent = `"${name}" — ${isActive ? 'bloklansinmi?' : 'blokdan chiqarilsinmi?'}`;
+            const btn = document.getElementById('m-confirm');
+            btn.className = 'btn ' + (isActive ? 'btn-danger-soft' : 'btn-success');
+            btn.textContent = isActive ? '🚫 Bloklash' : '✅ Faollashtirish';
+            document.getElementById('confirm-modal').classList.add('open');
+        }
+
+        function confirmCancel(id, title) {
+            pendingAction = async () => {
+                await apiFetch(`/admin/auctions/${id}/cancel`, { method: 'PUT' });
+                showToast('✅ Auktsion bekor qilindi'); closeModal(); loadAuctions();
+            };
+            document.getElementById('m-icon').textContent = '❌';
+            document.getElementById('m-title').textContent = 'Auktsionni bekor qilish';
+            document.getElementById('m-desc').textContent = `"${title}…" bekor qilinsinmi?`;
+            const btn = document.getElementById('m-confirm');
+            btn.className = 'btn btn-danger-soft'; btn.textContent = '❌ Bekor qilish';
+            document.getElementById('confirm-modal').classList.add('open');
+        }
+
+        async function activateAuction(id) {
+            try { await apiFetch(`/admin/auctions/${id}/activate`, { method: 'PUT' }); showToast('✅ Faollashtirildi'); loadAuctions(); }
+            catch (e) { showToast('⚠️ ' + e.message); }
+        }
+
+        async function changeRole(id, role) {
+            try { await apiFetch(`/admin/users/${id}/role?role=${role}`, { method: 'PUT' }); showToast(`✅ Rol "${role}" ga o'zgartirildi`); loadUsers(); }
+            catch (e) { showToast('⚠️ ' + e.message); }
+        }
+
+        async function runAction() {
+            if (!pendingAction) return;
+            const btn = document.getElementById('m-confirm');
+            btn.disabled = true; btn.innerHTML = '<div class="spinner-sm"></div>';
+            try { await pendingAction(); } catch (e) { showToast('⚠️ ' + e.message); }
+            finally { btn.disabled = false; pendingAction = null; }
+        }
+
+        function closeModal() { document.getElementById('confirm-modal').classList.remove('open'); }
+
+        // ── HELPERS ───────────────────────────────────────────────────────────────────
+        function renderPages(elId, page, total, cb) {
+            const el = document.getElementById(elId);
+            if (total <= 1) { el.innerHTML = ''; return; }
+            let h = `<button class="pg" onclick="(${cb})(${page - 1})" ${page === 1 ? 'disabled' : ''}>←</button>`;
+            for (let i = 1; i <= total; i++) {
+                if (i === 1 || i === total || Math.abs(i - page) <= 1)
+                    h += `<button class="pg ${i === page ? 'active' : ''}" onclick="(${cb})(${i})">${i}</button>`;
+                else if (Math.abs(i - page) === 2)
+                    h += `<span style="color:var(--text3);padding:0 2px">…</span>`;
+            }
+            h += `<button class="pg" onclick="(${cb})(${page + 1})" ${page === total ? 'disabled' : ''}>→</button>`;
+            el.innerHTML = h;
+        }
+
+        function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+        function fmtPrice(n) { return new Intl.NumberFormat('uz-UZ').format(Math.round(n || 0)) + " so'm"; }
+        function fmtK(n) { return n >= 1e9 ? (n / 1e9).toFixed(1) + ' mlrd' : n >= 1e6 ? (n / 1e6).toFixed(1) + ' mln' : n >= 1e3 ? (n / 1e3).toFixed(0) + 'k' : Math.round(n); }
+        function timeAgo(d) {
+            if (!d) return '—';
+            const diff = Date.now() - new Date(d);
+            const m = Math.floor(diff / 60000), h = Math.floor(m / 60), day = Math.floor(h / 24);
+            if (day > 0) return day + ' kun oldin';
+            if (h > 0) return h + ' soat oldin';
+            return (m || 1) + ' daqiqa oldin';
+        }
+        function spinHTML() { return '<div class="spinner-w"><div class="spin"></div></div>'; }
+        function emptyH(i, m) { return `<div class="empty"><div class="ei">${i}</div><p>${m}</p></div>`; }
+        function errH(m) { return `<div class="empty"><div class="ei">⚠️</div><p>${m || 'Xatolik'}</p></div>`; }
+        function showToast(msg, ms = 3000) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
+            clearTimeout(t._t); t._t = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(80px)'; }, ms);
+        }
+    </script>
+</body>
+
+</html>
