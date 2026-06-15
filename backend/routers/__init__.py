@@ -1,1 +1,1 @@
-from . import auth, users, auctions, bids, payments, admin
+from . import auth, users, auctions, bids, payments, admin, upload

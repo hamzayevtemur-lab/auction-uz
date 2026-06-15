@@ -14,6 +14,7 @@ def create_auction(db: Session, data: AuctionCreate, seller: User) -> Auction:
         category_id=data.category_id,
         title=data.title,
         description=data.description,
+        images=data.images or [],
         item_condition=data.item_condition,
         location=data.location,
         delivery=data.delivery,

@@ -856,6 +856,31 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="form-card">
+                            <h2>
+                                <div class="card-icon" style="background:rgba(46,204,113,0.15)">📸</div>Rasmlar
+                            </h2>
+                            <div class="form-group" style="margin-bottom:10px">
+                                <label class="form-label">Mahsulot rasmlari (1-6 ta)</label>
+                                <div class="hint" style="margin-bottom:10px">Birinchi rasm asosiy rasm sifatida
+                                    ko'rsatiladi. JPG, PNG, WEBP — har biri 5MB gacha.</div>
+                                <input type="file" id="f-images" accept="image/*" multiple style="display:none"
+                                    onchange="handleImageSelect(event)" />
+                                <div id="image-dropzone" onclick="document.getElementById('f-images').click()"
+                                    style="border:2px dashed var(--border);border-radius:13px;padding:28px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg3)">
+                                    <div style="font-size:38px;margin-bottom:8px">🖼️</div>
+                                    <div style="font-size:14px;font-weight:600;margin-bottom:4px">Rasm tanlash uchun
+                                        bosing</div>
+                                    <div style="font-size:12px;color:var(--text3)">yoki shu yerga tashlang</div>
+                                </div>
+                                <div id="image-preview-grid"
+                                    style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px;margin-top:12px">
+                                </div>
+                                <div class="err-msg" id="e-images"></div>
+                            </div>
+                        </div>
+
                         <button class="btn-main" onclick="goStep2()">Davom etish →</button>
                     </div>
 
@@ -1104,6 +1129,7 @@
         const CAT_ICONS = { '1': '📱', '2': '🚗', '3': '🏠', '4': '👗', '5': '🎨', '6': '💍', '7': '🪑', '8': '⚽', '9': '📚', '10': '🔧' };
         let selPayMethod = 'payme';
         let createdAuctionId = null;
+        let selectedImages = [];  // array of File objects
 
         // ── AUTH & ROLE CHECK ──────────────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', () => {
@@ -1249,6 +1275,85 @@
             inp.value = v;
         }
 
+        // ── IMAGE UPLOAD ─────────────────────────────────────────────────────────
+        function handleImageSelect(e) {
+            const files = Array.from(e.target.files);
+            addImages(files);
+            e.target.value = ''; // allow re-selecting same file
+        }
+
+        function addImages(files) {
+            const errEl = document.getElementById('e-images');
+            errEl.classList.remove('show');
+
+            for (const file of files) {
+                if (selectedImages.length >= 6) {
+                    errEl.textContent = 'Maksimal 6 ta rasm';
+                    errEl.classList.add('show');
+                    break;
+                }
+                if (!file.type.startsWith('image/')) continue;
+                if (file.size > 5 * 1024 * 1024) {
+                    errEl.textContent = `"${file.name}" — 5MB dan katta`;
+                    errEl.classList.add('show');
+                    continue;
+                }
+                selectedImages.push(file);
+            }
+            renderImagePreviews();
+        }
+
+        function removeImage(idx) {
+            selectedImages.splice(idx, 1);
+            renderImagePreviews();
+        }
+
+        function renderImagePreviews() {
+            const grid = document.getElementById('image-preview-grid');
+            grid.innerHTML = selectedImages.map((file, i) => {
+                const url = URL.createObjectURL(file);
+                return `
+        <div style="position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;border:1px solid var(--border)">
+            <img src="${url}" style="width:100%;height:100%;object-fit:cover;display:block"/>
+            ${i === 0 ? '<div style="position:absolute;top:4px;left:4px;background:rgba(124,92,252,0.85);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px">Asosiy</div>' : ''}
+            <button type="button" onclick="removeImage(${i})"
+                style="position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:6px;background:rgba(0,0,0,0.6);color:#fff;border:none;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center">✕</button>
+        </div>`;
+            }).join('');
+        }
+
+        // Drag & drop support
+        document.addEventListener('DOMContentLoaded', () => {
+            const dz = document.getElementById('image-dropzone');
+            if (!dz) return;
+            ['dragover', 'dragenter'].forEach(ev => dz.addEventListener(ev, e => {
+                e.preventDefault(); dz.style.borderColor = 'var(--primary)';
+            }));
+            ['dragleave', 'drop'].forEach(ev => dz.addEventListener(ev, e => {
+                e.preventDefault(); dz.style.borderColor = 'var(--border)';
+            }));
+            dz.addEventListener('drop', e => {
+                const files = Array.from(e.dataTransfer.files);
+                addImages(files);
+            });
+        });
+
+        async function uploadImages() {
+            if (!selectedImages.length) return [];
+            const token = localStorage.getItem('savdo_token');
+            const formData = new FormData();
+            selectedImages.forEach(file => formData.append('files', file));
+
+            const r = await fetch(`${API}/upload/images`, {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData
+            });
+            const data = await r.json();
+            if (!r.ok) throw new Error(data.detail || 'Rasm yuklashda xatolik');
+            return data.urls || [];
+        }
+
         // ── MAIN PROCESS: Create auction then pay fee ──────────────────────────────
         async function processPayment() {
             const cardNum = document.getElementById('card-num').value.replace(/\s/g, '');
@@ -1271,7 +1376,15 @@
                 const startsAt = startVal ? new Date(startVal) : new Date();
                 const endsAt = new Date(startsAt.getTime() + dur * 86400000);
 
+                // Upload images first (if any selected)
+                let imageUrls = [];
+                if (selectedImages.length) {
+                    txt.innerHTML = '<div class="spinner"></div> Rasmlar yuklanmoqda…';
+                    imageUrls = await uploadImages();
+                }
+
                 const auctionData = {
+                    images: imageUrls,
                     category_id: parseInt(document.getElementById('f-cat').value),
                     title: document.getElementById('f-title').value.trim(),
                     description: document.getElementById('f-desc').value.trim(),

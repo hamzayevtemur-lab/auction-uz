@@ -281,6 +281,26 @@
             min-width: 0;
         }
 
+        /* AUTH ERROR BANNER */
+        .auth-banner {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #ff8a80;
+            border-radius: 14px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .auth-banner .ab-actions {
+            display: flex;
+            gap: 8px;
+        }
+
         /* STAT CARDS */
         .stats-grid {
             display: grid;
@@ -396,6 +416,13 @@
             justify-content: center;
             font-size: 18px;
             flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .item-emoji img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .item-name {
@@ -645,6 +672,21 @@
             pointer-events: none;
         }
 
+        /* FULL PAGE LOADING (initial auth check) */
+        .full-loading {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 14px;
+            z-index: 5000;
+            color: var(--text2);
+            font-size: 13px;
+        }
+
         @media(max-width:900px) {
             .sidebar {
                 display: none;
@@ -673,6 +715,12 @@
 </head>
 
 <body>
+    <!-- Shown briefly while we verify the session -->
+    <div class="full-loading" id="full-loading">
+        <div class="spinner"></div>
+        <p>Tekshirilmoqda…</p>
+    </div>
+
     <nav class="navbar">
         <div class="nav-inner">
             <a href="index.html" class="nav-logo">
@@ -715,6 +763,15 @@
 
         <!-- MAIN -->
         <main class="main-content">
+
+            <!-- Shown if /users/me fails but we still have a cached session -->
+            <div class="auth-banner" id="auth-banner" style="display:none">
+                <span>⚠️ <span id="auth-banner-msg">Server bilan bog'lanishda muammo.</span></span>
+                <div class="ab-actions">
+                    <button class="btn btn-outline btn-sm" onclick="loadUserInfo(true)">↺ Qayta urinish</button>
+                    <button class="btn btn-outline btn-sm" onclick="logout()">🚪 Chiqish</button>
+                </div>
+            </div>
 
             <!-- OVERVIEW -->
             <div id="tab-overview">
@@ -866,34 +923,62 @@
 
     <script>
         const API = 'http://127.0.0.1:8000/api';
+        const SERVER_BASE = 'http://127.0.0.1:8000';
         const CAT_ICONS = { 1: '📱', 2: '🚗', 3: '🏠', 4: '👗', 5: '🎨', 6: '💍', 7: '🪑', 8: '⚽', 9: '📚', 10: '🔧' };
         let user = null, myBids = [], myAuctions = [], myPayments = [], notifs = [], auctionCache = {};
 
         // ── AUTH CHECK ─────────────────────────────────────────────────────────────
+        // IMPORTANT: only redirect to login if there is NO token at all.
+        // We do NOT auto-logout on a failed /users/me request anymore — a
+        // transient 401/network error used to silently wipe the session and
+        // bounce the user back to index.html right after login/register.
         function requireAuth() {
             const token = localStorage.getItem('savdo_token');
             if (!token) { location.href = 'login.html?next=dashboard.html'; return false; }
             const u = localStorage.getItem('savdo_user');
-            if (u) user = JSON.parse(u);
+            if (u) {
+                try { user = JSON.parse(u); } catch { user = null; }
+            }
             return true;
         }
 
         // ── API HELPERS ────────────────────────────────────────────────────────────
+        // Does NOT auto-logout. Throws on any non-2xx so callers can decide
+        // what to do (show error, retry, etc).
         async function apiFetch(url, opts = {}) {
             const token = localStorage.getItem('savdo_token');
-            const r = await fetch(API + url, {
-                ...opts,
-                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...opts.headers }
-            });
-            if (r.status === 401) { logout(); return null; }
-            if (!r.ok) { const d = await r.json().catch(() => ({})); throw new Error(d.detail || 'Xatolik'); }
+            let r;
+            try {
+                r = await fetch(API + url, {
+                    ...opts,
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...opts.headers }
+                });
+            } catch (networkErr) {
+                console.error('Network error calling', url, networkErr);
+                throw new Error("Serverga ulanib bo'lmadi. Backend ishlab turganini tekshiring (uvicorn).");
+            }
+
+            if (!r.ok) {
+                const d = await r.json().catch(() => ({}));
+                const err = new Error(d.detail || `Xatolik (${r.status})`);
+                err.status = r.status;
+                console.error('API error', url, r.status, d);
+                throw err;
+            }
             return r.json();
         }
 
         // ── INIT ────────────────────────────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', async () => {
             if (!requireAuth()) return;
+
+            // Render whatever we have from localStorage immediately so the
+            // dashboard is usable even if /users/me is briefly unreachable.
+            renderSidebarUser();
+
             await loadUserInfo();
+            document.getElementById('full-loading').style.display = 'none';
+
             renderSidebarUser();
             loadOverview();
 
@@ -902,7 +987,8 @@
             if (tab) switchTab(tab, null);
         });
 
-        async function loadUserInfo() {
+        async function loadUserInfo(manualRetry = false) {
+            const banner = document.getElementById('auth-banner');
             try {
                 const data = await apiFetch('/users/me');
                 if (data) {
@@ -912,7 +998,25 @@
                     };
                     localStorage.setItem('savdo_user', JSON.stringify(user));
                 }
-            } catch { }
+                banner.style.display = 'none';
+            } catch (e) {
+                console.error('loadUserInfo failed:', e);
+
+                if (e.status === 401) {
+                    // Token really is invalid/expired — now it's safe to log out.
+                    showToast('⚠️ Sessiya muddati tugadi, qayta kiring');
+                    setTimeout(logout, 1200);
+                    return;
+                }
+
+                // Any other error (network/500/etc) — keep the session,
+                // just tell the user something went wrong.
+                document.getElementById('auth-banner-msg').textContent =
+                    "Ma'lumotlarni yuklab bo'lmadi: " + e.message;
+                banner.style.display = 'flex';
+
+                if (manualRetry) showToast('⚠️ ' + e.message);
+            }
         }
 
         function renderSidebarUser() {
@@ -964,7 +1068,7 @@
                     const unread = notifData.filter(n => !n.is_read).length;
                     document.getElementById('badge-notif').textContent = unread || '0';
                 }
-            } catch { }
+            } catch (e) { console.warn('notifications badge load failed:', e.message); }
 
             // Overview tables
             renderOverviewBids();
@@ -977,7 +1081,7 @@
             if (!list.length) { el.innerHTML = emptyHTML('🔨', 'Hali taklif berilmagan'); return; }
             el.innerHTML = tableHTML(['Buyum', 'Taklifim', 'Holat', ''],
                 list.map(b => `<tr onclick="location.href='auction-detail.html?id=${b.auction_id}'" style="cursor:pointer">
-      <td><div class="item-cell"><div class="item-emoji">${CAT_ICONS[1] || '🏷️'}</div><div><div class="item-name">Auktsion #${b.auction_id}</div></div></div></td>
+      <td><div class="item-cell">${itemEmojiHTML(auctionCache[b.auction_id])}<div><div class="item-name">${auctionCache[b.auction_id]?.title || 'Auktsion #' + b.auction_id}</div></div></div></td>
       <td><div class="amt" style="color:var(--gold)">${fmtPrice(b.amount)}</div></td>
       <td><span class="sp ${b.is_winner ? 'sp-won' : 'sp-active'}">${b.is_winner ? '👑 G\'olib' : '⚡ Faol'}</span></td>
       <td><a href="auction-detail.html?id=${b.auction_id}" class="btn btn-outline btn-sm" style="font-size:12px" onclick="event.stopPropagation()">Ko'rish</a></td>
@@ -991,7 +1095,7 @@
             if (!list.length) { el.innerHTML = emptyHTML('🏷️', "Hali auktsion joylashtirilmagan. <a href='create-auction.html' style='color:var(--primary2)'>Yaratish →</a>"); return; }
             el.innerHTML = tableHTML(['Sarlavha', 'Boshlang\'ich', 'Joriy taklif', 'Holat'],
                 list.map(a => `<tr onclick="location.href='auction-detail.html?id=${a.id}'" style="cursor:pointer">
-      <td><div class="item-cell"><div class="item-emoji">${CAT_ICONS[a.category_id] || '🏷️'}</div><div><div class="item-name">${a.title}</div></div></div></td>
+      <td><div class="item-cell">${itemEmojiHTML(a)}<div><div class="item-name">${a.title}</div></div></div></td>
       <td>${fmtPrice(a.starting_price)}</td>
       <td><div class="amt" style="color:var(--gold)">${fmtPrice(a.current_bid || a.starting_price)}</div></td>
       <td><span class="sp ${statusCls(a.status)}">${statusTxt(a.status)}</span></td>
@@ -1012,13 +1116,16 @@
                             if (a) auctionCache[b.auction_id] = {
                                 title: a.title,
                                 icon: CAT_ICONS[a.category_id] || '🏷️',
-                                status: a.status
+                                status: a.status,
+                                images: a.images || []
                             };
                         } catch { }
                     }
                 }
                 if (!silent) renderBids();
-            } catch { if (!silent) document.getElementById('bids-content').innerHTML = errHTML(); }
+            } catch (e) {
+                if (!silent) document.getElementById('bids-content').innerHTML = errHTML(e.message);
+            }
         }
 
         function renderBids() {
@@ -1027,7 +1134,7 @@
             el.innerHTML = tableHTML(['Auktsion', 'Taklif miqdori', 'Holat', 'Sana'],
                 myBids.map(b => `<tr onclick="location.href='auction-detail.html?id=${b.auction_id}'" style="cursor:pointer">
       <td><div class="item-cell">
-        <div class="item-emoji">${auctionCache[b.auction_id]?.icon || '🏷️'}</div>
+        ${itemEmojiHTML(auctionCache[b.auction_id])}
         <div><div class="item-name">${auctionCache[b.auction_id]?.title || 'Auktsion #' + b.auction_id}</div></div>
       </div></td>
       <td><div class="amt" style="color:var(--gold)">${fmtPrice(b.amount)}</div></td>
@@ -1043,7 +1150,9 @@
             try {
                 myAuctions = await apiFetch('/auctions/my') || [];
                 if (!silent) renderMyAuctions();
-            } catch { if (!silent) document.getElementById('auctions-content').innerHTML = errHTML(); }
+            } catch (e) {
+                if (!silent) document.getElementById('auctions-content').innerHTML = errHTML(e.message);
+            }
         }
 
         function renderMyAuctions() {
@@ -1051,7 +1160,7 @@
             if (!myAuctions.length) { el.innerHTML = emptyHTML('🏷️', "Hali auktsion yo'q. <a href='create-auction.html' style='color:var(--primary2)'>Yaratish →</a>"); return; }
             el.innerHTML = tableHTML(['Sarlavha', 'Boshlang\'ich', 'Joriy taklif', 'Holat', 'Amal'],
                 myAuctions.map(a => `<tr>
-      <td><div class="item-cell"><div class="item-emoji">${CAT_ICONS[a.category_id] || '🏷️'}</div><div><div class="item-name" style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.title}</div></div></div></td>
+      <td><div class="item-cell">${itemEmojiHTML(a)}<div><div class="item-name" style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.title}</div></div></div></td>
       <td>${fmtPrice(a.starting_price)}</td>
       <td><div class="amt" style="color:var(--gold)">${fmtPrice(a.current_bid || a.starting_price)}</div></td>
       <td><span class="sp ${statusCls(a.status)}">${statusTxt(a.status)}</span></td>
@@ -1066,7 +1175,9 @@
             try {
                 myPayments = await apiFetch('/payments/my') || [];
                 if (!silent) renderPayments();
-            } catch { if (!silent) document.getElementById('payments-content').innerHTML = errHTML(); }
+            } catch (e) {
+                if (!silent) document.getElementById('payments-content').innerHTML = errHTML(e.message);
+            }
         }
 
         function renderPayments() {
@@ -1091,7 +1202,7 @@
                 notifs = await apiFetch('/users/me/notifications') || [];
                 document.getElementById('badge-notif').textContent = notifs.filter(n => !n.is_read).length || '0';
                 renderNotifs();
-            } catch { document.getElementById('notif-content').innerHTML = errHTML(); }
+            } catch (e) { document.getElementById('notif-content').innerHTML = errHTML(e.message); }
         }
 
         function renderNotifs() {
@@ -1122,7 +1233,7 @@
                 document.querySelectorAll('.notif-item').forEach(el => { el.classList.remove('unread'); el.querySelector('.notif-dot')?.remove(); });
                 document.getElementById('badge-notif').textContent = '0';
                 showToast('✅ Barchasi o\'qilgan deb belgilandi');
-            } catch { showToast('⚠️ Xatolik yuz berdi'); }
+            } catch (e) { showToast('⚠️ ' + e.message); }
         }
 
         // ── PROFILE ────────────────────────────────────────────────────────────────
@@ -1161,6 +1272,13 @@
         }
 
         // ── HELPERS ────────────────────────────────────────────────────────────────
+        function itemEmojiHTML(a) {
+            if (a && a.images && a.images.length) {
+                return `<div class="item-emoji"><img src="${SERVER_BASE}${a.images[0]}"/></div>`;
+            }
+            const icon = a?.icon || CAT_ICONS[a?.category_id] || '🏷️';
+            return `<div class="item-emoji">${icon}</div>`;
+        }
         function statusCls(s) { return { active: 'sp-active', pending: 'sp-pending', ended: 'sp-lost', sold: 'sp-sold', cancelled: 'sp-lost' }[s] || 'sp-lost'; }
         function statusTxt(s) { return { active: 'Faol', pending: 'Kutilmoqda', ended: 'Tugadi', sold: 'Sotildi', cancelled: 'Bekor' }[s] || s; }
         function fmtPrice(n) { return new Intl.NumberFormat('uz-UZ').format(Math.round(n || 0)) + " so'm"; }
@@ -1174,7 +1292,7 @@
             return `<table class="data-table"><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`;
         }
         function loadingHTML() { return '<div class="loading"><div class="spinner"></div><p>Yuklanmoqda…</p></div>'; }
-        function errHTML() { return '<div class="empty-state"><div class="ei">⚠️</div><p>Ma\'lumotlarni yuklashda xatolik</p></div>'; }
+        function errHTML(msg) { return `<div class="empty-state"><div class="ei">⚠️</div><p>${msg || "Ma'lumotlarni yuklashda xatolik"}</p></div>`; }
         function emptyHTML(icon, msg) { return `<div class="empty-state"><div class="ei">${icon}</div><p>${msg}</p></div>`; }
         function showToast(msg, ms = 3000) {
             const t = document.getElementById('toast');

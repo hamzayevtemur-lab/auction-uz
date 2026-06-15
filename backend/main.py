@@ -1,61 +1,40 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 from contextlib import asynccontextmanager
-import os
 
-from .database import engine, Base
-from .routers import auth, users, auctions, bids, payments, admin
+from .database import Base, engine
+from .routers import auth, users, auctions, bids, payments, admin, upload
 
-# ── Barcha jadvallarni yaratish ───────────────────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: jadvallarni yaratish (agar mavjud bo'lmasa)
     Base.metadata.create_all(bind=engine)
-    print("✅ Ma'lumotlar bazasi jadvallari tayyor")
     yield
-    # Shutdown
-    print("🛑 Server to'xtatildi")
 
-app = FastAPI(
-    title="Savdo.uz API",
-    description="O'zbekiston auktsion platformasi backend API",
-    version="1.0.0",
-    docs_url="/api/docs",
-    redoc_url="/api/redoc",
-    lifespan=lifespan,
-)
+app = FastAPI(title="Savdo.uz API", lifespan=lifespan)
 
-# ── CORS — Frontend bilan aloqa ──────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5500",   # Live Server
-        "http://127.0.0.1:5500",
-        "http://localhost:3000",
-        "http://localhost:8080",
-        "*",                       # Development uchun; productiondan olib tashlang
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ── Routerlarni ulash ────────────────────────────────────────────────────
-API = "/api"
-app.include_router(auth.router,     prefix=API)
-app.include_router(users.router,    prefix=API)
-app.include_router(auctions.router, prefix=API)
-app.include_router(bids.router,     prefix=API)
-app.include_router(payments.router, prefix=API)
-app.include_router(admin.router,    prefix=API)
+# Static files for uploaded images
+UPLOAD_DIR = Path(__file__).resolve().parent / "uploads"
+UPLOAD_DIR.mkdir(exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 
-# ── Health check ─────────────────────────────────────────────────────────
+app.include_router(auth.router,     prefix="/api")
+app.include_router(users.router,    prefix="/api")
+app.include_router(auctions.router, prefix="/api")
+app.include_router(bids.router,     prefix="/api")
+app.include_router(payments.router, prefix="/api")
+app.include_router(admin.router,    prefix="/api")
+app.include_router(upload.router,   prefix="/api")
+
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "message": "Savdo.uz API ishlayapti 🚀"}
-
-# ── Ishga tushirish uchun (to'g'ridan python main.py bilan) ──────────────
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("backend.main:app", host="0.0.0.0", port=8000, reload=True)
+    return {"status": "ok"}

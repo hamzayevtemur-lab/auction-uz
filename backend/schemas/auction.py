@@ -6,6 +6,7 @@ from decimal import Decimal
 class AuctionCreate(BaseModel):
     category_id:    int
     title:          str
+    images: Optional[List[str]] = []
     description:    Optional[str] = None
     item_condition: Optional[str] = None
     location:       Optional[str] = None

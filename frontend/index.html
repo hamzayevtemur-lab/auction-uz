@@ -1182,9 +1182,9 @@
                         Qiling.</span><br />Egalang.</h1>
                 <p class="hero-desc">Noyob mahsulotlarni past narxdan boshlang va eng yaxshi taklif bilan yutib oling.
                     Sotuvchilar uchun qulay, xaridorlar uchun ishonchli platforma.</p>
-                <div class="hero-btns">
-                    <a href="auctions.html" class="btn btn-primary btn-lg">Auktsionlarni ko'rish →</a>
-                    <a href="create-auction.html" class="btn btn-outline btn-lg">Sotish</a>
+                <div class="hero-btns" id="hero-btns">
+                    <a href="auctions.html" class="btn btn-primary btn-lg" id="hero-btn-1">Auktsionlarni ko'rish →</a>
+                    <a href="create-auction.html" class="btn btn-outline btn-lg" id="hero-btn-2">Sotish</a>
                 </div>
                 <div class="hero-stats">
                     <div>
@@ -1391,6 +1391,7 @@
 
     <script>
         const API = 'http://127.0.0.1:8000/api';
+const SERVER_BASE = 'http://127.0.0.1:8000';
         const CAT_ICONS = { 1: '📱', 2: '🚗', 3: '🏠', 4: '👗', 5: '🎨', 6: '💍', 7: '🪑', 8: '⚽', 9: '📚', 10: '🔧' };
         let allAuctions = [], featuredEnd = null;
 
@@ -1403,6 +1404,21 @@
             document.getElementById('nav-signup').style.display = 'none';
             document.getElementById('nav-user').style.display = 'flex';
             document.getElementById('nav-av').textContent = usr.initials || '??';
+
+            // Personalize hero CTA — send logged-in users straight to their dashboard
+            const btn1 = document.getElementById('hero-btn-1');
+            const btn2 = document.getElementById('hero-btn-2');
+            if (usr.role === 'seller') {
+                btn1.textContent = '📊 Kabinetga o\'tish →';
+                btn1.href = 'dashboard.html';
+                btn2.textContent = '+ Auktsion yaratish';
+                btn2.href = 'create-auction.html';
+            } else {
+                btn1.textContent = '🔨 Auktsionlarni ko\'rish →';
+                btn1.href = 'auctions.html';
+                btn2.textContent = '📊 Kabinetga o\'tish';
+                btn2.href = 'dashboard.html';
+            }
         }
 
         // ── FETCH HELPERS ───────────────────────────────────────────────────────
@@ -1481,7 +1497,21 @@
             const f = allAuctions[0];
             if (f) {
                 featuredEnd = new Date(f.ends_at);
-                document.getElementById('featured-emoji').textContent = CAT_ICONS[f.category_id] || '🏷️';
+                const fcImg = document.querySelector('.fc-img');
+                const fEmoji = document.getElementById('featured-emoji');
+                const fGlow = fcImg.querySelector('.glow-ring');
+                if (f.images && f.images.length) {
+                    fcImg.style.backgroundImage = `url('${SERVER_BASE}${f.images[0]}')`;
+                    fcImg.style.backgroundSize = 'cover';
+                    fcImg.style.backgroundPosition = 'center';
+                    fEmoji.style.display = 'none';
+                    if (fGlow) fGlow.style.display = 'none';
+                } else {
+                    fcImg.style.backgroundImage = '';
+                    fEmoji.style.display = '';
+                    fEmoji.textContent = CAT_ICONS[f.category_id] || '🏷️';
+                    if (fGlow) fGlow.style.display = '';
+                }
                 document.getElementById('featured-title').textContent = f.title;
                 document.getElementById('featured-bid').textContent = fmtPrice(f.current_bid || f.starting_price);
                 document.getElementById('featured-link').href = `auction-detail.html?id=${f.id}`;
@@ -1493,8 +1523,8 @@
                 const urgent = !t.ended && t.d === 0 && t.h < 1;
                 return `
     <div class="a-card" style="animation-delay:${i * 50}ms" onclick="location.href='auction-detail.html?id=${a.id}'">
-      <div class="a-img">
-        <span>${CAT_ICONS[a.category_id] || '🏷️'}</span>
+      <div class="a-img" ${a.images && a.images.length ? `style="background-image:url('${SERVER_BASE}${a.images[0]}');background-size:cover;background-position:center"` : ''}>
+        ${!(a.images && a.images.length) ? `<span>${CAT_ICONS[a.category_id] || '🏷️'}</span>` : ''}
         <div class="a-img-overlay"></div>
         <div class="a-badge badge-live">Jonli</div>
         <button class="a-fav" onclick="event.stopPropagation();this.textContent=this.textContent==='♡'?'❤️':'♡'">♡</button>

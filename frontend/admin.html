@@ -887,46 +887,18 @@
         <div class="entry-card">
             <div class="entry-icon">🔐</div>
             <h1>Admin Panel</h1>
-            <p>Kirish uchun avval hisobingizga kiring, so'ng maxfiy admin kodini kiriting.</p>
+            <p>Davom etish uchun maxfiy admin kodini kiriting.</p>
 
             <div class="alert alert-err" id="entry-err">⚠️ <span id="entry-err-msg"></span></div>
 
-            <!-- Step 1: Login -->
-            <div id="entry-step1">
-                <div class="form-group">
-                    <label class="form-label">Email yoki telefon</label>
-                    <input type="text" class="form-input" id="e-identifier" placeholder="admin@savdo.uz" />
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Parol</label>
-                    <input type="password" class="form-input" id="e-password" placeholder="Parolingiz"
-                        onkeydown="if(event.key==='Enter')entryLogin()" />
-                </div>
-                <button class="btn-entry" id="login-btn" onclick="entryLogin()">
-                    <span id="login-btn-txt">Kirish →</span>
-                </button>
+            <div class="form-group">
+                <label class="form-label">Admin kirish kodi</label>
+                <input type="password" class="form-input code-input" id="e-code" placeholder="••••••••" maxlength="50"
+                    autofocus onkeydown="if(event.key==='Enter')entryCode()" />
             </div>
-
-            <!-- Step 2: Admin code -->
-            <div id="entry-step2" style="display:none">
-                <div
-                    style="background:rgba(245,200,66,0.08);border:1px solid rgba(245,200,66,0.2);border-radius:12px;padding:14px;margin-bottom:18px;font-size:13px;color:rgba(245,200,66,0.9)">
-                    ✅ Tizimga kirdingiz. Endi admin kodini kiriting.
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Admin kirish kodi</label>
-                    <input type="password" class="form-input code-input" id="e-code" placeholder="••••••••"
-                        maxlength="50" onkeydown="if(event.key==='Enter')entryCode()" />
-                    <div style="font-size:12px;color:var(--text3);margin-top:5px">Bu kod .env faylidagi
-                        ADMIN_SECRET_CODE</div>
-                </div>
-                <button class="btn-entry" id="code-btn" onclick="entryCode()">
-                    <span id="code-btn-txt">🔓 Admin paneliga kirish</span>
-                </button>
-                <button onclick="entryReset()"
-                    style="width:100%;margin-top:8px;padding:10px;background:none;border:1px solid var(--border);border-radius:10px;color:var(--text2);font-size:13px;cursor:pointer;">←
-                    Orqaga</button>
-            </div>
+            <button class="btn-entry" id="code-btn" onclick="entryCode()">
+                <span id="code-btn-txt">🔓 Admin paneliga kirish</span>
+            </button>
 
             <a href="index.html" class="back-link">← Bosh sahifaga qaytish</a>
         </div>
@@ -1120,57 +1092,16 @@
         const CAT_ICONS = { 1: '📱', 2: '🚗', 3: '🏠', 4: '👗', 5: '🎨', 6: '💍', 7: '🪑', 8: '⚽', 9: '📚', 10: '🔧' };
         const CAT_NAMES = { 1: 'Elektronika', 2: 'Avtomobil', 3: "Ko'chmas mulk", 4: 'Kiyim', 5: "San'at", 6: 'Zargarlik', 7: 'Mebel', 8: 'Sport', 9: 'Kitob', 10: 'Boshqa' };
         let pendingAction = null, uPage = 1, aPage = 1, pPage = 1;
+        let currentAdminId = JSON.parse(localStorage.getItem('savdo_user') || '{}').id || null;
 
         // ── ENTRY FLOW ────────────────────────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', () => {
-            // If already admin in session, skip entry
             const token = localStorage.getItem('savdo_token');
             const user = JSON.parse(localStorage.getItem('savdo_user') || '{}');
             if (token && user.role === 'admin') {
                 showAdminPanel(user.full_name);
             }
         });
-
-        async function entryLogin() {
-            const identifier = document.getElementById('e-identifier').value.trim();
-            const password = document.getElementById('e-password').value;
-            if (!identifier || !password) { showEntryErr('Email va parolni kiriting'); return; }
-
-            const btn = document.getElementById('login-btn');
-            const txt = document.getElementById('login-btn-txt');
-            btn.disabled = true; txt.innerHTML = '<div class="spinner-sm"></div>';
-
-            try {
-                const r = await fetch(`${API}/auth/login`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ identifier, password })
-                });
-                const data = await r.json();
-                if (!r.ok) throw new Error(data.detail || 'Login xatosi');
-
-                // Save token temporarily
-                localStorage.setItem('savdo_token', data.access_token);
-                localStorage.setItem('savdo_user', JSON.stringify({
-                    id: data.user.id, full_name: data.user.full_name,
-                    email: data.user.email, role: data.user.role,
-                    initials: data.user.full_name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
-                }));
-
-                // If already admin, go straight in
-                if (data.user.role === 'admin') {
-                    showAdminPanel(data.user.full_name);
-                    return;
-                }
-
-                // Otherwise ask for admin code
-                document.getElementById('entry-step1').style.display = 'none';
-                document.getElementById('entry-step2').style.display = 'block';
-                document.getElementById('entry-err').classList.remove('show');
-                document.getElementById('e-code').focus();
-
-            } catch (e) { showEntryErr(e.message); }
-            finally { btn.disabled = false; txt.textContent = 'Kirish →'; }
-        }
 
         async function entryCode() {
             const code = document.getElementById('e-code').value.trim();
@@ -1181,30 +1112,25 @@
             btn.disabled = true; txt.innerHTML = '<div class="spinner-sm"></div>';
 
             try {
-                const token = localStorage.getItem('savdo_token');
-                const r = await fetch(`${API}/admin/verify-code`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                const r = await fetch(`${API}/admin/login-with-code`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ code })
                 });
                 const data = await r.json();
                 if (!r.ok) throw new Error(data.detail || "Noto'g'ri kod");
 
-                // Update stored user role
-                const user = JSON.parse(localStorage.getItem('savdo_user') || '{}');
-                user.role = 'admin';
-                localStorage.setItem('savdo_user', JSON.stringify(user));
+                localStorage.setItem('savdo_token', data.access_token);
+                localStorage.setItem('savdo_user', JSON.stringify({
+                    id: data.user.id, full_name: data.user.full_name,
+                    email: data.user.email, role: data.user.role,
+                    initials: data.user.full_name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+                }));
 
-                showAdminPanel(user.full_name);
+                currentAdminId = data.user.id;
+                showAdminPanel(data.user.full_name);
 
             } catch (e) { showEntryErr(e.message); }
-            finally { btn.disabled = false; txt.textContent = '🔓 Admin paneliga kirish'; }
-        }
-
-        function entryReset() {
-            document.getElementById('entry-step1').style.display = 'block';
-            document.getElementById('entry-step2').style.display = 'none';
-            document.getElementById('entry-err').classList.remove('show');
-            document.getElementById('e-code').value = '';
+            finally { btn.disabled = false; txt.textContent = "🔓 Admin paneliga kirish"; }
         }
 
         function showEntryErr(msg) {
@@ -1354,7 +1280,11 @@
             <option value="${u.role}" selected>${u.role}</option>
             ${u.role !== 'buyer' ? '<option value="buyer">buyer</option>' : ''}
             ${u.role !== 'seller' ? '<option value="seller">seller</option>' : ''}
-          </select>`: '<span style="color:var(--text3);font-size:11px">—</span>'}
+          </select>`: ''}
+          ${u.id !== currentAdminId
+                        ? `<button class="btn btn-danger-soft btn-sm" title="O'chirish"
+                onclick="confirmDelete(${u.id},'${u.full_name.replace("'", "\\'")}')">🗑️</button>`
+                        : '<span style="color:var(--text3);font-size:11px">Siz</span>'}
         </div></td>
       </tr>`).join('')}</tbody></table>`;
                 renderPages('u-pages', d.page, d.pages, p => loadUsers(p));
@@ -1460,6 +1390,19 @@
             const btn = document.getElementById('m-confirm');
             btn.className = 'btn ' + (isActive ? 'btn-danger-soft' : 'btn-success');
             btn.textContent = isActive ? '🚫 Bloklash' : '✅ Faollashtirish';
+            document.getElementById('confirm-modal').classList.add('open');
+        }
+
+        function confirmDelete(id, name) {
+            pendingAction = async () => {
+                const d = await apiFetch(`/admin/users/${id}`, { method: 'DELETE' });
+                showToast(d.message); closeModal(); loadUsers(); loadDashboard();
+            };
+            document.getElementById('m-icon').textContent = '🗑️';
+            document.getElementById('m-title').textContent = "Foydalanuvchini o'chirish";
+            document.getElementById('m-desc').textContent = `"${name}" butunlay o'chirilsinmi? Bu amalni qaytarib bo'lmaydi — uning barcha auktsion, taklif va to'lovlari ham o'chadi.`;
+            const btn = document.getElementById('m-confirm');
+            btn.className = 'btn btn-danger-soft'; btn.textContent = "🗑️ Butunlay o'chirish";
             document.getElementById('confirm-modal').classList.add('open');
         }
 
