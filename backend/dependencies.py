@@ -55,5 +55,5 @@ def get_current_admin(current_user: User = Depends(get_current_user)) -> User:
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Bu amal faqat adminlar uchun mavjud"
         )
-        
+         
     return current_user
