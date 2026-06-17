@@ -24,8 +24,17 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
-    """JWT token yaratish"""
+    """
+    JWT token yaratish.
+    "sub" claim JWT standartiga ko'ra har doim string bo'lishi kerak —
+    shuning uchun bu yerda majburan str() ga o'tkazamiz. Aks holda
+    dependencies.py dagi int(payload.get("sub")) bilan mos kelmay,
+    foydalanuvchi har safar 401 olishi mumkin edi.
+    """
     to_encode = data.copy()
+    if "sub" in to_encode and to_encode["sub"] is not None:
+        to_encode["sub"] = str(to_encode["sub"])
+
     expire = datetime.utcnow() + (
         expires_delta or timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
