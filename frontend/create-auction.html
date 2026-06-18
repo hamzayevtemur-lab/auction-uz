@@ -1227,7 +1227,33 @@
             document.getElementById('prev-title').textContent = title;
             document.getElementById('prev-price').textContent = start ? fmtPrice(start) : '—';
             document.getElementById('prev-dur').textContent = dur + ' kun';
-            if (cat && CAT_ICONS[cat]) document.getElementById('prev-emoji').textContent = CAT_ICONS[cat];
+
+            // Only fall back to the category emoji when no real photo has
+            // been uploaded yet — updatePreviewImage() takes priority once
+            // the seller picks a file.
+            if (!selectedImages.length) {
+                const emojiEl = document.getElementById('prev-emoji');
+                emojiEl.style.backgroundImage = '';
+                emojiEl.textContent = (cat && CAT_ICONS[cat]) ? CAT_ICONS[cat] : '🏷️';
+            }
+        }
+
+        // Shows the first selected image as the live preview thumbnail,
+        // replacing the emoji placeholder. Called whenever selectedImages
+        // changes (add or remove).
+        function updatePreviewImage() {
+            const emojiEl = document.getElementById('prev-emoji');
+            if (selectedImages.length) {
+                const url = URL.createObjectURL(selectedImages[0]);
+                emojiEl.style.backgroundImage = `url('${url}')`;
+                emojiEl.style.backgroundSize = 'cover';
+                emojiEl.style.backgroundPosition = 'center';
+                emojiEl.textContent = '';
+            } else {
+                emojiEl.style.backgroundImage = '';
+                const cat = document.getElementById('f-cat').value;
+                emojiEl.textContent = (cat && CAT_ICONS[cat]) ? CAT_ICONS[cat] : '🏷️';
+            }
         }
 
         function charCount(inputId, countId, max) {
@@ -1320,6 +1346,7 @@
                 style="position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:6px;background:rgba(0,0,0,0.6);color:#fff;border:none;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center">✕</button>
         </div>`;
             }).join('');
+            updatePreviewImage();
         }
 
         // Drag & drop support

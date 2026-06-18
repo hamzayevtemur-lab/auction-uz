@@ -230,6 +230,33 @@
             font-size: 150px;
             background: linear-gradient(160deg, #16103a, #0b0820);
             position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .thumb-row {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            background: var(--bg2);
+            overflow-x: auto;
+        }
+
+        .thumb {
+            width: 64px;
+            height: 64px;
+            border-radius: 10px;
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+            background-color: var(--bg3);
+        }
+
+        .thumb.active {
+            border-color: var(--primary);
         }
 
         .status-badge {
@@ -939,6 +966,7 @@
 
     <script>
         const API = 'http://127.0.0.1:8000/api';
+        const SERVER_BASE = 'http://127.0.0.1:8000';
         const CAT_NAMES = { 1: 'Elektronika', 2: 'Avtomobil', 3: "Ko'chmas mulk", 4: 'Kiyim', 5: "San'at", 6: 'Zargarlik', 7: 'Mebel', 8: 'Sport', 9: 'Kitob', 10: 'Boshqa' };
         const CAT_ICONS = { 1: '📱', 2: '🚗', 3: '🏠', 4: '👗', 5: '🎨', 6: '💍', 7: '🪑', 8: '⚽', 9: '📚', 10: '🔧' };
 
@@ -1015,13 +1043,26 @@
             const sbCls = isEnded ? 'sb-ended' : isPending ? 'sb-pending' : 'sb-live';
             const sbTxt = isEnded ? 'Tugadi' : isPending ? 'Tez kunda' : 'Jonli';
 
+            const images = a.images || [];
+            const hasImages = images.length > 0;
+            const mainImgStyle = hasImages
+                ? ` style="background-image:url('${SERVER_BASE}${images[0]}')"`
+                : '';
+            const mainImgContent = hasImages ? '' : `<span>${CAT_ICONS[a.category_id] || '🏷️'}</span>`;
+            const thumbRow = images.length > 1
+                ? `<div class="thumb-row">${images.map((img, i) =>
+                    `<div class="thumb ${i === 0 ? 'active' : ''}" style="background-image:url('${SERVER_BASE}${img}')" onclick="switchMainImage('${img}',this)"></div>`
+                ).join('')}</div>`
+                : '';
+
             document.getElementById('main-grid').innerHTML = `
   <div class="left-col">
     <div class="card-box">
-      <div class="main-img">
-        <span>${CAT_ICONS[a.category_id] || '🏷️'}</span>
+      <div class="main-img" id="main-img-box"${mainImgStyle}>
+        ${mainImgContent}
         <div class="status-badge ${sbCls}">${sbTxt}</div>
       </div>
+      ${thumbRow}
     </div>
     <div class="info-block">
       <div class="tags">
@@ -1083,6 +1124,17 @@
   </div>`;
 
             updateBidPanel();
+        }
+
+        // Switch the large preview image when a thumbnail is clicked.
+        function switchMainImage(url, thumbEl) {
+            const box = document.getElementById('main-img-box');
+            if (box) {
+                box.style.backgroundImage = `url('${SERVER_BASE}${url}')`;
+                box.querySelectorAll('span').forEach(s => s.style.display = 'none');
+            }
+            document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+            if (thumbEl) thumbEl.classList.add('active');
         }
 
         function updateBidPanel() {

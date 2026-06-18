@@ -727,6 +727,7 @@
 
     <script>
         const API = 'http://127.0.0.1:8000/api';
+        const SERVER_BASE = 'http://127.0.0.1:8000';
         const CAT_NAMES = { 1: 'Elektronika', 2: 'Avtomobil', 3: "Ko'chmas mulk", 4: 'Kiyim', 5: "San'at", 6: 'Zargarlik', 7: 'Mebel', 8: 'Sport', 9: 'Kitob', 10: 'Boshqa' };
         const CAT_ICONS = { 1: '📱', 2: '🚗', 3: '🏠', 4: '👗', 5: '🎨', 6: '💍', 7: '🪑', 8: '⚽', 9: '📚', 10: '🔧' };
         let currentPage = 1, totalPages = 1, liveTimers = [];
@@ -792,10 +793,14 @@
                 const badgeCls = st === 'active' ? 'bl' : st === 'pending' ? 'bs' : 'be';
                 const badgeTxt = st === 'active' ? 'Jonli' : st === 'pending' ? 'Tez kunda' : 'Tugadi';
                 const urgent = !t.ended && t.d === 0 && t.h < 1;
+                const hasImg = a.images && a.images.length > 0;
+                const imgStyle = hasImg
+                    ? ` style="background-image:url('${SERVER_BASE}${a.images[0]}');background-size:cover;background-position:center"`
+                    : '';
                 return `
     <div class="a-card" style="animation-delay:${i * 40}ms" onclick="location.href='auction-detail.html?id=${a.id}'">
-      <div class="a-img">
-        <span>${CAT_ICONS[a.category_id] || '🏷️'}</span>
+      <div class="a-img"${imgStyle}>
+        ${!hasImg ? `<span>${CAT_ICONS[a.category_id] || '🏷️'}</span>` : ''}
         <div class="a-img-ov"></div>
         <div class="a-badge ${badgeCls}">${badgeTxt}</div>
         <button class="a-fav" onclick="event.stopPropagation();this.textContent=this.textContent==='♡'?'❤️':'♡'">♡</button>
