@@ -1145,11 +1145,23 @@
             if (!panel) return;
 
             if (isEnded) {
-                panel.innerHTML = `<div style="background:var(--bg3);border-radius:13px;padding:18px;text-align:center;margin-bottom:12px">
+                const u = JSON.parse(localStorage.getItem('savdo_user') || '{}');
+                const isWinner = isLoggedIn && a.winner_id && u.id === a.winner_id;
+
+                if (isWinner) {
+                    panel.innerHTML = `<div style="background:rgba(245,200,66,0.1);border:1px solid rgba(245,200,66,0.3);border-radius:13px;padding:18px;text-align:center;margin-bottom:12px">
+      <div style="font-size:44px;margin-bottom:10px">🏆</div>
+      <h4 style="font-size:15px;margin-bottom:7px">Siz g'olib bo'ldingiz!</h4>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:14px">Buyumni olish uchun escrow to'lovini amalga oshiring</p>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px" onclick="openPayModal('escrow')">💳 Escrow to'lovini amalga oshirish</button>
+    </div>`;
+                } else {
+                    panel.innerHTML = `<div style="background:var(--bg3);border-radius:13px;padding:18px;text-align:center;margin-bottom:12px">
       <div style="font-size:44px;margin-bottom:10px">🏁</div>
       <h4 style="font-size:15px;margin-bottom:7px">Auktsion tugadi</h4>
       <p style="font-size:13px;color:var(--text2)">${a.winner_id ? 'G\'olib aniqlandi' : 'G\'olib aniqlanmadi'}</p>
     </div>`;
+                }
             } else if (!isLoggedIn) {
                 panel.innerHTML = `<div style="background:var(--bg3);border-radius:13px;padding:18px;text-align:center;margin-bottom:12px">
       <div style="font-size:34px;margin-bottom:9px">🔐</div>
@@ -1342,6 +1354,11 @@
                     isParticipating = true;
                     updateBidPanel();
                     showToast('🎉 Auktsiyonga muvaffaqiyatli qo\'shildingiz!');
+                } else if (payMode === 'escrow') {
+                    showToast('✅ To\'lov amalga oshirildi! Sotuvchi siz bilan bog\'lanadi.');
+                    document.getElementById('success-msg').textContent = "Escrow to'lovi qabul qilindi!";
+                    document.getElementById('success-amount').textContent = '';
+                    document.getElementById('success-modal').classList.add('open');
                 }
             } catch (e) {
                 showToast(`⚠️ ${e.message}`);

@@ -7,10 +7,28 @@ from contextlib import asynccontextmanager
 from .database import Base, engine
 from .routers import auth, users, auctions, bids, payments, admin, upload
 
+import asyncio
+from contextlib import asynccontextmanager
+from .auction_closer import run_auction_closer_loop
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
+
+    # Start the background loop that auto-closes expired auctions.
+    # create_task schedules it without blocking startup; it runs
+    # forever in the background until the app shuts down.
+    closer_task = asyncio.create_task(run_auction_closer_loop())
+
     yield
+
+    # Clean shutdown — cancel the loop so it doesn't error out when
+    # the event loop closes.
+    closer_task.cancel()
+    try:
+        await closer_task
+    except asyncio.CancelledError:
+        pass
 
 app = FastAPI(title="Savdo.uz API", lifespan=lifespan)
 

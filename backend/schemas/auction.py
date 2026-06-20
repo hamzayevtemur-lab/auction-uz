@@ -1,7 +1,8 @@
 from pydantic import BaseModel, field_validator
 from typing import Optional, List
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
+
 
 class AuctionCreate(BaseModel):
     category_id:    int
@@ -31,9 +32,23 @@ class AuctionCreate(BaseModel):
 
     @field_validator("ends_at")
     def ends_in_future(cls, v):
-        if v <= datetime.utcnow():
+        # The frontend sends an ISO datetime with timezone info (e.g. ends
+        # with "Z"), which Python parses as timezone-AWARE. But
+        # datetime.utcnow() returns a timezone-NAIVE datetime. Comparing
+        # aware vs naive raises TypeError and crashes the whole request
+        # with a 500 — which is exactly what was happening here, on every
+        # single auction creation attempt regardless of payment method.
+        #
+        # Fix: normalize both sides to timezone-aware UTC before comparing.
+        if v.tzinfo is None:
+            v_compare = v.replace(tzinfo=timezone.utc)
+        else:
+            v_compare = v
+        now = datetime.now(timezone.utc)
+        if v_compare <= now:
             raise ValueError("Tugash vaqti kelajakda bo'lishi kerak")
         return v
+
 
 class AuctionOut(BaseModel):
     id:             int
@@ -57,4 +72,4 @@ class AuctionOut(BaseModel):
     created_at:     datetime
 
     class Config:
-        from_attributes = True
+        from_attributes = True 

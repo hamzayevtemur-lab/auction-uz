@@ -301,6 +301,44 @@
             gap: 8px;
         }
 
+        /* WINNER BANNER — "you won, pay now" prompt on overview tab */
+        .winner-banner {
+            background: linear-gradient(135deg, rgba(245, 200, 66, 0.14), rgba(124, 92, 252, 0.10));
+            border: 1px solid rgba(245, 200, 66, 0.35);
+            border-radius: 16px;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .winner-banner .wb-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .winner-banner .wb-body {
+            flex: 1;
+        }
+
+        .winner-banner .wb-title {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .winner-banner .wb-msg {
+            font-size: 13px;
+            color: var(--text2);
+        }
+
+        .winner-banner .wb-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
         /* STAT CARDS */
         .stats-grid {
             display: grid;
@@ -775,6 +813,7 @@
 
             <!-- OVERVIEW -->
             <div id="tab-overview">
+                <div id="winner-banners"></div>
                 <h1 style="font-size:20px;margin-bottom:4px">Xush kelibsiz, <span id="greet-name"
                         style="color:var(--primary2)">—</span> 👋</h1>
                 <p style="color:var(--text2);font-size:13px;margin-bottom:22px">Hisobingiz holati</p>
@@ -1061,18 +1100,50 @@
             document.getElementById('ov-auctions').textContent = myAuctions.length || '0';
             document.getElementById('badge-bids').textContent = activeBids || '0';
 
-            // Notification badge — unread count
+            // Notification badge — unread count, and surface any "you
+            // won" notifications as a pay-now banner right on overview.
             try {
                 const notifData = await apiFetch('/users/me/notifications');
                 if (notifData) {
                     const unread = notifData.filter(n => !n.is_read).length;
                     document.getElementById('badge-notif').textContent = unread || '0';
+                    renderWinnerBanners(notifData);
                 }
             } catch (e) { console.warn('notifications badge load failed:', e.message); }
 
             // Overview tables
             renderOverviewBids();
             renderOverviewAuctions();
+        }
+
+        // Shows a "you won — pay now" banner for each unread winner
+        // notification. We match it back to the bid in myBids (which has
+        // is_winner + auction_id) so we can link straight to the right
+        // auction's escrow payment.
+        function renderWinnerBanners(notifList) {
+            const el = document.getElementById('winner-banners');
+            if (!el) return;
+            const winnerNotifs = notifList.filter(n => n.type === 'winner' && !n.is_read);
+            if (!winnerNotifs.length) { el.innerHTML = ''; return; }
+
+            el.innerHTML = winnerNotifs.map(n => {
+                // Try to find which auction this refers to via myBids
+                // (is_winner=true entries) — fall back to a generic link
+                // to the bids tab if we can't pin down the exact auction.
+                const wonBid = myBids.find(b => b.is_winner);
+                const href = wonBid ? `auction-detail.html?id=${wonBid.auction_id}` : 'dashboard.html?tab=bids';
+                return `
+        <div class="winner-banner">
+          <div class="wb-icon">🏆</div>
+          <div class="wb-body">
+            <div class="wb-title">${n.title}</div>
+            <div class="wb-msg">${n.message || ''}</div>
+          </div>
+          <div class="wb-actions">
+            <a href="${href}" class="btn btn-primary btn-sm">💳 Hoziroq to'lash</a>
+          </div>
+        </div>`;
+            }).join('');
         }
 
         function renderOverviewBids() {
@@ -1107,7 +1178,8 @@
         async function loadBids(silent = false) {
             if (!silent) document.getElementById('bids-content').innerHTML = loadingHTML();
             try {
-                myBids = await apiFetch('/bids/my') || [];
+                const bidsResp = await apiFetch('/bids/my');
+                myBids = Array.isArray(bidsResp) ? bidsResp : (bidsResp?.items || []);
                 // Cache auction info for each bid
                 for (const b of myBids) {
                     if (!auctionCache[b.auction_id]) {
@@ -1148,7 +1220,8 @@
         async function loadMyAuctions(silent = false) {
             if (!silent) document.getElementById('auctions-content').innerHTML = loadingHTML();
             try {
-                myAuctions = await apiFetch('/auctions/my') || [];
+                const auctResp = await apiFetch('/auctions/my');
+                myAuctions = Array.isArray(auctResp) ? auctResp : (auctResp?.items || []);
                 if (!silent) renderMyAuctions();
             } catch (e) {
                 if (!silent) document.getElementById('auctions-content').innerHTML = errHTML(e.message);
@@ -1173,7 +1246,8 @@
         async function loadPayments(silent = false) {
             if (!silent) document.getElementById('payments-content').innerHTML = loadingHTML();
             try {
-                myPayments = await apiFetch('/payments/my') || [];
+                const payResp = await apiFetch('/payments/my');
+                myPayments = Array.isArray(payResp) ? payResp : (payResp?.items || []);
                 if (!silent) renderPayments();
             } catch (e) {
                 if (!silent) document.getElementById('payments-content').innerHTML = errHTML(e.message);
@@ -1289,7 +1363,12 @@
             if (day > 0) return day + ' kun oldin'; if (h > 0) return h + ' soat oldin'; return (m || 1) + ' daqiqa oldin';
         }
         function tableHTML(headers, rows) {
-            return `<table class="data-table"><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`;
+            // rows may arrive as an array of <tr> strings OR as a single
+            // already-joined string (some callers do .map(...).join('')
+            // before calling this). Handle both so a join() call here
+            // doesn't crash when it's already a string.
+            const body = Array.isArray(rows) ? rows.join('') : rows;
+            return `<table class="data-table"><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table>`;
         }
         function loadingHTML() { return '<div class="loading"><div class="spinner"></div><p>Yuklanmoqda…</p></div>'; }
         function errHTML(msg) { return `<div class="empty-state"><div class="ei">⚠️</div><p>${msg || "Ma'lumotlarni yuklashda xatolik"}</p></div>`; }
